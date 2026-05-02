@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 36,
-      "loss": 17,
+      "loss": 18,
       "be": 10,
-      "total": 63
+      "total": 64
     },
     "sess:us": {
       "win": 4,
@@ -86,9 +86,9 @@
     },
     "rsi_long:70-79": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin:BNB": {
       "win": 12,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 21,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 29
+      "total": 30
     },
     "rsi_short:30-39": {
       "win": 12,
@@ -134,15 +134,15 @@
     },
     "coin:ETH": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:ETH_LONG": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "rsi_short:50-59": {
       "win": 9,
@@ -164,9 +164,9 @@
     },
     "sess:asia_day": {
       "win": 19,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 26
+      "total": 27
     },
     "coin:NEAR": {
       "win": 14,
@@ -358,9 +358,9 @@
     },
     "ETH": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "NEAR": {
       "win": 14,
@@ -437,5 +437,5 @@
       "title": "🔄 趨勢反轉"
     }
   ],
-  "updated_at": 1777763118.950137
+  "updated_at": 1777766223.5207849
 }

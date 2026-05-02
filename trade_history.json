@@ -7511,5 +7511,77 @@
       "atr_pct": 0.11,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 07:57",
+    "date": "2026-05-03",
+    "order_id": "1777760579-291C3E58",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2320.97,
+    "close": 2313.9939,
+    "close_type": "SL",
+    "pnl": -0.3,
+    "is_win": false,
+    "is_be": false,
+    "score": 99,
+    "funding_rate": 2.20281226137e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 78.6,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.35,
+      "regime": "trend",
+      "adx": 83.2,
+      "atr_pct": 0.2,
+      "pullback": true,
+      "learning_notes": [
+        "score:90+ (n=28, 勝率 71%) → +2",
+        "sess:asia_day (n=25, 勝率 72%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 4,
+      "tp_adjust_notes": [
+        "TP3 由 2355.8504 校正到 2338.8729（避開阻力 2343.5600）"
+      ]
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 78.6,
+      "atr_pct": 0.2,
+      "funding": 0.022028122613699998,
+      "vol_ratio": 1.35,
+      "adx": 83.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 80.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 83.2,
+      "atr_pct": 0.2,
+      "volatile": false
+    }
   }
 ]
