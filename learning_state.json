@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 27,
-      "loss": 12,
+      "loss": 13,
       "be": 6,
-      "total": 45
+      "total": 46
     },
     "sess:us": {
       "win": 4,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 7,
-      "loss": 8,
+      "loss": 9,
       "be": 2,
-      "total": 17
+      "total": 18
     },
     "coin:DOGE": {
       "win": 1,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 10,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 18
+      "total": 19
     },
     "coin:ETH": {
       "win": 1,
@@ -146,9 +146,9 @@
     },
     "rsi_short:50-59": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin_side:SOL_SHORT": {
       "win": 1,
@@ -263,6 +263,18 @@
       "loss": 0,
       "be": 1,
       "total": 3
+    },
+    "coin:ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ADA_SHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -325,6 +337,12 @@
       "loss": 2,
       "be": 1,
       "total": 10
+    },
+    "ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -355,7 +373,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1777750564.574089,
+      "coin": "ADA",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1777745960.9482987
+  "updated_at": 1777750563.7847204
 }

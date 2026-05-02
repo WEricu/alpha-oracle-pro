@@ -6211,5 +6211,44 @@
       "atr_pct": 0.236,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 03:36",
+    "date": "2026-05-03",
+    "order_id": "1777653066-4751E77D",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2492,
+    "close": 0.2509,
+    "close_type": "SL",
+    "pnl": -0.68,
+    "is_win": false,
+    "is_be": false,
+    "score": 70,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 54.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 70.0,
+      "rsi": 54.0,
+      "atr_pct": 1.0,
+      "funding": 0.1,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
   }
 ]
