@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777648542.0919144,
     "entry_message_id": 2489,
-    "last_checked_ts": 1777750200.0,
-    "current_price": 84.16
+    "last_checked_ts": 1777751100.0,
+    "current_price": 84.12
   },
   "BTC-USDT-SWAP_SHORT_1777653063-48C93FC8": {
     "instId": "BTC-USDT-SWAP",
@@ -66,8 +66,8 @@
     "hit_tp3": false,
     "activated_at": 1777653063.6613379,
     "entry_message_id": 2498,
-    "last_checked_ts": 1777750200.0,
-    "current_price": 78454.7
+    "last_checked_ts": 1777751100.0,
+    "current_price": 78411.6
   },
   "LINK-USDT-SWAP_SHORT_1777657301-4D190AC0": {
     "instId": "LINK-USDT-SWAP",
@@ -101,8 +101,8 @@
     "hit_tp3": false,
     "activated_at": 1777657301.2259293,
     "entry_message_id": 2511,
-    "last_checked_ts": 1777750200.0,
-    "current_price": 9.165
+    "last_checked_ts": 1777751100.0,
+    "current_price": 9.16
   },
   "ETH-USDT-SWAP_LONG_1777701966-09359FFA": {
     "instId": "ETH-USDT-SWAP",
@@ -171,8 +171,8 @@
     "hit_tp3": false,
     "activated_at": 1777701966.801887,
     "entry_message_id": 2657,
-    "last_checked_ts": 1777750200.0,
-    "current_price": 2310.57
+    "last_checked_ts": 1777751100.0,
+    "current_price": 2308.89
   },
   "BNB-USDT-SWAP_LONG_1777733108-D5912E94": {
     "instId": "BNB-USDT-SWAP",
@@ -239,8 +239,8 @@
     "hit_tp3": false,
     "activated_at": 1777733108.7994397,
     "entry_message_id": 2764,
-    "last_checked_ts": 1777750200.0,
-    "current_price": 618.5
+    "last_checked_ts": 1777751100.0,
+    "current_price": 618.4
   },
   "XRP-USDT-SWAP_LONG_1777736046-FF883F33": {
     "instId": "XRP-USDT-SWAP",
@@ -309,7 +309,7 @@
     "hit_tp3": false,
     "activated_at": 1777736046.064798,
     "entry_message_id": 2779,
-    "last_checked_ts": 1777750200.0,
+    "last_checked_ts": 1777751100.0,
     "current_price": 1.393
   },
   "ADA-USDT-SWAP_LONG_1777751286-4C2ED1B5": {
@@ -378,7 +378,7 @@
     "activated_at": 1777751286.7483315,
     "entry_message_id": 166,
     "last_checked_ts": 1777751286.7483315,
-    "current_price": 0.2511
+    "current_price": 0.2509
   },
   "AVAX-USDT-SWAP_LONG_1777751288-0362AA0E": {
     "instId": "AVAX-USDT-SWAP",
@@ -446,7 +446,7 @@
     "activated_at": 1777751288.9445002,
     "entry_message_id": 167,
     "last_checked_ts": 1777751288.9445002,
-    "current_price": 9.164
+    "current_price": 9.156
   },
   "NEAR-USDT-SWAP_LONG_1777751292-288F23BA": {
     "instId": "NEAR-USDT-SWAP",
