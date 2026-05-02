@@ -2,7 +2,7 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"   # 每 5 分鐘觸發（GitHub 可靠最低間隔），內部循環每分鐘掃描
   workflow_dispatch:
 
 permissions:
@@ -14,9 +14,9 @@ concurrency:
 
 jobs:
   run:
-    name: 🤖 Alpha Oracle Pro
+    name: 🔮 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 9
 
     steps:
       - name: 📦 下載程式碼
@@ -32,34 +32,31 @@ jobs:
       - name: 📦 安裝依賴
         run: pip install --quiet requests tradingview-ta
 
-      - name: 🗄️ 初始化狀態檔案
-        run: |
-          [ -f active_signals.json ]   || echo '{}' > active_signals.json
-          [ -f trade_history.json ]    || echo '[]' > trade_history.json
-          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
-          [ -f system_state.json ]     || echo '{}' > system_state.json
-          [ -f learning_state.json ]   || echo '{}' > learning_state.json
-
-      - name: 🚀 執行 Alpha Oracle
+      - name: 🔍 每分鐘循環掃描（共 4 輪，間隔 60 秒）
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "68"
-          TZ: Asia/Taipei
+          SETUP_SCORE_THRESHOLD: "75"
+          TZ: Europe/London
         run: |
-          echo "🚀 Alpha Oracle Pro - 繁體中文版"
-          python main.py
+          for i in 1 2 3 4; do
+            echo "🔍 第 $i / 4 輪掃描（$(date -u '+%H:%M:%S UTC')）..."
+            python main.py || echo "⚠️ 第 $i 輪出錯，繼續下一輪"
+            if [ "$i" -lt 4 ]; then
+              echo "⏱ 等待 60 秒..."
+              sleep 60
+            fi
+          done
 
-      - name: 💾 保存狀態
-        if: always()
+      - name: 💾 提交狀態檔案
         run: |
-          git config user.name  "alpha-bot"
-          git config user.email "bot@alpha.example"
-          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
-          git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
-          git diff --staged --quiet || {
-            git commit -m "chore: 更新訊號狀態 [skip ci]"
-            git push --quiet || git push --force-with-lease --quiet || true
-          }
-        continue-on-error: true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "✅ 無狀態變更"
+          else
+            git commit -m "🤖 自動更新狀態 $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
