@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777648542.0919144,
     "entry_message_id": 2489,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 84.06
+    "last_checked_ts": 1777747500.0,
+    "current_price": 84.18
   },
   "BTC-USDT-SWAP_SHORT_1777653063-48C93FC8": {
     "instId": "BTC-USDT-SWAP",
@@ -66,8 +66,8 @@
     "hit_tp3": false,
     "activated_at": 1777653063.6613379,
     "entry_message_id": 2498,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 78366.1
+    "last_checked_ts": 1777747500.0,
+    "current_price": 78424.4
   },
   "ADA-USDT-SWAP_SHORT_1777653066-4751E77D": {
     "instId": "ADA-USDT-SWAP",
@@ -101,8 +101,8 @@
     "hit_tp3": false,
     "activated_at": 1777653066.7494726,
     "entry_message_id": 2500,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 0.2499
+    "last_checked_ts": 1777747500.0,
+    "current_price": 0.2506
   },
   "LINK-USDT-SWAP_SHORT_1777657301-4D190AC0": {
     "instId": "LINK-USDT-SWAP",
@@ -136,8 +136,8 @@
     "hit_tp3": false,
     "activated_at": 1777657301.2259293,
     "entry_message_id": 2511,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 9.135
+    "last_checked_ts": 1777747500.0,
+    "current_price": 9.152
   },
   "ETH-USDT-SWAP_LONG_1777701966-09359FFA": {
     "instId": "ETH-USDT-SWAP",
@@ -206,8 +206,8 @@
     "hit_tp3": false,
     "activated_at": 1777701966.801887,
     "entry_message_id": 2657,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 2307.98
+    "last_checked_ts": 1777747500.0,
+    "current_price": 2308.62
   },
   "BNB-USDT-SWAP_LONG_1777733108-D5912E94": {
     "instId": "BNB-USDT-SWAP",
@@ -274,8 +274,8 @@
     "hit_tp3": false,
     "activated_at": 1777733108.7994397,
     "entry_message_id": 2764,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 618.4
+    "last_checked_ts": 1777747500.0,
+    "current_price": 618.2
   },
   "XRP-USDT-SWAP_LONG_1777736046-FF883F33": {
     "instId": "XRP-USDT-SWAP",
@@ -344,7 +344,7 @@
     "hit_tp3": false,
     "activated_at": 1777736046.064798,
     "entry_message_id": 2779,
-    "last_checked_ts": 1777745700.0,
-    "current_price": 1.391
+    "last_checked_ts": 1777747500.0,
+    "current_price": 1.392
   }
 }
