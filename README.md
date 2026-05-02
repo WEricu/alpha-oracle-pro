@@ -52,3 +52,5 @@ The standalone backtest tool is invoked as a script in the repo root.
 ## License
 
 For personal use only. Not financial advice. Use at your own risk.
+
+<!-- auto-run enabled -->
