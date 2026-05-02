@@ -1,72 +1,4 @@
 {
-  "BNB-USDT-SWAP_LONG_1777733108-D5912E94": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 616.5,
-    "sl": 618.0268,
-    "tp1": 618.0268,
-    "tp2": 619.5536,
-    "tp3": 621.5893,
-    "score": 97,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 68.5,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "volume": 2,
-      "volume_ratio": 1.27,
-      "regime": "trend",
-      "adx": 80.0,
-      "atr_pct": 0.11,
-      "learning_notes": [
-        "score:90+ (n=21, 勝率 76%) → +2",
-        "rsi_long:60-69 (n=7, 勝率 14%) → -3",
-        "fund:neutral (n=35, 勝率 63%) → +1",
-        "coin:BNB (n=11, 勝率 82%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
-      ],
-      "learning_adjust": 2
-    },
-    "funding_rate": -6.61764966179e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 62.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 44.9
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 80.0,
-      "atr_pct": 0.11,
-      "volatile": false
-    },
-    "created": 1777733108.7980087,
-    "expires": 1777819508.798009,
-    "order_id": "1777733108-D5912E94",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1777733108.7994397,
-    "entry_message_id": 2764,
-    "last_checked_ts": 1777759200.0,
-    "current_price": 618.3
-  },
   "AVAX-USDT-SWAP_LONG_1777751288-0362AA0E": {
     "instId": "AVAX-USDT-SWAP",
     "side": "LONG",
@@ -132,8 +64,8 @@
     "hit_tp3": false,
     "activated_at": 1777751288.9445002,
     "entry_message_id": 167,
-    "last_checked_ts": 1777759200.0,
-    "current_price": 9.187
+    "last_checked_ts": 1777761900.0,
+    "current_price": 9.192
   },
   "TON-USDT-SWAP_LONG_1777758179-B873B67D": {
     "instId": "TON-USDT-SWAP",
@@ -200,8 +132,8 @@
     "hit_tp3": false,
     "activated_at": 1777758179.4509559,
     "entry_message_id": 323,
-    "last_checked_ts": 1777759200.0,
-    "current_price": 1.345
+    "last_checked_ts": 1777761900.0,
+    "current_price": 1.341
   },
   "ETH-USDT-SWAP_LONG_1777760579-291C3E58": {
     "instId": "ETH-USDT-SWAP",
@@ -270,8 +202,8 @@
     "hit_tp3": false,
     "activated_at": 1777760579.812043,
     "entry_message_id": 377,
-    "last_checked_ts": 1777760579.812043,
-    "current_price": 2319.03
+    "last_checked_ts": 1777761900.0,
+    "current_price": 2322.52
   },
   "LINK-USDT-SWAP_LONG_1777760581-FA52AE55": {
     "instId": "LINK-USDT-SWAP",
@@ -340,8 +272,8 @@
     "hit_tp3": false,
     "activated_at": 1777760581.832133,
     "entry_message_id": 378,
-    "last_checked_ts": 1777760581.832133,
-    "current_price": 9.191
+    "last_checked_ts": 1777761900.0,
+    "current_price": 9.189
   },
   "DOT-USDT-SWAP_LONG_1777760583-6C1A2531": {
     "instId": "DOT-USDT-SWAP",
@@ -409,7 +341,7 @@
     "hit_tp3": false,
     "activated_at": 1777760583.7426026,
     "entry_message_id": 379,
-    "last_checked_ts": 1777760583.7426026,
-    "current_price": 1.227
+    "last_checked_ts": 1777761900.0,
+    "current_price": 1.226
   }
 }

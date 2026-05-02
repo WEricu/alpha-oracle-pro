@@ -7441,5 +7441,75 @@
       "atr_pct": 0.195,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 07:05",
+    "date": "2026-05-03",
+    "order_id": "1777733108-D5912E94",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 616.5,
+    "close": 618.0268,
+    "close_type": "LOCK",
+    "pnl": 0.25,
+    "is_win": true,
+    "is_be": false,
+    "score": 97,
+    "funding_rate": -6.61764966179e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": 2,
+      "volume_ratio": 1.27,
+      "regime": "trend",
+      "adx": 80.0,
+      "atr_pct": 0.11,
+      "learning_notes": [
+        "score:90+ (n=21, 勝率 76%) → +2",
+        "rsi_long:60-69 (n=7, 勝率 14%) → -3",
+        "fund:neutral (n=35, 勝率 63%) → +1",
+        "coin:BNB (n=11, 勝率 82%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 97.0,
+      "rsi": 68.5,
+      "atr_pct": 0.11,
+      "funding": -0.0661764966179,
+      "vol_ratio": 1.27,
+      "adx": 80.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 80.0,
+      "atr_pct": 0.11,
+      "volatile": false
+    }
   }
 ]
