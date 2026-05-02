@@ -2,7 +2,7 @@ name: Alpha Oracle Monitor (高頻監控)
 
 on:
   schedule:
-    - cron: "*/3 * * * *"
+    - cron: "*/2 * * * *"
   workflow_dispatch:
 
 permissions:
