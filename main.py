@@ -85,6 +85,26 @@ def tw_now() -> datetime:
 def tw_ts() -> str:
     """台灣時間時間戳字串（給通知顯示用）"""
     return tw_now().strftime("%Y-%m-%d %H:%M:%S 台灣時間")
+# ═════════════════════════════════════════════════════════
+# 🇬🇧 英國時間工具（自動識別 BST/GMT，夏令時+1h）
+# ═════════════════════════════════════════════════════════
+try:
+    from zoneinfo import ZoneInfo
+    UK_TZ = ZoneInfo("Europe/London")
+except ImportError:
+    UK_TZ = timezone(timedelta(hours=0))
+
+
+def uk_now() -> datetime:
+    """獲取英國時間 datetime（自動 BST/GMT）"""
+    return datetime.now(UK_TZ)
+
+
+def uk_date_str() -> str:
+    """英國今日日期字串 YYYY-MM-DD"""
+    return uk_now().strftime("%Y-%m-%d")
+
+
 
 
 # ═════════════════════════════════════════════════════════
@@ -130,6 +150,7 @@ COOLDOWN_HOURS = 2
 ACTIVE_SIGNALS_FILE = "active_signals.json"
 TRADE_HISTORY_FILE = "trade_history.json"
 COOLDOWN_FILE = "signal_cooldown.json"
+DAILY_SIGNALS_FILE = "daily_signals_state.json"
 CONFIG_FILE = "config.json"
 SYSTEM_STATE_FILE = "system_state.json"
 LEARNING_FILE = "learning_state.json"
@@ -143,8 +164,8 @@ _price_cache: dict = {}
 DEFAULT_CONFIG: dict = {
     "coins": ALL_COINS,                # 可在 config.json 自訂
     "max_signals": 3,
-    "score_threshold": 68,
-    "cooldown_hours": 2,
+    "score_threshold": 75,
+    "cooldown_hours": 4,
     "signal_expire_hours": 24,
     "atr_max_pct": 0.04,
     "post_mortem": {
@@ -605,8 +626,8 @@ def verify_price(
     """⚖️ 雙來源價格驗證 → (是否通過, TV 價格, 偏離百分比)
 
     block_on_unverified:
-      True  → TV 抓不到也擋訊號（保守）
-      False → TV 抓不到當作通過（避免單點失效擋掉所有訊號）
+      True → TV 抓不到當作通過（逛守）
+      False  → TV 抓不到當作通過（避免單點失效擋掉所有訊號）
     """
     tv_price = fetch_price_tv(instId)
     if tv_price is None:
@@ -892,7 +913,7 @@ def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
     score = max(-15, min(15, score))
 
     align_desc = []
-    align_desc.append(f"1H={'順' if h1 == expect else '反' if h1 == -expect else '中'}")
+    align_desc.append(f"1H={'i��' if h1 == expect else '反' if h1 == -expect else '中'}")
     align_desc.append(f"4H={'順' if h4 == expect else '反' if h4 == -expect else '中'}")
     return score, " / ".join(align_desc)
 
@@ -1176,11 +1197,11 @@ def generate_signal(
                 "instId": instId,
                 "side": side,
                 "tf": "15m",
-                "entry": round(entry, 4),
-                "sl": round(sl, 4),
-                "tp1": round(tp_levels[0], 4),
-                "tp2": round(tp_levels[1], 4),
-                "tp3": round(tp_levels[2], 4),
+                "entry": round(entry, 6),
+                "sl": round(sl, 6),
+                "tp1": round(tp_levels[0], 6),
+                "tp2": round(tp_levels[1], 6),
+                "tp3": round(tp_levels[2], 6),
                 "score": score,
                 "grade": grade,
                 "detail": detail,
@@ -1286,6 +1307,27 @@ def mark_cooldown(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> None:
     cutoff = time.time() - cooldown_hours * 3600 * 3
     cd = {k: v for k, v in cd.items() if float(v) > cutoff}
     _save_json(COOLDOWN_FILE, cd)
+
+def get_daily_signal_count() -> int:
+    """取得今日（英國時間）已發送的高質量訊號數"""
+    state = _load_json(DAILY_SIGNALS_FILE, {})
+    today = uk_date_str()
+    if state.get("date_uk") != today:
+        _save_json(DAILY_SIGNALS_FILE, {"date_uk": today, "count": 0})
+        return 0
+    return int(state.get("count", 0))
+
+
+def increment_daily_signal_count() -> int:
+    """遞增今日訊號計數（英國時間），回傳新計數"""
+    state = _load_json(DAILY_SIGNALS_FILE, {})
+    today = uk_date_str()
+    if state.get("date_uk") != today:
+        state = {"date_uk": today, "count": 0}
+    state["count"] = int(state.get("count", 0)) + 1
+    _save_json(DAILY_SIGNALS_FILE, state)
+    return state["count"]
+
 
 
 def record_trade(
@@ -1549,7 +1591,7 @@ def format_daily_report(date: str | None = None) -> str:
             sub = _summarize_trades(ts)
             lines.append(
                 f"  {c}: {sub['n']} 筆 (勝 {sub['win']}/敗 {sub['loss']}) "
-                f"PnL `{sub['pnl']:+.2f}%`"
+                f"PnL�{sub['pnl']:+.2f}%`"
             )
 
     return "\n".join(lines)
@@ -2092,7 +2134,7 @@ def is_in_news_window(cfg: dict) -> tuple[bool, str]:
         except Exception:
             continue
 
-    # 2. NFP 自動規則：每月第一個週五 21:25–22:30（台灣時間）
+    # 2. NFP 自動規則：每月第$��個週五 21:25–22:30（台灣時間）
     auto = cfg.get("auto_news_blackout", {})
     if auto.get("nfp", True):
         if now.weekday() == 4 and now.day <= 7:
@@ -2520,29 +2562,7 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
       預設 1 次 = 純靠 cron 頻率；設成 3 + interval=20 → 一次 cron 內 1 分鐘內掃 3 次
 
     用法：python main.py monitor
-    建議搭配 monitor-only.yml workflow（每 3 分鐘 cron）
-    """
-    if not tracker.signals:
-        logging.info("📭 無追蹤中訊號，monitor 跳過")
-        return
-
-    n = len(tracker.signals)
-    logging.info(f"🔔 monitor 模式啟動，追蹤中 {n} 筆訊號 × {in_run_polls} 輪")
-
-    total_transitions = 0
-    for poll_idx in range(in_run_polls):
-        if not tracker.signals:
-            logging.info("📭 所有訊號已結束，提早收工")
-            break
-        try:
-            tracker.check_all()
-            total_transitions += tracker.transitions
-            if poll_idx < in_run_polls - 1:
-                time.sleep(poll_interval)
-        except Exception as e:
-            logging.error(f"❌ monitor poll {poll_idx + 1} 出錯：{e}")
-
-    logging.info(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
+    建議搭配 monitor-only.yml workflow�每 3 分鐘 cron�Ȑ�"" ��b��BG&6�W"�6�v��3����vv��r��f�/	�:�xJ��ދ�NK�ފ�����������F�"�{>��"��&WGW&ࠢ���V�G&6�W"�6�v��2����vv��r��f�b/	�IB���F�"j�[��YY�X�^��΋�ދ�NK�����z�n������9b���'V�����7��ʢ"���F�F��G&�6�F���2� �f�"�����G���&�vR����'V�����2����b��BG&6�W"�6�v��3����vv��r��f�/	�:�h�iȞ������[{.{Yi�����h�iz�iKn[zR"��'&V��G'���G&6�W"�6�V6�����F�F��G&�6�F���2��G&6�W"�G&�6�F���0��b�����G�����'V�����2���F��R�6�VW�������FW'f�W�6WBW�6WF���2S����vv��r�W'&�"�b.)�����F�"���������G���X{�����ɧ�W�"�����vv��r��nfo(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
 
 
 def run_scan(tracker: SignalTracker) -> int:
@@ -2553,6 +2573,7 @@ def run_scan(tracker: SignalTracker) -> int:
     cfg = load_config()
     coins = cfg.get("coins", ALL_COINS)
     max_signals = cfg.get("max_signals", MAX_SIGNALS)
+    daily_max = cfg.get("daily_max_signals", 10)
     score_thr = cfg.get("score_threshold", SCORE_THRESHOLD)
     cooldown_h = cfg.get("cooldown_hours", COOLDOWN_HOURS)
     expire_h = cfg.get("signal_expire_hours", SIGNAL_EXPIRE_HOURS)
@@ -2600,10 +2621,22 @@ def run_scan(tracker: SignalTracker) -> int:
         tracker.send_position_updates()
         return 0
 
+    # ── 3. 每日訊號上限檢查 ──
+    daily_sent = get_daily_signal_count()
+    if daily_sent >= daily_max:
+        logging.info(f"📊 今日（英國時間）已達上限 {daily_max} 單（已發 {daily_sent}），停止開新訊號")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
     # ── 3. 掃描每個幣種 ──
     sent = 0
     for instId in coins:
         if sent >= max_signals:
+            break
+        # 每日上限
+        if daily_sent + sent >= daily_max:
+            logging.info(f"📊 今日上限 {daily_max} 單已達，停止")
             break
 
         # 3.1 🔒 同幣種未平倉不重複開倉（先擋這個，避免冷卻過期後又開新單）
@@ -2697,6 +2730,8 @@ def run_scan(tracker: SignalTracker) -> int:
                 logging.info(f"📍 {instId} PENDING 訊號已建立，訂單 {order_id}")
 
             mark_cooldown(instId, cooldown_h)
+            new_daily = increment_daily_signal_count()
+            logging.info(f"📊 今日（英國時間）第 {new_daily} 單，上限 {daily_max}")
             sent += 1
         except Exception as e:
             logging.error(f"[{instId}] 掃描失敗：{e}")
