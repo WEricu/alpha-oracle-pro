@@ -66,7 +66,7 @@
     "activated_at": 1777833892.7514625,
     "entry_message_id": 536,
     "last_checked_ts": 1777842000.0,
-    "current_price": 84.38
+    "current_price": 84.37
   },
   "DOT-USDT-SWAP_LONG_1777839746-3FA97595": {
     "instId": "DOT-USDT-SWAP",
@@ -133,7 +133,7 @@
     "activated_at": 1777839746.0149817,
     "entry_message_id": 551,
     "last_checked_ts": 1777842000.0,
-    "current_price": 1.219
+    "current_price": 1.218
   },
   "AVAX-USDT-SWAP_LONG_1777842411-EC357F68": {
     "instId": "AVAX-USDT-SWAP",
@@ -204,6 +204,6 @@
     "activated_at": 1777842411.103246,
     "entry_message_id": 577,
     "last_checked_ts": 1777842411.103246,
-    "current_price": 9.134
+    "current_price": 9.133
   }
 }
