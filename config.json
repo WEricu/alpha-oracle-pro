@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
+  "_comment": "Alpha Oracle Pro v14.0 配置（優化 OKX 價差與滑價防禦版）",
   "coins": [
     "BTC-USDT-SWAP",
     "ETH-USDT-SWAP",
@@ -50,8 +50,11 @@
   },
   "price_verification": {
     "enabled": true,
-    "max_deviation_pct": 0.1,
-    "block_on_unverified": false
+    "max_deviation_pct": 0.05,
+    "max_spread_pct": 0.03,
+    "block_on_unverified": true,
+    "order_type": "limit",
+    "use_post_only": true
   },
   "circuit_breaker": {
     "enabled": true,
@@ -61,11 +64,11 @@
     "hard_pause_hours": 24
   },
   "blackout_windows_tw": [
-    {"start": "07:50", "end": "08:10", "reason": "資金費焇畐算（00 UTC）"},
-    {"start": "15:50", "end": "16:10", "reason": "資金費焇畐算（08 UTC）"},
-    {"start": "23:50", "end": "00:10", "reason": "資金費焇畐算（16 UTC）"},
+    {"start": "07:50", "end": "08:10", "reason": "資金費結算（00 UTC）"},
+    {"start": "15:50", "end": "16:10", "reason": "資金費結算（08 UTC）"},
+    {"start": "23:50", "end": "00:10", "reason": "資金費結算（16 UTC）"},
     {"start": "21:25", "end": "21:45", "reason": "美股開盤波動"},
-    {"start": "02:00", "end": "02:30", "reason": "FOMC 公番冲宱"}
+    {"start": "02:00", "end": "02:30", "reason": "FOMC 公布衝擊"}
   ],
   "news_blackouts": [],
   "auto_news_blackout": {
