@@ -1,0 +1,71 @@
+name: Alpha Oracle (1 分鐘掃描)
+
+# 🤖 v14.6 改為「每 1 分鐘」整合掃描：
+#   每次 cron：
+#     1. 早期退出：所有幣都在冷卻 / 持倉 → 只跑 monitor (TP/SL 檢查)
+#     2. 否則：完整訊號生成 + 監控 + 學習更新
+#   實際耗時：5–60 秒不等（看有幾個幣種值得掃）
+
+on:
+  schedule:
+    - cron: "* * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: 🤖 Alpha Oracle 主掃描
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: 📦 下載程式碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🐍 設置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 安裝依賴
+        run: pip install --quiet requests tradingview-ta
+
+      - name: 🗄️ 初始化狀態檔案
+        run: |
+          [ -f active_signals.json ]   || echo '{}' > active_signals.json
+          [ -f trade_history.json ]    || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
+          [ -f system_state.json ]     || echo '{}' > system_state.json
+          [ -f learning_state.json ]   || echo '{}' > learning_state.json
+
+      - name: 🚀 執行 Alpha Oracle
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS: "2"
+          SETUP_SCORE_THRESHOLD: "80"
+          TZ: Asia/Taipei
+        run: |
+          echo "🚀 Alpha Oracle - 1 分鐘整合掃描"
+          python main.py
+
+      - name: 💾 保存狀態
+        if: always()
+        run: |
+          git config user.name  "alpha-bot"
+          git config user.email "bot@alpha.example"
+          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
+          git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: 更新訊號狀態 [skip ci]"
+            git push --quiet || git push --force-with-lease --quiet || true
+          }
+        continue-on-error: true
