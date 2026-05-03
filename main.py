@@ -1554,7 +1554,7 @@ def _summarize_trades(trades: list) -> dict:
         "wr": win / n * 100 if n else 0,
         "pnl": pnl,
         "avg": avg,
-        "max_win": biggest_win,
+        "max_win": biggest_win,
         "max_loss": biggest_loss,
     }
 
