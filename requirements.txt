@@ -1,0 +1,10 @@
+# 基礎通訊與請求
+websockets
+requests
+
+# 數據處理 (Pro 版核心)
+pandas
+numpy
+
+# 如果您有連結交易所，通常需要這個
+ccxt
