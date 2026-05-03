@@ -1814,7 +1814,7 @@ def apply_knn_learning(
 
 
 def record_loss_reason(coin: str, side: str, reasons: list) -> None:
-    "" 記錄止損主因到 learning_state（供後續查詢）"""
+    """記錄止損主因到 learning_state（供後續查詢）"""
     state = _load_json(LEARNING_FILE, {})
     state.setdefault("loss_reasons", [])
     for r in reasons[:1]:  # 只記第一名主因
