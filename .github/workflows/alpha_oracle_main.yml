@@ -1,32 +1,51 @@
-name: Alpha Oracle Bot Run
+name: Alpha Oracle Pro - Optimized Main
 
 on:
-  workflow_dispatch: # 允許您在 GitHub 介面手動點擊 "Run workflow" 啟動
+  workflow_dispatch: # 允許手動點擊 Run workflow 啟動
   schedule:
-    - cron: '0 * * * *' # 可選：每小時自動檢查一次
+    - cron: '0 * * * *' # 每小時自動執行一次
 
 jobs:
-  launch-bot:
+  run-bot:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write # 賦予權限，讓機器人能自動把學習狀態存回 GitHub
+
     steps:
-      - name: Checkout Code
+      - name: 1. 檢出代碼 (Checkout)
         uses: actions/checkout@v4
 
-- name: Setup Python
+      - name: 2. 設定 Python 環境 (Setup Python)
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip' # 開啟快取功能，縮短啟動時間
+          cache: 'pip' # 開啟 pip 快取，下次執行會變快
 
-      - name: Install Dependencies
+      - name: 3. 安裝依賴套件 (Install Dependencies)
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # 如果有 requirements.txt 就讀取，沒有就安裝預設套件
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install websockets requests pandas ccxt numpy
+          fi
 
-      - name: Run Bot
+      - name: 4. 執行機器人 (Run Bot)
         env:
-          # 如果您的 config.json 裡面需要 API Key，建議透過 Secrets 傳入
-          # 範例：EXCHANGE_API_KEY: ${{ secrets.EXCHANGE_API_KEY }}
           PYTHONUNBUFFERED: 1
+          # 請確保您已在 GitHub Secrets 設定以下變數
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
         run: python main.py
+
+      - name: 5. 自動保存數據與學習狀態 (Auto Save State)
+        if: always() # 無論機器人成功或失敗，都執行存檔步驟
+        run: |
+          git config --global user.name "alpha-oracle-bot"
+          git config --global user.email "bot@github.com"
+          # 將所有更新後的 JSON 檔案加入暫存區
+          git add *.json
+          # 提交並推回 GitHub，[skip ci] 防止無限循環觸發
+          git commit -m "Update robot state and history [skip ci]" || echo "沒有需要更新的資料"
+          git push || echo "推送失敗或沒有變動"
