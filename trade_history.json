@@ -9295,5 +9295,21 @@
       "atr_pct": 0.311,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 05:47:42 台灣時間",
+    "coin": "SOL-USDT-SWAP",
+    "entry": 84.2,
+    "close": 83.79,
+    "mode": "SL",
+    "score": 94
+  },
+  {
+    "time": "2026-05-04 05:47:42 台灣時間",
+    "coin": "AVAX-USDT-SWAP",
+    "entry": 9.126,
+    "close": 9.063,
+    "mode": "SL",
+    "score": 92
   }
 ]
