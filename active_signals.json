@@ -64,8 +64,8 @@
     "hit_tp3": false,
     "activated_at": 1777833891.713668,
     "entry_message_id": 534,
-    "last_checked_ts": 1777834800.0,
-    "current_price": 78663.4
+    "last_checked_ts": 1777835700.0,
+    "current_price": 78745.8
   },
   "ETH-USDT-SWAP_LONG_1777833892-41150C12": {
     "instId": "ETH-USDT-SWAP",
@@ -134,8 +134,8 @@
     "hit_tp3": false,
     "activated_at": 1777833892.2722003,
     "entry_message_id": 535,
-    "last_checked_ts": 1777834800.0,
-    "current_price": 2328.67
+    "last_checked_ts": 1777835700.0,
+    "current_price": 2333.75
   },
   "SOL-USDT-SWAP_LONG_1777833892-BDFB771A": {
     "instId": "SOL-USDT-SWAP",
@@ -203,7 +203,213 @@
     "hit_tp3": false,
     "activated_at": 1777833892.7514625,
     "entry_message_id": 536,
-    "last_checked_ts": 1777834800.0,
-    "current_price": 84.23
+    "last_checked_ts": 1777835700.0,
+    "current_price": 84.38
+  },
+  "BNB-USDT-SWAP_LONG_1777837053-3EF04E22": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 619.2,
+    "sl": 618.117857,
+    "tp1": 620.823214,
+    "tp2": 620.1572,
+    "tp3": 620.1572,
+    "score": 82,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 0,
+      "rsi_value": 41.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.53,
+      "regime": "range",
+      "adx": 12.5,
+      "atr_pct": 0.117,
+      "learning_notes": [
+        "coin:BNB (n=15, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 2,
+      "tp_adjust_notes": [
+        "TP2 由 622.4464 校正到 620.1572（避開阻力 621.4000）",
+        "TP3 由 624.6107 校正到 620.1572（避開阻力 621.4000）"
+      ]
+    },
+    "funding_rate": 4.86998195028e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 78.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 12.5,
+      "atr_pct": 0.117,
+      "volatile": false
+    },
+    "created": 1777837050.4004443,
+    "expires": 1777923450.4004445,
+    "order_id": "1777837053-3EF04E22",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777837053.4223225,
+    "entry_message_id": 540,
+    "last_checked_ts": 1777837053.4223225,
+    "current_price": 619.2
+  },
+  "XRP-USDT-SWAP_LONG_1777837053-29C1BA2F": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.395,
+    "sl": 1.390607,
+    "tp1": 1.3972,
+    "tp2": 1.3972,
+    "tp3": 1.3972,
+    "score": 80,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 5,
+      "volume_ratio": 1.61,
+      "regime": "range",
+      "adx": 9.1,
+      "atr_pct": 0.21,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 由 1.4016 校正到 1.3972（避開阻力 1.4000）",
+        "TP2 由 1.4082 校正到 1.3972（避開阻力 1.4000）",
+        "TP3 由 1.4170 校正到 1.3972（避開阻力 1.4000）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 82.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 9.1,
+      "atr_pct": 0.21,
+      "volatile": false
+    },
+    "created": 1777837050.4070578,
+    "expires": 1777923450.407058,
+    "order_id": "1777837053-29C1BA2F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777837053.955487,
+    "entry_message_id": 541,
+    "last_checked_ts": 1777837053.955487,
+    "current_price": 1.395
+  },
+  "ADA-USDT-SWAP_LONG_1777837054-EEA73032": {
+    "instId": "ADA-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.2509,
+    "sl": 0.250193,
+    "tp1": 0.251961,
+    "tp2": 0.253021,
+    "tp3": 0.252294,
+    "score": 83,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 47.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.22,
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.188,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP3 由 0.2544 校正到 0.2523（避開阻力 0.2528）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.188,
+      "volatile": false
+    },
+    "created": 1777837050.3373017,
+    "expires": 1777923450.337302,
+    "order_id": "1777837054-EEA73032",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777837054.421269,
+    "entry_message_id": 542,
+    "last_checked_ts": 1777837054.421269,
+    "current_price": 0.2509
   }
 }
