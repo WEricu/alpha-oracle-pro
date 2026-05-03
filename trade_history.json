@@ -9226,5 +9226,74 @@
       "atr_pct": 0.155,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 05:35",
+    "date": "2026-05-04",
+    "order_id": "1777839746-3FA97595",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 1.218,
+    "close": 1.212321,
+    "close_type": "SL",
+    "pnl": -0.47,
+    "is_win": false,
+    "is_be": false,
+    "score": 81,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 66.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 8,
+      "volume_ratio": 5.34,
+      "regime": "transitional",
+      "adx": 23.8,
+      "atr_pct": 0.311,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP3 由 1.2464 校正到 1.2375（避開阻力 1.2400）"
+      ]
+    },
+    "features": {
+      "score": 81.0,
+      "rsi": 66.7,
+      "atr_pct": 0.311,
+      "funding": 0.1,
+      "vol_ratio": 5.34,
+      "adx": 23.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.9
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 58.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.8,
+      "atr_pct": 0.311,
+      "volatile": false
+    }
   }
 ]
