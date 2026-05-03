@@ -1,36 +1,38 @@
-name: Alpha Oracle Bot Run
+name: Alpha Oracle Pro Main
 
 on:
-  workflow_dispatch: # 允許您在 GitHub 介面手動點擊 "Run workflow" 啟動
-  schedule:
-    - cron: '0 * * * *' # 可選：每小時自動檢查一次
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.py'
 
 jobs:
-  launch-bot:
+  run-pro-bot:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
-          # 檢查是否有 requirements.txt，若無則手動安裝常見依賴
-          if [ -f requirements.txt ]; then 
-            pip install -r requirements.txt
-          else
-            pip install websockets requests pandas # 根據檔案清單推測的基礎依賴
-          fi
+          pip install websockets requests pandas # 根據 Pro 版功能添加
+          # 如果有 ccxt 請加上：pip install ccxt
 
-      - name: Run Bot
+      - name: Execute Main Bot
         env:
-          # 如果您的 config.json 裡面需要 API Key，建議透過 Secrets 傳入
-          # 範例：EXCHANGE_API_KEY: ${{ secrets.EXCHANGE_API_KEY }}
-          PYTHONUNBUFFERED: 1
+          API_KEY: ${{ secrets.MY_EXCHANGE_KEY }}
+          API_SECRET: ${{ secrets.MY_EXCHANGE_SECRET }}
         run: python main.py
+
+      - name: Auto Commit State Updates
+        run: |
+          git config --global user.name "Bot-Auto-Updater"
+          git config --global user.email "bot@actions.com"
+          git add *.json
+          git commit -m "Update robot learning state and trade history [skip ci]" || exit 0
+          git push
