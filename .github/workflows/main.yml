@@ -50,13 +50,16 @@ jobs:
           done
 
       - name: 💾 提交狀態檔案
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin main
           git add -A
           if git diff --staged --quiet; then
             echo "✅ 無狀態變更"
           else
             git commit -m "🤖 自動更新狀態 $(date -u '+%Y-%m-%d %H:%M UTC')"
-            git push
+            git push --quiet || git push --force-with-lease --quiet || true
           fi
+        continue-on-error: true
