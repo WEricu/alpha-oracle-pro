@@ -2,7 +2,7 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # 每 5 分鐘觸發（GitHub 可靠最低間隔），內部循環每分鐘掃描
+    - cron: "* * * * *"   # 每分鐘觸發（並發掃描版）
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
   run:
     name: 🔮 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 3
 
     steps:
       - name: 📦 下載程式碼
@@ -32,22 +32,14 @@ jobs:
       - name: 📦 安裝依賴
         run: pip install --quiet requests tradingview-ta
 
-      - name: 🔍 每分鐘循環掃描（共 4 輪，間隔 60 秒）
+      - name: 🔍 執行掃描
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "75"
           TZ: Europe/London
-        run: |
-          for i in 1 2 3 4; do
-            echo "🔍 第 $i / 4 輪掃描（$(date -u '+%H:%M:%S UTC')）..."
-            python main.py || echo "⚠️ 第 $i 輪出錯，繼續下一輪"
-            if [ "$i" -lt 4 ]; then
-              echo "⏱ 等待 60 秒..."
-              sleep 60
-            fi
-          done
+        run: python main.py
 
       - name: 💾 提交狀態檔案
         if: always()
