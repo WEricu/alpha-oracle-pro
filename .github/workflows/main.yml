@@ -2,21 +2,22 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    - cron: "* * * * *"   # 每分鐘觸發（並發掃描版）
-  workflow_dispatch:
+    # 改為每 5 分鐘執行一次，這在 GitHub 免費版上更為穩定，避免任務排隊延遲
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # 保留手動觸發按鈕，方便測試
 
 permissions:
-  contents: write
+  contents: write # 確保 Action 有權限將 active_signals.json 推送回倉庫[cite: 5]
 
 concurrency:
   group: alpha-oracle-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true # 如果前一個任務還在跑，自動取消它，避免 Git 提交衝突[cite: 5]
 
 jobs:
   run:
     name: 🔮 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5 # 稍微放寬超時限制，確保掃描能完整完成[cite: 5]
 
     steps:
       - name: 📦 下載程式碼
@@ -30,15 +31,16 @@ jobs:
           python-version: '3.11'
 
       - name: 📦 安裝依賴
-        run: pip install --quiet requests tradingview-ta
+        # 加入 websockets 以兼容你新增的監控檔案[cite: 3]
+        run: pip install --quiet requests tradingview-ta websockets pandas
 
       - name: 🔍 執行掃描
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "75"
-          TZ: Europe/London
+          SETUP_SCORE_THRESHOLD: "72" # 稍微調降門檻以增加信號頻率
+          TZ: Asia/Taipei # 建議改為你的所在地時區
         run: python main.py
 
       - name: 💾 提交狀態檔案
@@ -46,12 +48,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 強制拉取最新遠端狀態，避免日誌累積導致的 Push 失敗[cite: 5]
           git pull --rebase --autostash origin main
           git add -A
           if git diff --staged --quiet; then
-            echo "✅ 無狀態變更"
+            echo "✅ 無狀態變更，跳過提交"
           else
-            git commit -m "🤖 自動更新狀態 $(date -u '+%Y-%m-%d %H:%M UTC')"
-            git push --quiet || git push --force-with-lease --quiet || true
+            git commit -m "🤖 訊號狀態更新：$(date '+%Y-%m-%d %H:%M')"
+            git push origin main
           fi
         continue-on-error: true
