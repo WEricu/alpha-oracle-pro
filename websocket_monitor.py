@@ -92,7 +92,7 @@ async def on_price_update(instId: str, price: float):
 
     # 限頻：同一個 instId 每 5 秒最多處理一次
     now = time.time()
-    if now - _last_process.get(instId, 0) < 5:
+    if now - _last_process.get(instId, 0) < 0.5:
         return
     _last_process[instId] = now
 
