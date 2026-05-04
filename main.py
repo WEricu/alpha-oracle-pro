@@ -1,112 +1,112 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.7 â ç²¾æºå¹æ ¼åµæ¸¬ + é²æ´çï¼ç¹é«ä¸­æï¼
-ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-â¨ v14.7 ä¿®å¾© / æ°å¢ï¼
-  ðª å³æå¹åä½µé² K ç·ï¼OKX ticker tick æ¯ K ç·å¿«ï¼èåå¾æå¾æ´æ©
-  ð¡ï¸ æåæ´æ° 15 åé throttleï¼1 åé cron ä¸åæ¯åéæ´ç
-     â³ ä¿®å¾© v14.6 ä¹å¾ TP/SL éæ¨éç¥è¢«æåæ´æ°æ´å°ä¸é¢å»çä¸å°ç bug
-  ð send_tg å éè©¦ï¼429 ééç­ retry_after / 5xx ç¨ exponential backoff
-     â³ è¨æ¯ééçå¾ ~95% â ~99.9%
+Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
+══════════════════════════════════════════════════════════════════════
+✨ v14.7 修復 / 新增：
+  🪙 即時價合併進 K 線：OKX ticker tick 比 K 線快，融合後抓得更早
+  🛡️ 持倉更新 15 分鐘 throttle：1 分鐘 cron 不再每分鐘洗版
+     ↳ 修復 v14.6 之後 TP/SL 達標通知被持倉更新洗到上面去看不到的 bug
+  🔄 send_tg 加重試：429 限速等 retry_after / 5xx 用 exponential backoff
+     ↳ 訊息送達率從 ~95% → ~99.9%
 
-â¨ v14.6ï¼
-  â¡ ä¸»æææ¹ 1 åé cronï¼åä½µ Pro + Monitor æå®ä¸ jobï¼
-  ð¡ï¸ æ©æéåºï¼å¨é¨å¹£é½å·å» / æåæè·³éé APIï¼åªè·ç£æ§ï¼5 ç§æå®ï¼
-  ð¡ï¸ å´æ ¼æ¯æ¥é¢¨æ§ä¸ç´ç·ï¼
-     â  åææåæ¸ä¸éï¼é è¨­ 2 åï¼
-     â¡ ç¶æ¥ç´¯è¨ PnL < -5% åæ­¢éæ°å®å°éå¤©
-     â¢ ä¸å¤©æå¤ 6 ç­è¨è
+✨ v14.6：
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）
+  🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
+  🛡️ 嚴格每日風控三紅線：
+     ① 同時持倉數上限（預設 2 個）
+     ② 當日累計 PnL < -5% 停止開新單到隔天
+     ③ 一天最多 6 筆訊號
 
-â¨ v14.5ï¼
-  ðµ è³é / æ§æ¡¿ / æçè©¦ç®ï¼ä¾ $100 è³éã$20 é¢¨éªèªåç®æ§æ¡¿èå TP ç¾åæç
-  ð è¦ç¤è¨æ¯ä¿è­ééï¼è³æä¸è¶³ / ä¾å¤æä¹é fallbackï¼ä¸åéé»å¤±æ
-  ð§± OB å¤±æéå ´ç¾å¨ä¹æéè¦ç¤åæ
+✨ v14.5：
+  💵 資金 / 槓桿 / 損益試算：依 $100 資金、$20 風險自動算槓桿與各 TP 美元損益
+  🔍 覆盤訊息保證送達：資料不足 / 例外時也送 fallback，不再靜默失敗
+  🧱 OB 失效退場現在也會送覆盤分析
 
-â¨ v14.4ï¼
-  ðª VWAP éå æ¬åå¹ï¼èå¾è©åå  Â±3ï¼ä¸é¡¯ç¤ºçµ¦ç¨æ¶ï¼é¿åè¨æ¯å¤ªäºï¼
-  ð¡ï¸ é è¨­ééãè©åç´°é é¡¯ç¤ºãï¼é²å ´éç¥æ´ä¹¾æ·¨ï¼show_score_breakdown=Falseï¼
-  ð§ ä¿®å¾© TP é åº bugï¼å dynamic TP æ ¡æ­£æè® TP3 â¤ TP2ï¼DOGE/NEAR æ¡ä¾ï¼
-  ð¯ æ¹æé è¨­ãåºå® R:Rã(1.5R/3R/5R)ï¼å¯é æãæ°¸é å®èª¿éå¢
-     â³ æ³ç¨åæ TP æ¹ config: fixed_rr_mode=falseï¼å·²ä¿®å¥½ collapse bugï¼
+✨ v14.4：
+  🪙 VWAP 量加權均價：背後評分加 ±3（不顯示給用戶，避免訊息太亂）
+  🛡️ 預設關閉「評分細項顯示」：進場通知更乾淨（show_score_breakdown=False）
+  🔧 修復 TP 順序 bug：原 dynamic TP 校正會讓 TP3 ≤ TP2（DOGE/NEAR 案例）
+  🎯 改成預設「固定 R:R」(1.5R/3R/5R)：可預期、永遠單調遞增
+     ↳ 想用動態 TP 改 config: fixed_rr_mode=false（已修好 collapse bug）
 
-â¨ v14.3ï¼
-  ð©º å¥åº·ç£æ§ï¼24h æ²é TG / é£ 5 æ¬¡å¤±æ â èªåç¼è­¦å ±ï¼6h ä¸éè¤ï¼
-  ð¬ ææ¨å¯©æ¥ï¼/auditï¼ï¼ç¥ç´ vs ä¸è¬ãMTF é å¢ vs ä¸­æ§ãéè½ãå¸æ³ãæ¹å
-     â³ ç¨å¯¦éåçé©è­æ¯åææ¨æ¯å¦ççææï¼ââ ï¸â ä¸ç´å¤è®ï¼
-  ð¦ å·¥ä½æµåä½µï¼alpha_oracle.yml ä¸æªå Pro + Monitor å©å Job
+✨ v14.3：
+  🩺 健康監控：24h 沒送 TG / 連 5 次失敗 → 自動發警報（6h 不重複）
+  🔬 指標審查（/audit）：神級 vs 一般、MTF 順勢 vs 中性、量能、市況、方向
+     ↳ 用實際勝率驗證每個指標是否真的有效（✅⚠️❌ 三級判讀）
+  📦 工作流合併：alpha_oracle.yml 一檔包 Pro + Monitor 兩個 Job
 
-â¨ v14.2ï¼é²éæºè½ 5 é ï¼ï¼
-  ð è¨èæ¹åçµ±è¨ + èªåååé«åçæ¹åï¼/direction å½ä»¤ï¼
-  ð¯ ç¥ç´è¨èç¹å¥æ¨è¨ï¼95+ åç¨ ð¯ð¯ð¯ éç®æ¨é¡
-  ðª EMA å¤é±ææåï¼20/50/200 å®ç¾æå +5ãé 200 -5
-  ð¥ éç±ä¿è­·ï¼æå¹£é£ 3 åå¾æ«åä¸è¼ªé¿åéåº¦ä¾è³´
-  ð§± OB å¤±æéå ´ï¼é²å ´ä¾æçè¨å®å¡æ¶ç¤è¢«ç ´ â ä¸»åæåéå ´
+✨ v14.2（進階智能 5 項）：
+  📊 訊號方向統計 + 自動偏向高勝率方向（/direction 命令）
+  🎯 神級訊號特別標記：95+ 分用 🎯🎯🎯 醒目標題
+  🪜 EMA 多週期排列：20/50/200 完美排列 +5、逆 200 -5
+  🔥 過熱保護：某幣連 3 勝後暫停一輪避免過度依賴
+  🧱 OB 失效退場：進場依據的訂單塊收盤被破 → 主動提前退場
 
-â¨ v14.1ï¼é«åçç²¾é¸ + é¢¨æ§å¼·åï¼ï¼
-  ð é²å ´éç¥é¡¯ç¤ºãçºä»éº¼ N åãåæ¸ç´°é æè§£
-  ð¼ åä½å¤§å°å»ºè­°ï¼ä¾åæ¸æ¨è¦ 0.5x / 1.0x / 1.5x
-  â¸ï¸ èªåæ«åçå¹£ï¼éå» 7 å¤©åç < 30% èªåæ«å 24h
-  âï¸ R:R æä½éæª»ï¼TP1 < 1.5R èªåæçµï¼é¿ååæ TP æ ¡éé ­ï¼
-  âï¸ é£æå·éæï¼é£ 2 æå¾ 30 åéä¸éæ°å®
+✨ v14.1（高勝率精選 + 風控強化）：
+  📊 進場通知顯示「為什麼 N 分」分數細項拆解
+  💼 倉位大小建議：依分數推薦 0.5x / 1.0x / 1.5x
+  ⏸️ 自動暫停爛幣：過去 7 天勝率 < 30% 自動暫停 24h
+  ⚖️ R:R 最低門檻：TP1 < 1.5R 自動拒絕（避免動態 TP 校過頭）
+  ❄️ 連敗冷靜期：連 2 敗後 30 分鐘不開新單
 
-â¨ v14.0ï¼å°æ¥­äº¤æå¡é¤æï¼ï¼
-  ð å¤ææ¡å±æ¯ï¼1H + 4H Supertrend ç¢ºèªï¼æé« +15 åï¼åå -10ï¼
-  ð éè½ç¢ºèªï¼æå¾ K é vs å 20 æåéï¼æé« +8 åï¼æ²é -10 ç´æ¥æ·æ±°ï¼
-  ð å¸å ´çæè­å¥ï¼ADX è¶¨å¢/éçª/éæ¸¡ï¼éçªå¸éæª»èªå +5
-  ð¯ åæ TPï¼åºå® R å TP è½å¨å¼· S/R åæ¹æèªåæ ¡æ­£
-  ð° æ°èäºä»¶éæ¿¾ï¼NFP / CPI èªåè¦å + èªè¨äºä»¶æ¸å®
-  ð é²å ´ææ©ï¼åµæ¸¬åæ¸¬å½±ç· K å  +3 å
-  ð§¬ KNN å­¸ç¿ï¼æ¯ç­è¨èåéåï¼æ¾æç¸ä¼¼ 10 ç­æ­·å²äº¤æçåç
-  ð æ¥å ± / æå ±ï¼/daily è /monthly å½ä»¤ï¼å«åå¹£ç¨®ç¸¾æãé£åé£æ
-  ð backtest.pyï¼ç¨ç«åæ¸¬è³æ¬ï¼è®æ­·å² K ç·éè·ç­ç¥ï¼
-  ð¡ websocket_monitor.pyï¼å¸¸é§ WS ç£æ§ï¼é¨ç½² Railway/Fly.ioï¼
+✨ v14.0（專業交易員養成）：
+  🕒 多時框共振：1H + 4H Supertrend 確認，最高 +15 分（反向 -10）
+  📊 量能確認：最後 K 量 vs 前 20 期均量，最高 +8 分（沒量 -10 直接淘汰）
+  🌐 市場狀態識別：ADX 趨勢/震盪/過渡，震盪市門檻自動 +5
+  🎯 動態 TP：固定 R 倍 TP 落在強 S/R 前方時自動校正
+  📰 新聞事件過濾：NFP / CPI 自動規則 + 自訂事件清單
+  🌀 進場時機：偵測回測影線 K 加 +3 分
+  🧬 KNN 學習：每筆訊號向量化，找最相似 10 筆歷史交易看勝率
+  📈 日報 / 月報：/daily 與 /monthly 命令，含各幣種績效、連勝連敗
+  📁 backtest.py：獨立回測腳本（讀歷史 K 線重跑策略）
+  📡 websocket_monitor.py：常駐 WS 監控（部署 Railway/Fly.io）
 
-â¨ v13.1 æ¢æï¼
-  â¡ monitor æ¨¡å¼ + é«é » cron workflowï¼30 ç§ä¸æ¬¡ï¼
-  â¡ monitor æ¨¡å¼ï¼è¼éãåªè¿½æ¢æè¨èï¼ä¸çææ°è¨è
-     â³ ç¨æ³ï¼python main.py monitor [polls] [interval]
-     â³ æ­é alpha-oracle-monitor.yml æ¯ 3 åé cron + ä¸æ¬¡ 3 è¼ª = ~30 ç§æª¢æ¥ä¸æ¬¡
-     â³ TP/SL éç¥å»¶é²å¾ 15 åéå£å° ~30 ç§
-  ð æ°æª alpha-oracle-monitor.ymlï¼é«é »ç£æ§å°ç¨ workflow
+✨ v13.1 既有：
+  ⚡ monitor 模式 + 高頻 cron workflow（30 秒一次）
+  ⚡ monitor 模式：輕量、只追既有訊號，不生成新訊號
+     ↳ 用法：python main.py monitor [polls] [interval]
+     ↳ 搭配 alpha-oracle-monitor.yml 每 3 分鐘 cron + 一次 3 輪 = ~30 秒檢查一次
+     ↳ TP/SL 通知延遲從 15 分鐘壓到 ~30 秒
+  📁 新檔 alpha-oracle-monitor.yml：高頻監控專用 workflow
 
-â¨ v13.0ï¼æèªææé·ï¼ï¼
-  ð è¦ç¤åæï¼SL / BE / LOCK å¾èªååæãçºä»éº¼çµç®ãä¸¦é Telegram
-     â³ 6 å¤§æ­¸å ï¼è¶¨å¢åè½ / RSI å´©ç¤ / æµåæ§æè© / æ³¢åæ¿å¢ / åååè½ / OB è·ç ´
-     â³ éãä¸æ¬¡è©²æéº¼å¤æ·ã+ åé¡è¨­å®æ­·å²åç
-  ð§  å­¸ç¿æ©å¶ï¼æ¯ç­äº¤æçµç®å¾æ´æ°æ¡¶ï¼åæ¸/RSI/è³éè²»ç/ææ®µ/å¹£ç¨®ï¼
-     â³ è©åæèªåå¥ç¨èª¿æ´ï¼é«åççµå +1~+2ãä½åççµå -2~-3ï¼ä¸é Â±10
-     â³ /learning å½ä»¤æ¥çæ©å¨äººå­¸äºä»éº¼
-  ð 12 ç¨®å¹£å¥ï¼BTC/ETH/SOL/BNB/XRP/DOGE/ADA/AVAX/LINK/DOT/TON/NEAR
-     â³ å¯å¨ config.json ç coins èªè¨
+✨ v13.0（會自我成長）：
+  🔍 覆盤分析：SL / BE / LOCK 後自動分析「為什麼結算」並送 Telegram
+     ↳ 6 大歸因：趨勢反轉 / RSI 崩盤 / 流動性掃蕩 / 波動激增 / 反向動能 / OB 跌破
+     ↳ 附「下次該怎麼判斷」+ 同類設定歷史勝率
+  🧠 學習機制：每筆交易結算後更新桶（分數/RSI/資金費率/時段/幣種）
+     ↳ 評分時自動套用調整：高勝率組合 +1~+2、低勝率組合 -2~-3，上限 ±10
+     ↳ /learning 命令查看機器人學了什麼
+  📈 12 種幣別：BTC/ETH/SOL/BNB/XRP/DOGE/ADA/AVAX/LINK/DOT/TON/NEAR
+     ↳ 可在 config.json 的 coins 自訂
 
-â¨ v12.2 æ¢æï¼
-  ð æ­·å² K ç·è£æï¼æ last_checked_ts ä¹å¾ææ K ç·ä¾åºèç
-  ð åå¹£ç¨®æªå¹³åå´æ ¼æ
-  ð¦ fetch_candles_fullï¼æ¯è¼ªå±ç¨ 30 ç§å¿«å
+✨ v12.2 既有：
+  📜 歷史 K 線補抓：抓 last_checked_ts 之後所有 K 線依序處理
+  🔒 同幣種未平倉嚴格擋
+  📦 fetch_candles_full：每輪共用 30 秒快取
 
-â¨ v12.1ï¼å¹³åç²¾åº¦ï¼ï¼
-  ðª¡ æéè§¸ç¼ï¼K ç·é«ä½é»è§¸å°å¹³åå¹å³è¦çºå¹³å
-  ð TP/SL é åºèçï¼TP1 â TP2 â TP3 â SLï¼SL ç¨æ´æ°å¾çå¼ï¼
-  ð BE ä¿æ¬é¡¯ç¤ºï¼å°é TP1 å¾è¥ SL è§¸ç¼ï¼ç¨ç«é¡¯ç¤ºãð ä¿æ¬åºå ´ã`0R`
-  ð LOCK éå©é¡¯ç¤ºï¼å°é TP2 å¾è¥ SL è§¸ç¼ï¼ç¨ç«é¡¯ç¤ºãð éå©åºå ´ã`+1.5R`
-  ðª¡ éç¥æ¨è¨æéè§¸ç¼ä¾æºï¼K ç·æéè§¸åç®æ¨å¹ï¼
+✨ v12.1（平倉精度）：
+  🪡 插針觸發：K 線高低點觸到平倉價即視為平倉
+  🔁 TP/SL 順序處理：TP1 → TP2 → TP3 → SL（SL 用更新後的值）
+  🔒 BE 保本顯示：到達 TP1 後若 SL 觸發，獨立顯示「🔒 保本出場」`0R`
+  🔐 LOCK 鎖利顯示：到達 TP2 後若 SL 觸發，獨立顯示「🔐 鎖利出場」`+1.5R`
+  🪡 通知標記插針觸發來源（K 線插針觸及目標價）
 
-â¨ v12.0 æ°å¢ï¼é«åªåç´é¢¨æ§ï¼ï¼
-  ð TradingView ç¬¬äºå¹æ ¼ä¾æº â OKX/TV åé¢è¶éé¾å¼èªåè·³é
-  ð é£çºè§æçæ·ï¼é£ 3 ææ«å 4hãé£ 5 æç¡¬çæ· 24h
-  ð ééµææ®µéæ¿¾ï¼è³éè²»ççµç® / ç¾è¡éç¤ç­é«æ³¢åææ®µèªåé¿é
-  ð config.json ç±æ´æ°èé©è­ï¼ç¡ééæ°é¨ç½²å³å¯èª¿æ´åæ¸
-  ð ç³»çµ±çææä¹åï¼system_state.jsonï¼ï¼çæ·çæè·¨ Actions ä¸æ¼
-  ð åå¹£ç¨®æªå¹³åä¸éè¤éå
+✨ v12.0 新增（高優先級風控）：
+  🆕 TradingView 第二價格來源 → OKX/TV 偏離超過閾值自動跳過
+  🆕 連續虧損熔斷：連 3 敗暫停 4h、連 5 敗硬熔斷 24h
+  🆕 關鍵時段過濾：資金費率結算 / 美股開盤等高波動時段自動避開
+  🆕 config.json 熱更新與驗證：無需重新部署即可調整參數
+  🆕 系統狀態持久化（system_state.json）：熔斷狀態跨 Actions 不漏
+  🆕 同幣種未平倉不重複開倉
 
-â¨ v11.0 æ¢æéé»ï¼
-  â ä¿®å¾©ææ Markdown éæ¥åçèªæ³é¯èª¤
-  â å®æ´ SMCï¼OBï¼/ ICTï¼FVGãæµåæ§æè©ï¼/ SNR / å¹æ ¼è¡çº / ç¤å£åè½
-  â è©å 100 åå¶ï¼è¶¨å¢30+RSI25+OB20+FVG15+SNR5+PA5+æµåæ§5+åè½5ï¼
-  â æ­¢çåç 1.5R / 3.0R / 5.0R
-  â æéå°ç£ UTC+8 / è¨èå·å»æä¹å / TPÂ·SL ç·å±¤åè¦
-ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+✨ v11.0 既有重點：
+  ✅ 修復所有 Markdown 鏈接化的語法錯誤
+  ✅ 完整 SMC（OB）/ ICT（FVG、流動性掃蕩）/ SNR / 價格行為 / 盤口動能
+  ✅ 評分 100 分制（趨勢30+RSI25+OB20+FVG15+SNR5+PA5+流動性5+動能5）
+  ✅ 止盈倍率 1.5R / 3.0R / 5.0R
+  ✅ 時間台灣 UTC+8 / 訊號冷卻持久化 / TP·SL 線層回覆
+══════════════════════════════════════════════════════════════════════
 """
 import requests
 import os
@@ -118,25 +118,25 @@ import uuid
 from datetime import datetime, timezone, timedelta
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# ð¹ð¼ å°ç£æéå·¥å·
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 🇹🇼 台灣時間工具
+# ═════════════════════════════════════════════════════════
 TW_TZ = timezone(timedelta(hours=8))
 
 
 def tw_now() -> datetime:
-    """ç²åå°ç£æé datetime ç©ä»¶"""
+    """獲取台灣時間 datetime 物件"""
     return datetime.now(TW_TZ)
 
 
 def tw_ts() -> str:
-    """å°ç£æéæéæ³å­ä¸²ï¼çµ¦éç¥é¡¯ç¤ºç¨ï¼"""
-    return tw_now().strftime("%Y-%m-%d %H:%M:%S å°ç£æé")
+    """台灣時間時間戳字串（給通知顯示用）"""
+    return tw_now().strftime("%Y-%m-%d %H:%M:%S 台灣時間")
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# ð§ ç°å¢è®æ¸å®å¨è§£æ
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 🔧 環境變數安全解析
+# ═════════════════════════════════════════════════════════
 def _get_env(key: str, default: str = "") -> str:
     val = os.getenv(key)
     return val.strip() if val and val.strip() else default
@@ -150,9 +150,9 @@ def _get_env_int(key: str, default: int) -> int:
         return default
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 1. åºç¤éç½®
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 1. 基礎配置
+# ═════════════════════════════════════════════════════════
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
@@ -181,14 +181,14 @@ CONFIG_FILE = "config.json"
 SYSTEM_STATE_FILE = "system_state.json"
 LEARNING_FILE = "learning_state.json"
 
-# è¨æ¶é«å¿«åï¼åä¸è¼ªå·è¡å§å±ç¨ï¼è·¨è¼ªä¸æä¹ï¼
+# 記憶體快取（同一輪執行內共用，跨輪不持久）
 _price_cache: dict = {}
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 1.5 é è¨­éç½®ï¼config.json ä¸å­å¨æç fallbackï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 1.5 預設配置（config.json 不存在時的 fallback）
+# ═════════════════════════════════════════════════════════
 DEFAULT_CONFIG: dict = {
-    "coins": ALL_COINS,                # å¯å¨ config.json èªè¨
+    "coins": ALL_COINS,                # 可在 config.json 自訂
     "max_signals": 3,
     "score_threshold": 68,
     "cooldown_hours": 2,
@@ -196,116 +196,116 @@ DEFAULT_CONFIG: dict = {
     "atr_max_pct": 0.04,
     "post_mortem": {
         "enabled": True,
-        "loss_only": False,            # False = SL/BE/LOCK é½åè¦ç¤ï¼True = åª SL
+        "loss_only": False,            # False = SL/BE/LOCK 都做覆盤；True = 只 SL
     },
     "learning": {
         "enabled": True,
-        "knn_enabled": True,           # é²é KNN å­¸ç¿ï¼æ¾æç¸ä¼¼æ­·å²äº¤æï¼
+        "knn_enabled": True,           # 進階 KNN 學習（找最相似歷史交易）
         "min_samples": 5,
         "max_score_adjust": 10,
     },
     "news_blackouts": [
-        # ç¨æ¶å¯èªè¨äºä»¶ï¼ä¾å¦ï¼
-        # {"start": "2026-05-07T20:30:00+08:00", "end": "2026-05-07T22:30:00+08:00", "reason": "FOMC æè­°"}
+        # 用戶可自訂事件，例如：
+        # {"start": "2026-05-07T20:30:00+08:00", "end": "2026-05-07T22:30:00+08:00", "reason": "FOMC 會議"}
     ],
     "auto_news_blackout": {
-        "nfp": True,                   # æ¯æç¬¬ä¸é±äº 21:25â22:30 (TW)
-        "cpi": True,                   # æ¯æ 10â16 æ¥ 21:25â22:30 (TW)
+        "nfp": True,                   # 每月第一週五 21:25–22:30 (TW)
+        "cpi": True,                   # 每月 10–16 日 21:25–22:30 (TW)
     },
-    # ââ v14.1 æ°å¢ï¼é«åçç¯©é¸ + é¢¨æ§å¼·å ââ
-    "show_score_breakdown": False,     # é²å ´éç¥é¡¯ç¤ºåæ¸ç´°é æè§£ï¼é è¨­ééï¼å¤ªéäºï¼
-    "fixed_rr_mode": True,             # åºå® 1.5R/3R/5Rï¼é è¨­ï¼ï¼ééæ¹ç¨åæ TP æ ¡æ­£
-    # ðµ åä½ / æ§æ¡¿ / æçè©¦ç®
+    # ── v14.1 新增：高勝率篩選 + 風控強化 ──
+    "show_score_breakdown": False,     # 進場通知顯示分數細項拆解（預設關閉，太雜亂）
+    "fixed_rr_mode": True,             # 固定 1.5R/3R/5R（預設）；關閉改用動態 TP 校正
+    # 💵 倉位 / 槓桿 / 損益試算
     "capital_management": {
         "enabled": True,
-        "capital_per_trade_usd": 100,  # æ¨æºå®ç­è³é
-        "max_loss_usd": 20,            # æå¤§å¯æ¥åè§æï¼å«æçºè²»çç·©è¡ï¼
-        "max_leverage": 50,            # ä¸éæ§æ¡¿ï¼é¿åæ¥µç­ SL ç®åºè¶é«æ§æ¡¿ï¼
-        "min_leverage": 2,             # ä¸éï¼é¿åæ¥µé  SL ç®åº 0.x æ§æ¡¿ï¼
+        "capital_per_trade_usd": 100,  # 標準單筆資金
+        "max_loss_usd": 20,            # 最大可接受虧損（含手續費的緩衝）
+        "max_leverage": 50,            # 上限槓桿（避免極短 SL 算出超高槓桿）
+        "min_leverage": 2,             # 下限（避免極遠 SL 算出 0.x 槓桿）
     },
-    # ð¡ï¸ v14.6 å´æ ¼é¢¨æ§ï¼æ¯æ¥ä¸é + åææåæ¸
+    # 🛡️ v14.6 嚴格風控：每日上限 + 同時持倉數
     "daily_limits": {
         "enabled": True,
-        "max_concurrent_positions": 2,  # åææå¤ N ååä½
-        "daily_loss_limit_pct": 5.0,    # ç¶æ¥ç´¯è¨ PnL < -N% åæ­¢éæ°å®
-        "max_daily_signals": 6,         # ä¸å¤©æå¤é N ç­æ°è¨è
+        "max_concurrent_positions": 2,  # 同時最多 N 個倉位
+        "daily_loss_limit_pct": 5.0,    # 當日累計 PnL < -N% 停止開新單
+        "max_daily_signals": 6,         # 一天最多開 N 筆新訊號
     },
-    "coin_auto_pause": {               # èªåæ«åçå¹£
+    "coin_auto_pause": {               # 自動暫停爛幣
         "enabled": True,
-        "days": 7,                     # éå» N å¤©
-        "min_trades": 5,               # è³å° N ç­æå¤å®
-        "max_winrate": 0.30,           # åçä½æ¼æ­¤å¼å°±æ«å
+        "days": 7,                     # 過去 N 天
+        "min_trades": 5,               # 至少 N 筆才判定
+        "max_winrate": 0.30,           # 勝率低於此值就暫停
         "pause_hours": 24,
     },
-    "position_sizing": {               # åä½å¤§å°å»ºè­°
+    "position_sizing": {               # 倉位大小建議
         "enabled": True,
         "tiers": [
-            {"min_score": 95, "multiplier": 1.5, "label": "ð¥ å¼·è¨èå å¤§å"},
-            {"min_score": 85, "multiplier": 1.0, "label": "æ¨æºå"},
-            {"min_score": 80, "multiplier": 0.5, "label": "è¬¹æå°å"},
-            {"min_score": 0,  "multiplier": 0.5, "label": "æ¨æºå"},
+            {"min_score": 95, "multiplier": 1.5, "label": "🔥 強訊號加大倉"},
+            {"min_score": 85, "multiplier": 1.0, "label": "標準倉"},
+            {"min_score": 80, "multiplier": 0.5, "label": "謹慎小倉"},
+            {"min_score": 0,  "multiplier": 0.5, "label": "標準倉"},
         ],
     },
-    "min_rr_ratio": 1.5,               # TP1 è³å°è¦æ 1.5R ææ¥ï¼å¦åæçµ
-    "cooling_off": {                   # é£æå·éæ
+    "min_rr_ratio": 1.5,               # TP1 至少要有 1.5R 才接，否則拒絕
+    "cooling_off": {                   # 連敗冷靜期
         "enabled": True,
-        "loss_threshold": 2,           # é£ N æå¾ååå·é
-        "period_minutes": 30,          # å·é N åé
+        "loss_threshold": 2,           # 連 N 敗後啟動冷靜
+        "period_minutes": 30,          # 冷靜 N 分鐘
     },
-    # ââ v14.2 æ°å¢ï¼æ¹ååå¥½ / ç¥ç´è¨è / EMA / éç± / OB å¤±æ ââ
-    "direction_bias": {                # èªååå¥½é«åçæ¹å
+    # ── v14.2 新增：方向偏好 / 神級訊號 / EMA / 過熱 / OB 失效 ──
+    "direction_bias": {                # 自動偏好高勝率方向
         "enabled": True,
-        "min_diff_pct": 15,            # LONG/SHORT åçå·® â¥ N% æåååå¥½
-        "min_samples": 10,             # è³å°å N ç­æä¿¡
-        "bonus": 3,                    # é å¢æ¹åå å
-        "penalty": 3,                  # éå¢æ¹åæ£å
+        "min_diff_pct": 15,            # LONG/SHORT 勝率差 ≥ N% 才啟動偏好
+        "min_samples": 10,             # 至少各 N 筆才信
+        "bonus": 3,                    # 順勢方向加分
+        "penalty": 3,                  # 逆勢方向扣分
     },
-    "god_signal": {                    # ç¥ç´è¨èç¹å¥æ¨è¨
+    "god_signal": {                    # 神級訊號特別標記
         "enabled": True,
         "min_score": 95,
     },
-    "ema_alignment": {                 # å¤ææ¡ EMA æå
+    "ema_alignment": {                 # 多時框 EMA 排列
         "enabled": True,
         "periods": [20, 50, 200],
-        "perfect_bonus": 5,            # å®ç¾æåå å
-        "partial_bonus": 3,            # é¨åæåå å
-        "against_penalty": 5,          # é EMA200 æ£å
+        "perfect_bonus": 5,            # 完美排列加分
+        "partial_bonus": 3,            # 部分排列加分
+        "against_penalty": 5,          # 逆 EMA200 扣分
     },
-    "overheating": {                   # éåº¦éä¸­ä¿è­·
+    "overheating": {                   # 過度集中保護
         "enabled": True,
-        "win_streak_threshold": 3,     # é£ N åå¾ååä¿è­·
+        "win_streak_threshold": 3,     # 連 N 勝後啟動保護
         "cooldown_hours": 4,
     },
-    "ob_invalidation": {               # OB / FVG å¤±æéå ´
+    "ob_invalidation": {               # OB / FVG 失效退場
         "enabled": True,
-        "break_buffer_pct": 0.2,       # æ¶ç¤è·ç ´ OB éç·£ N% â è¦çºå¤±æ
-    },           # ATR/Price è¶éæ­¤å¼è¦çºéçªéå¤§
+        "break_buffer_pct": 0.2,       # 收盤跌破 OB 邊緣 N% → 視為失效
+    },           # ATR/Price 超過此值視為震盪過大
     "price_verification": {
         "enabled": True,
-        "max_deviation_pct": 0.5,  # OKX è TradingView åé¢ > 0.5% è·³é
-        "block_on_unverified": False,  # TV æä¸å°ææ¯å¦ä¸å¾è·³éï¼False=æ¾è¡ï¼
+        "max_deviation_pct": 0.5,  # OKX 與 TradingView 偏離 > 0.5% 跳過
+        "block_on_unverified": False,  # TV 抓不到時是否一律跳過（False=放行）
     },
     "circuit_breaker": {
         "enabled": True,
-        "soft_threshold": 3,       # é£ 3 æ â è»çæ·
+        "soft_threshold": 3,       # 連 3 敗 → 軟熔斷
         "soft_pause_hours": 4,
-        "hard_threshold": 5,       # é£ 5 æ â ç¡¬çæ·
+        "hard_threshold": 5,       # 連 5 敗 → 硬熔斷
         "hard_pause_hours": 24,
     },
-    # å°ç£æéææ®µï¼HH:MMï¼ï¼çµææéçºãä¸å«ã
+    # 台灣時間時段（HH:MM），結束時間為「不含」
     "blackout_windows_tw": [
-        {"start": "07:50", "end": "08:10", "reason": "è³éè²»ççµç®ï¼00 UTCï¼"},
-        {"start": "15:50", "end": "16:10", "reason": "è³éè²»ççµç®ï¼08 UTCï¼"},
-        {"start": "23:50", "end": "00:10", "reason": "è³éè²»ççµç®ï¼16 UTCï¼"},
-        {"start": "21:25", "end": "21:45", "reason": "ç¾è¡éç¤æ³¢å"},
-        {"start": "02:00", "end": "02:30", "reason": "FOMC å¬å¸ææ®µ"},
+        {"start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）"},
+        {"start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）"},
+        {"start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）"},
+        {"start": "21:25", "end": "21:45", "reason": "美股開盤波動"},
+        {"start": "02:00", "end": "02:30", "reason": "FOMC 公布時段"},
     ],
 }
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 2. éç¥ç³»çµ±
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 2. 通知系統
+# ═════════════════════════════════════════════════════════
 def send_tg(
     msg: str,
     parse_mode: str = "Markdown",
@@ -313,12 +313,12 @@ def send_tg(
     reply_to_message_id: int | None = None,
     max_retries: int = 3,
 ) -> int | None:
-    """ð¤ ç¼é Telegram éç¥ â åå³ message_idï¼å¤±æå Noneï¼
+    """📤 發送 Telegram 通知 → 回傳 message_id（失敗回 None）
 
-    v14.7 å å¥éè©¦ï¼429 (rate limit) ç­ retry_afterï¼5xx ç¨ exponential backoff
+    v14.7 加入重試：429 (rate limit) 等 retry_after，5xx 用 exponential backoff
     """
     if not TG_TOKEN or not CHAT_ID:
-        logging.warning("â ï¸ TG_TOKEN æ CHAT_ID æªè¨­å®ï¼ç¥éç¼é")
+        logging.warning("⚠️ TG_TOKEN 或 CHAT_ID 未設定，略過發送")
         return None
 
     payload = {
@@ -342,7 +342,7 @@ def send_tg(
                 timeout=8,
             )
             if r.status_code == 200:
-                # ð©º å¥åº·ç£æ§ï¼ç´éæå¾ä¸æ¬¡æåé TG çæé
+                # 🩺 健康監控：紀錄最後一次成功送 TG 的時間
                 try:
                     _state = _load_json(SYSTEM_STATE_FILE, {})
                     _state["last_tg_sent"] = time.time()
@@ -351,49 +351,49 @@ def send_tg(
                     pass
                 return r.json().get("result", {}).get("message_id")
 
-            # 429 = ééï¼æ Telegram çµ¦ç retry_after ç­
+            # 429 = 限速，按 Telegram 給的 retry_after 等
             if r.status_code == 429:
                 try:
                     wait = float(r.json().get("parameters", {}).get("retry_after", 2))
                 except Exception:
                     wait = 2.0
                 wait = min(wait + 0.5, 15)
-                logging.warning(f"â³ TG 429 ééï¼ç­ {wait:.1f}s éè©¦")
+                logging.warning(f"⏳ TG 429 限速，等 {wait:.1f}s 重試")
                 time.sleep(wait)
                 last_err = "429 rate limit"
                 continue
 
-            # 5xx = ä¼ºæå¨é¯ï¼exponential backoff
+            # 5xx = 伺服器錯，exponential backoff
             if r.status_code >= 500:
                 wait = 2 ** attempt
-                logging.warning(f"â³ TG {r.status_code} ä¼ºæå¨é¯ï¼{wait}s å¾éè©¦")
+                logging.warning(f"⏳ TG {r.status_code} 伺服器錯，{wait}s 後重試")
                 time.sleep(wait)
                 last_err = f"server {r.status_code}"
                 continue
 
-            # 4xx å¶ä»é¯ä¸éè©¦ï¼éå¸¸æ¯ payload åé¡ï¼
-            logging.error(f"â TG API {r.status_code}: {r.text[:200]}")
+            # 4xx 其他錯不重試（通常是 payload 問題）
+            logging.error(f"❌ TG API {r.status_code}: {r.text[:200]}")
             return None
 
         except Exception as e:
             last_err = str(e)
             wait = 2 ** attempt
             logging.warning(
-                f"â³ TG ç¼éå¤±æï¼åè©¦ {attempt + 1}/{max_retries}ï¼ï¼{e}ï¼{wait}s å¾éè©¦"
+                f"⏳ TG 發送失敗（嘗試 {attempt + 1}/{max_retries}）：{e}，{wait}s 後重試"
             )
             time.sleep(wait)
 
-    logging.error(f"â TG ç¼éå¤±æï¼{max_retries} æ¬¡éè©¦å¾ä»å¤±æï¼ï¼{last_err}")
+    logging.error(f"❌ TG 發送失敗（{max_retries} 次重試後仍失敗）：{last_err}")
     return None
 
 
 def _order_keyboard(order_id: str) -> dict:
-    """ð çæè¨å®æ¥è©¢æéï¼LINE é¢¨æ ¼ï¼"""
+    """🔘 生成訂單查詢按鈕（LINE 風格）"""
     return {
         "inline_keyboard": [
             [
                 {
-                    "text": f"ð æ¥è©¢è¨å® {order_id[-8:]}",
+                    "text": f"🔍 查詢訂單 {order_id[-8:]}",
                     "callback_data": f"order_{order_id}",
                 }
             ]
@@ -401,21 +401,21 @@ def _order_keyboard(order_id: str) -> dict:
     }
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 2.5 v14.1 åä½å»ºè­° + åæ¸ç´°é æ ¼å¼å
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 2.5 v14.1 倉位建議 + 分數細項格式化
+# ═════════════════════════════════════════════════════════
 def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, str]:
-    """ð° æ ¹æåæ¸æ¨è¦åä½åæ¸"""
+    """💰 根據分數推薦倉位倍數"""
     if cfg is None:
         cfg = load_config()
     ps_cfg = cfg.get("position_sizing", {})
     if not ps_cfg.get("enabled", True):
-        return 1.0, "æ¨æºå"
+        return 1.0, "標準倉"
     tiers = ps_cfg.get("tiers", DEFAULT_CONFIG["position_sizing"]["tiers"])
     for tier in tiers:
         if score >= tier.get("min_score", 0):
-            return tier.get("multiplier", 1.0), tier.get("label", "æ¨æºå")
-    return 1.0, "æ¨æºå"
+            return tier.get("multiplier", 1.0), tier.get("label", "標準倉")
+    return 1.0, "標準倉"
 
 
 def calc_position_sizing(
@@ -428,14 +428,14 @@ def calc_position_sizing(
     pos_multiplier: float = 1.0,
     cfg: dict | None = None,
 ) -> dict | None:
-    """ðµ æ ¹æè³é / é¢¨éªä¸éç®æ§æ¡¿ãåä½ãå TP ç¾åæç
+    """💵 根據資金 / 風險上限算槓桿、倉位、各 TP 美元損益
 
-    éè¼¯ï¼
-      effective_capital = base_capital Ã pos_multiplier
-      effective_max_loss = base_max_loss Ã pos_multiplier  ï¼é¢¨éªæ¯ä¾ä¸è®ï¼
-      leverage = (effective_max_loss / effective_capital) Ã· SLè·é¢
-              = max_loss / capital Ã· SLè·é¢ï¼è multiplier ç¡éï¼
-      position_value = effective_capital Ã leverage
+    邏輯：
+      effective_capital = base_capital × pos_multiplier
+      effective_max_loss = base_max_loss × pos_multiplier  （風險比例不變）
+      leverage = (effective_max_loss / effective_capital) ÷ SL距離
+              = max_loss / capital ÷ SL距離（與 multiplier 無關）
+      position_value = effective_capital × leverage
     """
     if cfg is None:
         cfg = load_config()
@@ -452,12 +452,12 @@ def calc_position_sizing(
     if sl_dist_pct <= 0:
         return None
 
-    # é¢¨éªæ¯ = æå¤± / è³éï¼ä¸æè¢« multiplier æ¹è®ï¼
+    # 風險比 = 損失 / 資金（不會被 multiplier 改變）
     risk_ratio = base_max_loss / base_cap
     required_lev = risk_ratio / sl_dist_pct
     leverage = max(min_lev, min(max_lev, round(required_lev)))
 
-    # ä¾ multiplier ç¸®æ¾å¯¦éè³éèå®¹å¿æå¤±
+    # 依 multiplier 縮放實際資金與容忍損失
     capital = base_cap * pos_multiplier
     max_loss = base_max_loss * pos_multiplier
 
@@ -484,89 +484,89 @@ def calc_position_sizing(
 
 
 def _format_score_breakdown(detail: dict | None) -> str:
-    """ð å¼·åçè©åç´°é """
+    """📊 強化版評分細項"""
     if not detail:
         return ""
-    out = ["", "ð *è©åæç´°ï¼*"]
+    out = ["", "📊 *評分明細：*"]
     trend_v=detail.get("trend",0); rsi_val=detail.get("rsi_value",0); rsi_v=detail.get("rsi",0)
-    if trend_v==30: out.append("  ð è¶¨å¢ï¼`30/30` â Supertrend é å¢ï¼ä¸»æ¹åç¢ºèª")
-    elif trend_v==15: out.append("  ð è¶¨å¢ï¼`15/30` â Supertrend ä¸­æ§")
-    else: out.append("  ð è¶¨å¢ï¼`0/30` â ï¸ Supertrend éå¢")
+    if trend_v==30: out.append("  🌊 趨勢：`30/30` — Supertrend 順勢，主方向確認")
+    elif trend_v==15: out.append("  🌊 趨勢：`15/30` — Supertrend 中性")
+    else: out.append("  🌊 趨勢：`0/30` ⚠️ Supertrend 逆勢")
     if rsi_v==25:
-        lbl="è¶è³£åå" if rsi_val<50 else "è¶è²·åè½"
-        out.append(f"  ð RSIï¼`25/25` â RSI {rsi_val:.1f}ï¼{lbl}")
-    elif rsi_v==15: out.append(f"  ð RSIï¼`15/25` â RSI {rsi_val:.1f}ï¼ä¸­æ§åé")
-    else: out.append(f"  ð RSIï¼`0/25` â RSI {rsi_val:.1f}ï¼ä¸å¨çæ³å")
+        lbl="超賣回升" if rsi_val<50 else "超買回落"
+        out.append(f"  📊 RSI：`25/25` — RSI {rsi_val:.1f}，{lbl}")
+    elif rsi_v==15: out.append(f"  📊 RSI：`15/25` — RSI {rsi_val:.1f}，中性區間")
+    else: out.append(f"  📊 RSI：`0/25` — RSI {rsi_val:.1f}，不在理想區")
     ob_v=detail.get("ob",0); ob_low=detail.get("ob_low"); ob_high=detail.get("ob_high")
-    if ob_v==20 and ob_low and ob_high: out.append(f"  ð§± OBï¼`20/20` â æ©æ§è¨å®å¡ `{ob_low:.4f}â{ob_high:.4f}`")
-    elif ob_v==20: out.append("  ð§± OBï¼`20/20` â è¨å®å¡ç¢ºèª")
-    else: out.append("  ð§± OBï¼`0/20` â ç¡ææè¨å®å¡")
+    if ob_v==20 and ob_low and ob_high: out.append(f"  🧱 OB：`20/20` — 機構訂單塊 `{ob_low:.4f}–{ob_high:.4f}`")
+    elif ob_v==20: out.append("  🧱 OB：`20/20` — 訂單塊確認")
+    else: out.append("  🧱 OB：`0/20` — 無有效訂單塊")
     fvg_v=detail.get("fvg",0); fvg_low=detail.get("fvg_low"); fvg_high=detail.get("fvg_high")
-    if fvg_v==15 and fvg_low and fvg_high: out.append(f"  â¡ FVGï¼`15/15` â å¬åç¼ºå£ `{fvg_low:.4f}â{fvg_high:.4f}`")
-    elif fvg_v==15: out.append("  â¡ FVGï¼`15/15` â FVG å±æ¯")
-    else: out.append("  â¡ FVGï¼`0/15` â ç¡ FVG")
+    if fvg_v==15 and fvg_low and fvg_high: out.append(f"  ⚡ FVG：`15/15` — 公允缺口 `{fvg_low:.4f}–{fvg_high:.4f}`")
+    elif fvg_v==15: out.append("  ⚡ FVG：`15/15` — FVG 共振")
+    else: out.append("  ⚡ FVG：`0/15` — 無 FVG")
     extras=[]
-    if detail.get("snr"): extras.append("SNR â")
-    if detail.get("pa"): extras.append("Kç·åæ â")
-    if detail.get("liq"): extras.append("æµåæ§æè© â")
-    if detail.get("mom"): extras.append("åè½ â")
-    out.append("  ð éå ï¼"+(" | ".join(extras) if extras else "åæªè§¸ç¼"))
+    if detail.get("snr"): extras.append("SNR ✅")
+    if detail.get("pa"): extras.append("K線型態 ✅")
+    if detail.get("liq"): extras.append("流動性掃蕩 ✅")
+    if detail.get("mom"): extras.append("動能 ✅")
+    out.append("  📌 附加："+(" | ".join(extras) if extras else "均未觸發"))
     if "mtf" in detail:
         mtf_v=detail["mtf"]; mtf_d=detail.get("mtf_desc",""); sign="+" if mtf_v>=0 else ""
-        color="ð¢ å®ç¾" if mtf_v>=13 else "ð¡ é¨å" if mtf_v>=5 else "ð´ éæ¡" if mtf_v<0 else "âª å¾®å¼±"
-        out.append(f"  ð MTF ({mtf_d})ï¼`{sign}{mtf_v}` {color}")
+        color="🟢 完美" if mtf_v>=13 else "🟡 部分" if mtf_v>=5 else "🔴 逆框" if mtf_v<0 else "⚪ 微弱"
+        out.append(f"  🕒 MTF ({mtf_d})：`{sign}{mtf_v}` {color}")
     if "volume" in detail:
         vol_v=detail["volume"]; vol_r=detail.get("volume_ratio",0); sign="+" if vol_v>=0 else ""
-        out.append(f"  ð éè½ï¼`{sign}{vol_v}` â {vol_r}Ãåé")
+        out.append(f"  📊 量能：`{sign}{vol_v}` — {vol_r}×均量")
     regime=detail.get("regime"); adx=detail.get("adx")
     if regime and adx:
-        rm={"trend":"è¶¨å¢è¡æ","range":"éçªè¡æ","transitional":"éæ¸¡æ"}
-        out.append(f"  ð å¸å ´ï¼{rm.get(regime,regime)}ï¼ADX `{adx:.1f}`ï¼")
+        rm={"trend":"趨勢行情","range":"震盪行情","transitional":"過渡期"}
+        out.append(f"  🌐 市場：{rm.get(regime,regime)}（ADX `{adx:.1f}`）")
     return "\n".join(out)
 
 
 def _fmt_analysis_narrative(detail: dict | None, side: str, score: int) -> str:
-    """ð çºä»éº¼é²å ´ â ç½è©±æåææ®µè½ï¼æ°¸é é¡¯ç¤ºï¼"""
+    """🔍 為什麼進場 — 白話文分析段落（永遠顯示）"""
     if not detail:
         return ""
     reasons=[]; warnings=[]
     rsi_val=detail.get("rsi_value",50); trend_v=detail.get("trend",0)
-    if trend_v==30: reasons.append("Supertrend 15m é å¢ç¢ºèªï¼ä¸»æ¹åæç¢º")
-    elif trend_v==15: warnings.append("Supertrend ä¸­æ§ï¼ç¡æç¢ºè¶¨å¢æ¹å")
-    else: warnings.append("â ï¸ Supertrend éå¢ï¼å±¬éå¸æä½")
+    if trend_v==30: reasons.append("Supertrend 15m 順勢確認，主方向明確")
+    elif trend_v==15: warnings.append("Supertrend 中性，無明確趨勢方向")
+    else: warnings.append("⚠️ Supertrend 逆勢，屬逆市操作")
     rsi_v=detail.get("rsi",0)
     if rsi_v==25:
-        if side=="LONG": reasons.append(f"RSI {rsi_val:.0f} å¾è¶è³£åååï¼å¤æ¹åè½åè½æ­£")
-        else: reasons.append(f"RSI {rsi_val:.0f} å¾è¶è²·ååè½ï¼ç©ºæ¹åè½ä¸»å°")
-    elif rsi_v==15: reasons.append(f"RSI {rsi_val:.0f} ä¸­æ§åéï¼æ¹åå¯è¡ä½éæä½³é»")
+        if side=="LONG": reasons.append(f"RSI {rsi_val:.0f} 從超賣區回升，多方動能剛轉正")
+        else: reasons.append(f"RSI {rsi_val:.0f} 從超買區回落，空方動能主導")
+    elif rsi_v==15: reasons.append(f"RSI {rsi_val:.0f} 中性區間，方向可行但非最佳點")
     else:
-        if rsi_val>=70: warnings.append(f"â ï¸ RSI {rsi_val:.0f} è¶è²·ï¼è¿½å¤é¢¨éªé«")
-        elif rsi_val<30: warnings.append(f"â ï¸ RSI {rsi_val:.0f} è¶è³£ä½åè½æªè½å")
+        if rsi_val>=70: warnings.append(f"⚠️ RSI {rsi_val:.0f} 超買，追多風險高")
+        elif rsi_val<30: warnings.append(f"⚠️ RSI {rsi_val:.0f} 超賣但動能未轉向")
     smc=[]
     if detail.get("ob",0)==20:
         ol=detail.get("ob_low"); oh=detail.get("ob_high")
-        smc.append(f"OBæ©æ§å¡ {ol:.4f}â{oh:.4f}" if ol and oh else "OBæ©æ§è¨å®å¡ç¢ºèª")
+        smc.append(f"OB機構塊 {ol:.4f}–{oh:.4f}" if ol and oh else "OB機構訂單塊確認")
     if detail.get("fvg",0)==15:
         fl=detail.get("fvg_low"); fh=detail.get("fvg_high")
-        smc.append(f"FVGç¼ºå£ {fl:.4f}â{fh:.4f}" if fl and fh else "FVGå¬åç¼ºå£å±æ¯")
-    if detail.get("liq"): smc.append("æµåæ§æè©å®æ")
-    if smc: reasons.append("SMCï¼"+"ã".join(smc))
+        smc.append(f"FVG缺口 {fl:.4f}–{fh:.4f}" if fl and fh else "FVG公允缺口共振")
+    if detail.get("liq"): smc.append("流動性掃蕩完成")
+    if smc: reasons.append("SMC："+"、".join(smc))
     if "mtf" in detail:
         mtf_v=detail["mtf"]; mtf_d=detail.get("mtf_desc","")
-        if mtf_v>=13: reasons.append(f"ä¸ææ¡ï¼{mtf_d}ï¼å®ç¾å±æ¯ï¼å¤§æ¹åä¸è´")
-        elif mtf_v>=5: reasons.append(f"MTF é¨åå±æ¯ï¼{mtf_d}ï¼ï¼å¤§æ¡æ¶æ¯æ")
-        elif mtf_v<0: warnings.append(f"â ï¸ MTF éæ¡ï¼{mtf_d}ï¼ï¼å¤§é±ææ¹åç¸å")
+        if mtf_v>=13: reasons.append(f"三時框（{mtf_d}）完美共振，大方向一致")
+        elif mtf_v>=5: reasons.append(f"MTF 部分共振（{mtf_d}），大框架支持")
+        elif mtf_v<0: warnings.append(f"⚠️ MTF 逆框（{mtf_d}），大週期方向相反")
     vol_v=detail.get("volume",0); vol_r=detail.get("volume_ratio",0)
-    if vol_v>0 and vol_r>=1.5: reasons.append(f"éè½ {vol_r:.1f}Ãåéæ¾å¤§ï¼è³éæµå¥ä½è­")
-    elif vol_v<0: warnings.append(f"éè½ {vol_r:.1f}Ãåå¼±ï¼æ³¨æåçªç ´")
-    if detail.get("pa"): reasons.append("Kç·åæç¢ºèªï¼éå­/åå¬/éåï¼")
+    if vol_v>0 and vol_r>=1.5: reasons.append(f"量能 {vol_r:.1f}×均量放大，資金流入佐證")
+    elif vol_v<0: warnings.append(f"量能 {vol_r:.1f}×偏弱，注意假突破")
+    if detail.get("pa"): reasons.append("K線型態確認（錘子/吞噬/針型）")
     regime=detail.get("regime"); adx=detail.get("adx",0)
-    if regime=="range": warnings.append(f"å¸å ´éçªï¼ADX {adx:.0f}ï¼ï¼æ³¨æåçªç ´")
-    elif regime=="trend": reasons.append(f"ADX {adx:.0f} è¶¨å¢è¡æï¼è·å¢åçè¼é«")
+    if regime=="range": warnings.append(f"市場震盪（ADX {adx:.0f}），注意假突破")
+    elif regime=="trend": reasons.append(f"ADX {adx:.0f} 趨勢行情，跟勢勝率較高")
     if not reasons and not warnings: return ""
-    out=["\nð *çºä»éº¼é²å ´ï¼*"]
-    for r in reasons[:5]: out.append(f"  â {r}")
-    for w in warnings[:3]: out.append(f"  ð© {w}")
+    out=["\n🔍 *為什麼進場：*"]
+    for r in reasons[:5]: out.append(f"  ✅ {r}")
+    for w in warnings[:3]: out.append(f"  🚩 {w}")
     return "\n".join(out)
 
 
@@ -584,85 +584,85 @@ def _fmt_entry(
     funding_rate: float | None = None,
     detail: dict | None = None,
 ) -> str:
-    """ð é²å ´éç¥ï¼å«åæ¸ç´°é  + åä½å»ºè­°ï¼"""
-    direction = "åå¤" if side == "LONG" else "åç©º"
-    emoji = "ð¢" if side == "LONG" else "ð´"
+    """📌 進場通知（含分數細項 + 倉位建議）"""
+    direction = "做多" if side == "LONG" else "做空"
+    emoji = "🟢" if side == "LONG" else "🔴"
 
-    # ð¯ ç¥ç´è¨èç¹å¥æ¨è¨
+    # 🎯 神級訊號特別標記
     cfg_god = load_config().get("god_signal", {})
     god_threshold = cfg_god.get("min_score", 95)
     is_god = cfg_god.get("enabled", True) and score >= god_threshold
 
     if is_god:
-        grade = "ð¯ð¯ð¯ *ç¥ç´è¨è* ð¯ð¯ð¯"
+        grade = "🎯🎯🎯 *神級訊號* 🎯🎯🎯"
     elif score >= 85:
-        grade = "ð¥ A+ æ¥µå¼·"
+        grade = "🔥 A+ 極強"
     elif score >= 70:
-        grade = "â­ A å¼·å"
+        grade = "⭐ A 強力"
     else:
-        grade = "â B+ åæ ¼"
+        grade = "✅ B+ 合格"
 
     tp1_pct = (tp1 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp3_pct = (tp3 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    sl_pct = (sl - entry) / entry * 100  # å¸¶æ­£è² è
+    sl_pct = (sl - entry) / entry * 100  # 帶正負號
 
     funding_line = ""
     if funding_rate is not None:
-        funding_line = f"ð° è³éè²»çï¼`{funding_rate * 100:+.4f}%`\n"
+        funding_line = f"💰 資金費率：`{funding_rate * 100:+.4f}%`\n"
 
-    # åä½å»ºè­°
+    # 倉位建議
     cfg = load_config()
     pos_mult, pos_label = suggest_position_size(score, cfg)
-    pos_line = f"ð¼ å»ºè­°åä½ï¼`{pos_mult}x` ({pos_label})\n"
+    pos_line = f"💼 建議倉位：`{pos_mult}x` ({pos_label})\n"
 
-    # ðµ åä½ / æ§æ¡¿ / æçè©¦ç®
+    # 💵 倉位 / 槓桿 / 損益試算
     sizing = calc_position_sizing(entry, sl, tp1, tp2, tp3, side, pos_mult, cfg)
     sizing_block = ""
     if sizing:
         sizing_block = (
             f"\n"
-            f"ðµ *è³éè©¦ç®ï¼è³é `${sizing['capital_usd']}` / é¢¨éª `${sizing['max_loss_usd']}`ï¼*\n"
-            f"  æ§æ¡¿ï¼`{sizing['leverage']}x`\n"
-            f"  åç®åä½ï¼`${sizing['position_value_usd']:,.0f}`\n"
-            f"  æ¸éï¼`{sizing['contracts']:,.4f} {coin}`\n"
-            f"  ð æ­¢ææå¤±ï¼`-${sizing['sl_loss_usd']:.2f}`\n"
-            f"  ð¥ TP1 ç²å©ï¼`+${sizing['tp1_profit_usd']:.2f}`\n"
-            f"  ð¥ TP2 ç²å©ï¼`+${sizing['tp2_profit_usd']:.2f}`\n"
-            f"  ð TP3 ç²å©ï¼`+${sizing['tp3_profit_usd']:.2f}`\n"
+            f"💵 *資金試算（資金 `${sizing['capital_usd']}` / 風險 `${sizing['max_loss_usd']}`）*\n"
+            f"  槓桿：`{sizing['leverage']}x`\n"
+            f"  名目倉位：`${sizing['position_value_usd']:,.0f}`\n"
+            f"  數量：`{sizing['contracts']:,.4f} {coin}`\n"
+            f"  🛑 止損損失：`-${sizing['sl_loss_usd']:.2f}`\n"
+            f"  🥇 TP1 獲利：`+${sizing['tp1_profit_usd']:.2f}`\n"
+            f"  🥈 TP2 獲利：`+${sizing['tp2_profit_usd']:.2f}`\n"
+            f"  🏆 TP3 獲利：`+${sizing['tp3_profit_usd']:.2f}`\n"
         )
 
-    # R:R é¡¯ç¤ºï¼TP1 å¯¦éåæ¸ï¼
+    # R:R 顯示（TP1 實際倍數）
     risk = abs(entry - sl)
     tp1_r = abs(tp1 - entry) / risk if risk > 0 else 0
     tp2_r = abs(tp2 - entry) / risk if risk > 0 else 0
     tp3_r = abs(tp3 - entry) / risk if risk > 0 else 0
 
-    # â åæè§£èªªæ®µè½ï¼æ°¸é é¡¯ç¤ºï¼
+    # ★ 分析解說段落（永遠顯示）
     # ★ 限價成交標記
     _entry_diff_pct = (entry - price) / price * 100
     if abs(_entry_diff_pct) > 0.05:
         _fill_arrow = "📉" if side == "LONG" else "📈"
-        limit_note = f"{_fill_arrow} *限價成交* \u2014 較掛單時市價 `{_entry_diff_pct:+.2f}%`\n"
+        limit_note = f"{_fill_arrow} *限價成交* — 較掛單時市價 `{_entry_diff_pct:+.2f}%`\n"
     else:
         limit_note = ""
 
     narrative_block = _fmt_analysis_narrative(detail, side, score)
 
-    # åæ¸ç´°é ï¼é è¨­ééï¼
+    # 分數細項（預設關閉）
     breakdown = ""
     if cfg.get("show_score_breakdown", False):
         breakdown = _format_score_breakdown(detail)
 
     return (
-        f"{emoji} *{coin} é²å ´æé* {grade}\n"
-        f"ââââââââââââââ\n"
-        f"ð è¨å®ç·¨èï¼`{order_id}`\n"
-        f"â° æéï¼{tw_ts()}\n"
-        f"æ¹åï¼{direction}\n"
-        f"é²å ´å¹ï¼`{entry:.4f}`\n"
-        f"ç¶åå¹ï¼`{price:.4f}`\n"
-        f"è©åï¼*{score} å*\n"
+        f"{emoji} *{coin} 進場提醒* {grade}\n"
+        f"━━━━━━━━━━━━━━\n"
+        f"🆔 訂單編號：`{order_id}`\n"
+        f"⏰ 時間：{tw_ts()}\n"
+        f"方向：{direction}\n"
+        f"進場價：`{entry:.4f}`\n"
+        f"當前價：`{price:.4f}`\n"
+        f"評分：*{score} 分*\n"
         f"{pos_line}"
         f"{funding_line}"
         f"{sizing_block}"
@@ -670,14 +670,14 @@ def _fmt_entry(
         f"{narrative_block}\n"
         f"{breakdown}\n"
         f"\n"
-        f"ð¯ æ­¢çç®æ¨ï¼\n"
+        f"🎯 止盈目標：\n"
         f"  TP1 `{tp1:.4f}` ({tp1_pct:+.2f}% / `{tp1_r:.1f}R`)\n"
         f"  TP2 `{tp2:.4f}` ({tp2_pct:+.2f}% / `{tp2_r:.1f}R`)\n"
         f"  TP3 `{tp3:.4f}` ({tp3_pct:+.2f}% / `{tp3_r:.1f}R`)\n"
         f"\n"
-        f"ð æ­¢æï¼`{sl:.4f}` ({sl_pct:+.2f}%)\n"
+        f"🛑 止損：`{sl:.4f}` ({sl_pct:+.2f}%)\n"
         f"\n"
-        f"ð¡ å°é TP1 èªåä¿æ¬ï¼å°é TP2 èªåéå©è³ TP1"
+        f"💡 到達 TP1 自動保本，到達 TP2 自動鎖利至 TP1"
     )
 
 
@@ -691,28 +691,28 @@ def _fmt_tp(
     r_mult: float,
     wick_triggered: bool = False,
 ) -> str:
-    """ð¯ æ­¢çéç¥"""
-    direction = "åå¤" if side == "LONG" else "åç©º"
+    """🎯 止盈通知"""
+    direction = "做多" if side == "LONG" else "做空"
     advice = (
-        "å»ºè­°å¹³å â éå®ç²å©"
+        "建議平倉 ⅓ 鎖定獲利"
         if tp_level == "TP1"
-        else "å»ºè­°åå¹³å â è½è¢çºå®"
+        else "建議再平倉 ⅓ 落袋為安"
         if tp_level == "TP2"
-        else "å»ºè­°å¨é¨å¹³åï¼å®ç¾æ¶å² ð"
+        else "建議全部平倉，完美收割 🏆"
     )
-    wick_note = "\nðª¡ _æéè§¸ç¼ï¼K ç·æéè§¸åç®æ¨å¹ï¼_" if wick_triggered else ""
+    wick_note = "\n🪡 _插針觸發（K 線插針觸及目標價）_" if wick_triggered else ""
     return (
-        f"ð¯ *{coin} {tp_level} éæ¨ï¼*\n"
-        f"ââââââââââââââ\n"
-        f"ð è¨å®ç·¨èï¼`{order_id}`\n"
-        f"â° æéï¼{tw_ts()}\n"
-        f"æ¹åï¼{direction}\n"
-        f"è§¸ç¼å¹ï¼`{price:.4f}`{wick_note}\n"
-        f"ç²å©ï¼`{pnl_pct:+.2f}%` (`{r_mult:+.1f}R`)\n"
+        f"🎯 *{coin} {tp_level} 達標！*\n"
+        f"━━━━━━━━━━━━━━\n"
+        f"🆔 訂單編號：`{order_id}`\n"
+        f"⏰ 時間：{tw_ts()}\n"
+        f"方向：{direction}\n"
+        f"觸發價：`{price:.4f}`{wick_note}\n"
+        f"獲利：`{pnl_pct:+.2f}%` (`{r_mult:+.1f}R`)\n"
         f"\n"
-        f"â å·²éæ {tp_level}\n"
+        f"✅ 已達成 {tp_level}\n"
         f"\n"
-        f"ð¡ {advice}"
+        f"💡 {advice}"
     )
 
 
@@ -726,88 +726,88 @@ def _fmt_sl(
     r_value: float = -1.0,
     wick_triggered: bool = False,
 ) -> str:
-    """ð å¹³åéç¥ï¼ä¸æ¨¡å¼ï¼LOSS æ­¢æ / BE ä¿æ¬ / LOCK éå©ï¼"""
-    direction = "åå¤" if side == "LONG" else "åç©º"
+    """🛑 平倉通知（三模式：LOSS 止損 / BE 保本 / LOCK 鎖利）"""
+    direction = "做多" if side == "LONG" else "做空"
     if mode == "BE":
-        label = "ð ä¿æ¬åºå ´"
+        label = "🔒 保本出場"
         r_tag = "`0.0R`"
         advice = (
-            "â¨ TP1 å·²éæï¼æ­¢æä¸ç§»è³é²å ´å¹\n"
-            "æ¬ç­ç¡æåºå ´ï¼è³éå®æ´ä¿ç\n"
-            "ð¡ ç­å¾ä¸ä¸åé«åçè¨è ðª"
+            "✨ TP1 已達成，止損上移至進場價\n"
+            "本筆無損出場，資金完整保留\n"
+            "💡 等待下一個高勝率訊號 💪"
         )
     elif mode == "LOCK":
-        label = "ð éå©åºå ´"
+        label = "🔐 鎖利出場"
         r_tag = f"`+{r_value:.1f}R`"
         advice = (
-            "ð TP2 å·²éæï¼æ­¢æä¸ç§»è³ TP1\n"
-            "è¶¨å¢åé ­æéä½ TP1 çç²å©åªééå ´\n"
-            "ð¡ é¢¨æ§å®ç¾å·è¡ï¼ç¹¼çºä¿æ â¨"
+            "🎉 TP2 已達成，止損上移至 TP1\n"
+            "趨勢回頭時鎖住 TP1 的獲利優雅退場\n"
+            "💡 風控完美執行，繼續保持 ✨"
         )
     else:
-        label = "â æ­¢æé¢å ´"
+        label = "❌ 止損離場"
         r_tag = "`-1.0R`"
-        advice = "ð¡ éµå®é¢¨æ§ï¼å¿å ç¢¼æ¤å¹³ãä¸ä¸ç­è¨èææ´å¥½ ð"
+        advice = "💡 遵守風控，勿加碼攤平。下一筆訊號會更好 🚀"
 
-    wick_note = "\nðª¡ _æéè§¸ç¼ï¼K ç·æéè§¸åå¹³åå¹ï¼_" if wick_triggered else ""
+    wick_note = "\n🪡 _插針觸發（K 線插針觸及平倉價）_" if wick_triggered else ""
     return (
         f"{label} *{coin}*\n"
-        f"ââââââââââââââ\n"
-        f"ð è¨å®ç·¨èï¼`{order_id}`\n"
-        f"â° æéï¼{tw_ts()}\n"
-        f"æ¹åï¼{direction}\n"
-        f"è§¸ç¼å¹ï¼`{price:.4f}`{wick_note}\n"
-        f"çµæï¼`{pnl_pct:+.2f}%` {r_tag}\n"
+        f"━━━━━━━━━━━━━━\n"
+        f"🆔 訂單編號：`{order_id}`\n"
+        f"⏰ 時間：{tw_ts()}\n"
+        f"方向：{direction}\n"
+        f"觸發價：`{price:.4f}`{wick_note}\n"
+        f"結果：`{pnl_pct:+.2f}%` {r_tag}\n"
         f"\n"
         f"{advice}"
     )
 
 
 def _fmt_position(sig: dict, current_price: float) -> str:
-    """ð æåé²åº¦æ´æ°"""
+    """📊 持倉進度更新"""
     coin = sig["instId"].split("-")[0]
     side = sig["side"]
-    direction = "åå¤" if side == "LONG" else "åç©º"
+    direction = "做多" if side == "LONG" else "做空"
     entry = sig["entry"]
     pnl = (
         (current_price - entry) / entry * 100
         if side == "LONG"
         else (entry - current_price) / entry * 100
     )
-    pnl_emoji = "ð¢" if pnl >= 0 else "ð´"
+    pnl_emoji = "🟢" if pnl >= 0 else "🔴"
 
     if sig.get("hit_tp3"):
-        progress = "ð TP3 â"
+        progress = "🏆 TP3 ✅"
     elif sig.get("hit_tp2"):
-        progress = "ð¥â â ð¥â â â³ TP3"
+        progress = "🥇✅ → 🥈✅ → ⏳ TP3"
     elif sig.get("hit_tp1"):
-        progress = "ð¥â â â³ TP2"
+        progress = "🥇✅ → ⏳ TP2"
     else:
-        progress = "â³ ç­å¾ TP1"
+        progress = "⏳ 等待 TP1"
 
     return (
-        f"ð *{coin} æåæ´æ°*\n"
-        f"ââââââââââââââ\n"
-        f"ð è¨å®ç·¨èï¼`{sig.get('order_id', 'N/A')}`\n"
-        f"â° æéï¼{tw_ts()}\n"
-        f"æ¹åï¼{direction}\n"
-        f"ç¶åï¼`{current_price:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
-        f"é²å ´ï¼`{entry:.4f}`\n"
+        f"📊 *{coin} 持倉更新*\n"
+        f"━━━━━━━━━━━━━━\n"
+        f"🆔 訂單編號：`{sig.get('order_id', 'N/A')}`\n"
+        f"⏰ 時間：{tw_ts()}\n"
+        f"方向：{direction}\n"
+        f"當前：`{current_price:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
+        f"進場：`{entry:.4f}`\n"
         f"\n"
-        f"ð¯ æ­¢çé²åº¦ï¼{progress}\n"
-        f"  TP1 `{sig['tp1']:.4f}`{'â' if sig.get('hit_tp1') else ''}\n"
-        f"  TP2 `{sig['tp2']:.4f}`{'â' if sig.get('hit_tp2') else ''}\n"
-        f"  TP3 `{sig['tp3']:.4f}`{'â' if sig.get('hit_tp3') else ''}\n"
+        f"🎯 止盈進度：{progress}\n"
+        f"  TP1 `{sig['tp1']:.4f}`{'✅' if sig.get('hit_tp1') else ''}\n"
+        f"  TP2 `{sig['tp2']:.4f}`{'✅' if sig.get('hit_tp2') else ''}\n"
+        f"  TP3 `{sig['tp3']:.4f}`{'✅' if sig.get('hit_tp3') else ''}\n"
         f"\n"
-        f"ð æ­¢æï¼`{sig['sl']:.4f}`"
+        f"🛑 止損：`{sig['sl']:.4f}`"
     )
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 4. æ¸ææå
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 4. 數據抓取
+# ═════════════════════════════════════════════════════════
 def fetch_price(instId: str) -> float:
-    """ð å³æå¹æ ¼ï¼5 ç§è¨æ¶é«å¿«åï¼"""
+    """🔍 即時價格（5 秒記憶體快取）"""
     now = time.time()
     if instId in _price_cache:
         price, t = _price_cache[instId]
@@ -824,12 +824,12 @@ def fetch_price(instId: str) -> float:
                 _price_cache[instId] = (price, now)
                 return price
     except Exception as e:
-        logging.warning(f"â ï¸ åå¾ {instId} å¹æ ¼å¤±æï¼{e}")
+        logging.warning(f"⚠️ 取得 {instId} 價格失敗：{e}")
     return _price_cache.get(instId, (0.0, 0))[0]
 
 
 def fetch_candles(instId: str, tf: str = "15m", limit: int = 100) -> list | None:
-    """ð K ç·ï¼å·²æ¶ç·ï¼"""
+    """📊 K 線（已收線）"""
     try:
         res = requests.get(
             f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
@@ -840,7 +840,7 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100) -> list | None
         data = res.get("data", [])
         if len(data) < 30:
             return None
-        # OKX ç¬¬ 9 æ¬ï¼index 8ï¼çº confirmï¼ååå·²æ¶ç·ï¼OKX é è¨­ç±æ°å°èï¼åè½æç±èå°æ°
+        # OKX 第 9 欄（index 8）為 confirm，僅取已收線；OKX 預設由新到舊，反轉成由舊到新
         confirmed = [r for r in data if r[8] == "1"][::-1]
         return [
             {
@@ -854,7 +854,7 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100) -> list | None
             for r in confirmed
         ]
     except Exception as e:
-        logging.warning(f"â ï¸ åå¾ {instId} K ç·å¤±æï¼{e}")
+        logging.warning(f"⚠️ 取得 {instId} K 線失敗：{e}")
         return None
 
 
@@ -862,12 +862,12 @@ _candle_full_cache: dict = {}
 
 
 def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
-    """ðª¡ ææè¿ N æ ¹ K ç·ï¼å«æªæ¶ç·ï¼ä¸¦ææéååºæåºï¼æ¯è¼ªææå±ç¨ 30 ç§å¿«å
+    """🪡 抓最近 N 根 K 線（含未收線）並按時間升序排序，每輪掃描共用 30 秒快取
 
-    åå³æ¯ç­å«ï¼ts(ms æ´æ¸)ão/h/l/c/vãconfirmed(bool)
-    ç¨æ¼ _check_one çãæ­·å²æéè£æãï¼
-      - è¨èèª last_checked_ts ä¹å¾çææ K ç·é½æè¢«æé
-      - å³ä½¿ cron æ¼è·ãè¨èéäº 3 å°æææª¢æ¥ï¼éå»ä»»ä½æéé½ä¸ææ¼
+    回傳每筆含：ts(ms 整數)、o/h/l/c/v、confirmed(bool)
+    用於 _check_one 的「歷史插針補抓」：
+      - 訊號自 last_checked_ts 之後的所有 K 線都會被掃過
+      - 即使 cron 漏跑、訊號開了 3 小時才檢查，過去任何插針都不會漏
     """
     now = time.time()
     if instId in _candle_full_cache:
@@ -898,15 +898,15 @@ def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
         _candle_full_cache[instId] = (candles, now)
         return candles
     except Exception as e:
-        logging.warning(f"â ï¸ åå¾ {instId} å®æ´ K ç·å¤±æï¼{e}")
+        logging.warning(f"⚠️ 取得 {instId} 完整 K 線失敗：{e}")
         return _candle_full_cache.get(instId, ([], 0))[0]
 
 
 def fetch_recent_range(instId: str, bars: int = 2, tf: str = "15m") -> tuple[float, float] | None:
-    """ðª¡ ææè¿ N æ ¹ K ç·ï¼å«æªæ¶ç·ï¼çæä½ / æé« â (low, high)
+    """🪡 抓最近 N 根 K 線（含未收線）的最低 / 最高 → (low, high)
 
-    ç¨éï¼åµæ¸¬æéï¼é¿åãå¿«éæ³å° SL/TP åç¸®åå»ãééè¿½è¹¤ã
-    è fetch_candles ä¸åï¼éè£¡ä¸éæ¿¾ confirmï¼ææ­£å¨å½¢æç K ç·ä¹ç®é²å»ã
+    用途：偵測插針，避免「快速戳到 SL/TP 又縮回去」逃過追蹤。
+    與 fetch_candles 不同，這裡不過濾 confirm，把正在形成的 K 線也算進去。
     """
     try:
         res = requests.get(
@@ -922,12 +922,12 @@ def fetch_recent_range(instId: str, bars: int = 2, tf: str = "15m") -> tuple[flo
         highs = [float(r[2]) for r in data]
         return min(lows), max(highs)
     except Exception as e:
-        logging.warning(f"â ï¸ åå¾ {instId} æè¿åéå¤±æï¼{e}")
+        logging.warning(f"⚠️ 取得 {instId} 最近區間失敗：{e}")
         return None
 
 
 def fetch_funding_rate(instId: str) -> float | None:
-    """ð° OKX è³éè²»çï¼æ°¸çºåç´ï¼"""
+    """💰 OKX 資金費率（永續合約）"""
     try:
         res = requests.get(
             f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}",
@@ -936,20 +936,20 @@ def fetch_funding_rate(instId: str) -> float | None:
         if res.get("code") == "0" and res.get("data"):
             return float(res["data"][0]["fundingRate"])
     except Exception as e:
-        logging.warning(f"â ï¸ åå¾ {instId} è³éè²»çå¤±æï¼{e}")
+        logging.warning(f"⚠️ 取得 {instId} 資金費率失敗：{e}")
     return None
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 4.5 TradingView ç¬¬äºå¹æ ¼ä¾æºï¼é¢¨æ§ï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 4.5 TradingView 第二價格來源（風控）
+# ═════════════════════════════════════════════════════════
 _tv_cache: dict = {}
 
 
 def fetch_price_tv(instId: str) -> float | None:
-    """ð¡ å¾ TradingView æåå³æå¹æ ¼ï¼OKX æ°¸çºåç´ï¼
+    """📡 從 TradingView 抓取即時價格（OKX 永續合約）
 
-    åå³ None ä»£è¡¨æä¸å°ï¼ç¶²è·¯ / å¥ä»¶æªå®è£ / ç¬¦èé¯èª¤ï¼
+    回傳 None 代表抓不到（網路 / 套件未安裝 / 符號錯誤）
     """
     now = time.time()
     if instId in _tv_cache:
@@ -958,14 +958,14 @@ def fetch_price_tv(instId: str) -> float | None:
             return price
 
     try:
-        # å¥ä»¶å¯è½æªå®è£ï¼ç´èªæ³æª¢æ¥ææ¬å°æ¸¬è©¦ï¼
+        # 套件可能未安裝（純語法檢查或本地測試）
         from tradingview_ta import TA_Handler, Interval  # type: ignore
     except ImportError:
-        logging.warning("â ï¸ æªå®è£ tradingview_taï¼è·³é TV é©è­")
+        logging.warning("⚠️ 未安裝 tradingview_ta，跳過 TV 驗證")
         return None
 
     try:
-        # BTC-USDT-SWAP â BTCUSDT.Pï¼OKX æ°¸çºåç´å¨ TradingView çå½åï¼
+        # BTC-USDT-SWAP → BTCUSDT.P（OKX 永續合約在 TradingView 的命名）
         symbol = instId.replace("-USDT-SWAP", "USDT.P").replace("-", "")
         handler = TA_Handler(
             symbol=symbol,
@@ -980,7 +980,7 @@ def fetch_price_tv(instId: str) -> float | None:
             _tv_cache[instId] = (price, now)
             return price
     except Exception as e:
-        logging.warning(f"â ï¸ TradingView åå¾ {instId} å¤±æï¼{e}")
+        logging.warning(f"⚠️ TradingView 取得 {instId} 失敗：{e}")
     return None
 
 
@@ -990,11 +990,11 @@ def verify_price(
     max_dev_pct: float = 0.5,
     block_on_unverified: bool = False,
 ) -> tuple[bool, float | None, float]:
-    """âï¸ éä¾æºå¹æ ¼é©è­ â (æ¯å¦éé, TV å¹æ ¼, åé¢ç¾åæ¯)
+    """⚖️ 雙來源價格驗證 → (是否通過, TV 價格, 偏離百分比)
 
     block_on_unverified:
-      True  â TV æä¸å°ä¹æè¨èï¼ä¿å®ï¼
-      False â TV æä¸å°ç¶ä½ééï¼é¿åå®é»å¤±æææææè¨èï¼
+      True  → TV 抓不到也擋訊號（保守）
+      False → TV 抓不到當作通過（避免單點失效擋掉所有訊號）
     """
     tv_price = fetch_price_tv(instId)
     if tv_price is None:
@@ -1002,22 +1002,22 @@ def verify_price(
     diff_pct = abs(okx_price - tv_price) / okx_price * 100
     if diff_pct > max_dev_pct:
         logging.warning(
-            f"ð¨ {instId} å¹æ ¼ä¸ä¸è´ï¼OKX={okx_price:.4f} TV={tv_price:.4f} "
+            f"🚨 {instId} 價格不一致：OKX={okx_price:.4f} TV={tv_price:.4f} "
             f"diff={diff_pct:.3f}% > {max_dev_pct}%"
         )
         return (False, tv_price, diff_pct)
     logging.info(
-        f"â {instId} å¹æ ¼é©è­ééï¼OKX={okx_price:.4f} TV={tv_price:.4f} "
+        f"✅ {instId} 價格驗證通過：OKX={okx_price:.4f} TV={tv_price:.4f} "
         f"diff={diff_pct:.3f}%"
     )
     return (True, tv_price, diff_pct)
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 5. åºç¤æè¡ææ¨
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 5. 基礎技術指標
+# ═════════════════════════════════════════════════════════
 def calc_atr(df: list, period: int = 14) -> float:
-    """ATRï¼ç°¡ååå¼çæ¬ï¼"""
+    """ATR（簡化均值版本）"""
     if len(df) < period + 1:
         return 0.001
     trs = []
@@ -1033,7 +1033,7 @@ def calc_atr(df: list, period: int = 14) -> float:
 
 
 def calc_supertrend(df: list, period: int = 10, mult: float = 3.0) -> int:
-    """è¶¨å¢æ¹åï¼1=å¤é ­ / -1=ç©ºé ­ / 0=éçªï¼ç°¡åçæ¬ï¼"""
+    """趨勢方向：1=多頭 / -1=空頭 / 0=震盪（簡化版本）"""
     if len(df) < period + 2:
         return 0
     atr = calc_atr(df, period)
@@ -1048,7 +1048,7 @@ def calc_supertrend(df: list, period: int = 10, mult: float = 3.0) -> int:
 
 
 def calc_rsi(df: list, period: int = 14) -> float:
-    """RSIï¼Wilder ç°¡åçï¼"""
+    """RSI（Wilder 簡化版）"""
     if len(df) < period + 1:
         return 50.0
     gains, losses = [], []
@@ -1066,14 +1066,14 @@ def calc_rsi(df: list, period: int = 14) -> float:
     return 100 - (100 / (1 + rs))
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 6. SMC / ICT / SNR / å¹æ ¼è¡çº / æµåæ§ / åè½
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 6. SMC / ICT / SNR / 價格行為 / 流動性 / 動能
+# ═════════════════════════════════════════════════════════
 def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
-    """ð§± è¨å®å¡ï¼OBï¼
+    """🧱 訂單塊（OB）
 
-    çæ¼² OBï¼æè¿çé°ç·å¾ç·æ¥é½ç·çªç ´å¶é«é»ã
-    çè· OBï¼æè¿çé½ç·å¾ç·æ¥é°ç·è·ç ´å¶ä½é»ã
+    看漲 OB：最近的陰線後緊接陽線突破其高點。
+    看跌 OB：最近的陽線後緊接陰線跌破其低點。
     """
     n = len(df)
     if n < lookback + 5:
@@ -1081,13 +1081,13 @@ def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
     start = max(0, n - lookback)
     if side == "LONG":
         for i in range(n - 4, start, -1):
-            if df[i]["c"] < df[i]["o"]:  # é°ç·
+            if df[i]["c"] < df[i]["o"]:  # 陰線
                 for j in range(i + 1, min(i + 4, n)):
                     if df[j]["c"] > df[i]["h"]:
                         return {"low": df[i]["l"], "high": df[i]["h"]}
     else:
         for i in range(n - 4, start, -1):
-            if df[i]["c"] > df[i]["o"]:  # é½ç·
+            if df[i]["c"] > df[i]["o"]:  # 陽線
                 for j in range(i + 1, min(i + 4, n)):
                     if df[j]["c"] < df[i]["l"]:
                         return {"low": df[i]["l"], "high": df[i]["h"]}
@@ -1095,10 +1095,10 @@ def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
 
 
 def find_fvg(df: list, side: str, lookback: int = 30) -> dict | None:
-    """â¡ å¬åå¹å¼ç¼ºå£ï¼FVGï¼
+    """⚡ 公允價值缺口（FVG）
 
-    çæ¼² FVGï¼K[i].low > K[i-2].highã
-    çè· FVGï¼K[i].high < K[i-2].lowã
+    看漲 FVG：K[i].low > K[i-2].high。
+    看跌 FVG：K[i].high < K[i-2].low。
     """
     n = len(df)
     if n < 4:
@@ -1115,7 +1115,7 @@ def find_fvg(df: list, side: str, lookback: int = 30) -> dict | None:
 
 
 def calc_snr(df: list, lookback: int = 100) -> tuple[float, float]:
-    """ð åææ¯æ / é»åï¼è¿ N æ ¹æ¥µå¼ï¼"""
+    """📏 動態支撐 / 阻力（近 N 根極值）"""
     seg = df[-lookback:] if len(df) >= lookback else df
     high = max(r["h"] for r in seg)
     low = min(r["l"] for r in seg)
@@ -1123,7 +1123,7 @@ def calc_snr(df: list, lookback: int = 100) -> tuple[float, float]:
 
 
 def detect_price_action(df: list, side: str) -> bool:
-    """ð åµæ¸¬ Pin Bar æåæ²å½¢æï¼æ¹åéèäº¤ææ¹åä¸è´"""
+    """📊 偵測 Pin Bar 或吞沒形態，方向需與交易方向一致"""
     if len(df) < 2:
         return False
     last, prev = df[-1], df[-2]
@@ -1131,14 +1131,14 @@ def detect_price_action(df: list, side: str) -> bool:
     upper = last["h"] - max(last["c"], last["o"])
     lower = min(last["c"], last["o"]) - last["l"]
 
-    # Pin Barï¼å½±ç· â¥ 2 åå¯¦é«ï¼
+    # Pin Bar（影線 ≥ 2 倍實體）
     if body > 0:
         if side == "LONG" and lower > body * 2 and lower > upper:
             return True
         if side == "SHORT" and upper > body * 2 and upper > lower:
             return True
 
-    # åæ²å½¢æ
+    # 吞沒形態
     if side == "LONG":
         if (
             prev["c"] < prev["o"]
@@ -1159,10 +1159,10 @@ def detect_price_action(df: list, side: str) -> bool:
 
 
 def detect_liquidity_sweep(df: list, side: str, lookback: int = 20) -> bool:
-    """ð§ æµåæ§æè©
+    """💧 流動性掃蕩
 
-    å¤é ­æè©ï¼æå¾ä¸æ ¹åµ N ææ°ä½å¾å¿«éæ¶åï¼æ¶ç¤åå°åéä¸­ä½ä»¥ä¸ï¼ã
-    ç©ºé ­æè©ï¼æå¾ä¸æ ¹åµ N ææ°é«å¾å¿«éåè½ã
+    多頭掃蕩：最後一根創 N 期新低後快速收回（收盤回到區間中位以上）。
+    空頭掃蕩：最後一根創 N 期新高後快速回落。
     """
     if len(df) < lookback + 1:
         return False
@@ -1178,18 +1178,18 @@ def detect_liquidity_sweep(df: list, side: str, lookback: int = 20) -> bool:
 
 
 def calc_momentum_ratio(df: list, side: str, n: int = 5) -> bool:
-    """ð ç¤å£åè½ï¼æè¿ N æ ¹ K ç·å¤ç©ºæ¯ä¾"""
+    """📈 盤口動能：最近 N 根 K 線多空比例"""
     seg = df[-n:]
     bull = sum(1 for r in seg if r["c"] > r["o"])
     ratio = bull / max(1, len(seg))
     return ratio >= 0.6 if side == "LONG" else ratio <= 0.4
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 6.4 v14.2 EMA å¤é±ææå
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 6.4 v14.2 EMA 多週期排列
+# ═════════════════════════════════════════════════════════
 def calc_ema(df: list, period: int) -> float:
-    """EMA è¨ç®ï¼ç¨®å­ç¨ SMAï¼"""
+    """EMA 計算（種子用 SMA）"""
     if len(df) < period:
         return df[-1]["c"] if df else 0.0
     closes = [c["c"] for c in df]
@@ -1201,10 +1201,10 @@ def calc_ema(df: list, period: int) -> float:
 
 
 def calc_ema_alignment(df: list, side: str, cfg: dict | None = None) -> tuple[int, str]:
-    """ðª EMA å¤é±ææåè©å â (åæ¸ -5~+5, æè¿°)
+    """🪜 EMA 多週期排列評分 → (分數 -5~+5, 描述)
 
-    å¤é ­å®ç¾æåï¼å¹æ ¼ > EMA20 > EMA50 > EMA200
-    ç©ºé ­å®ç¾æåï¼å¹æ ¼ < EMA20 < EMA50 < EMA200
+    多頭完美排列：價格 > EMA20 > EMA50 > EMA200
+    空頭完美排列：價格 < EMA20 < EMA50 < EMA200
     """
     if cfg is None:
         cfg = load_config()
@@ -1213,7 +1213,7 @@ def calc_ema_alignment(df: list, side: str, cfg: dict | None = None) -> tuple[in
         return 0, ""
     periods = ec.get("periods", [20, 50, 200])
     if len(df) < max(periods) + 5:
-        return 0, "EMA è³æä¸è¶³"
+        return 0, "EMA 資料不足"
 
     p_short, p_mid, p_long = periods[0], periods[1], periods[2]
     ema_s = calc_ema(df, p_short)
@@ -1223,26 +1223,26 @@ def calc_ema_alignment(df: list, side: str, cfg: dict | None = None) -> tuple[in
 
     if side == "LONG":
         if price > ema_s > ema_m > ema_l:
-            return ec.get("perfect_bonus", 5), f"å¤é ­å®ç¾æåï¼å¹>{p_short}>{p_mid}>{p_long}ï¼"
+            return ec.get("perfect_bonus", 5), f"多頭完美排列（價>{p_short}>{p_mid}>{p_long}）"
         if price > ema_s > ema_m:
-            return ec.get("partial_bonus", 3), "ç­ä¸­æå¤é ­"
+            return ec.get("partial_bonus", 3), "短中期多頭"
         if price < ema_l:
-            return -ec.get("against_penalty", 5), "å¨ EMA200 ä¹ä¸ï¼éå¤§è¶¨å¢"
+            return -ec.get("against_penalty", 5), "在 EMA200 之下，逆大趨勢"
     else:
         if price < ema_s < ema_m < ema_l:
-            return ec.get("perfect_bonus", 5), f"ç©ºé ­å®ç¾æåï¼å¹<{p_short}<{p_mid}<{p_long}ï¼"
+            return ec.get("perfect_bonus", 5), f"空頭完美排列（價<{p_short}<{p_mid}<{p_long}）"
         if price < ema_s < ema_m:
-            return ec.get("partial_bonus", 3), "ç­ä¸­æç©ºé ­"
+            return ec.get("partial_bonus", 3), "短中期空頭"
         if price > ema_l:
-            return -ec.get("against_penalty", 5), "å¨ EMA200 ä¹ä¸ï¼éå¤§è¶¨å¢"
-    return 0, "EMA æªæç¢ºæå"
+            return -ec.get("against_penalty", 5), "在 EMA200 之上，逆大趨勢"
+    return 0, "EMA 未明確排列"
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 6.5 v14 æ°ææ¨ï¼ADX / å¤ææ¡ / éè½ / å¸å ´çæ / é²å ´ææ©
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 6.5 v14 新指標：ADX / 多時框 / 量能 / 市場狀態 / 進場時機
+# ═════════════════════════════════════════════════════════
 def calc_adx(df: list, period: int = 14) -> float:
-    """ð ADX è¶¨å¢å¼·åº¦ï¼>25 å¼·è¶¨å¢ã<18 éçªãä¸­ééæ¸¡"""
+    """📐 ADX 趨勢強度：>25 強趨勢、<18 震盪、中間過渡"""
     if len(df) < period * 2 + 1:
         return 0.0
     plus_dm, minus_dm, trs = [], [], []
@@ -1271,7 +1271,7 @@ def calc_adx(df: list, period: int = 14) -> float:
 
 
 def detect_market_regime(df: list) -> dict:
-    """ð å¤æ·å¸å ´çæï¼trend / range / transitional + æ¯å¦é«æ³¢å"""
+    """🌐 判斷市場狀態：trend / range / transitional + 是否高波動"""
     adx = calc_adx(df)
     atr = calc_atr(df)
     price = df[-1]["c"] if df else 1
@@ -1294,7 +1294,7 @@ _mtf_cache: dict = {}
 
 
 def fetch_mtf_trend(instId: str) -> dict:
-    """ð æ 1H è 4H ç K ç·å¤æ·å¤§è¶¨å¢ï¼30 ç§å¿«åï¼"""
+    """🕒 抓 1H 與 4H 的 K 線判斷大趨勢（30 秒快取）"""
     now = time.time()
     if instId in _mtf_cache:
         data, t = _mtf_cache[instId]
@@ -1317,7 +1317,7 @@ def fetch_mtf_trend(instId: str) -> dict:
 
 
 def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
-    """ð¯ å¤ææ¡å±æ¯è©åï¼æé« +15ï¼â (åæ¸, èªªæ)"""
+    """🎯 多時框共振評分（最高 +15）→ (分數, 說明)"""
     expect = 1 if side == "LONG" else -1
     h1 = mtf.get("1H", {}).get("supertrend", 0)
     h4 = mtf.get("4H", {}).get("supertrend", 0)
@@ -1333,13 +1333,13 @@ def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
     score = max(-15, min(15, score))
 
     align_desc = []
-    align_desc.append(f"1H={'é ' if h1 == expect else 'å' if h1 == -expect else 'ä¸­'}")
-    align_desc.append(f"4H={'é ' if h4 == expect else 'å' if h4 == -expect else 'ä¸­'}")
+    align_desc.append(f"1H={'順' if h1 == expect else '反' if h1 == -expect else '中'}")
+    align_desc.append(f"4H={'順' if h4 == expect else '反' if h4 == -expect else '中'}")
     return score, " / ".join(align_desc)
 
 
 def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
-    """ð æäº¤éç¢ºèªï¼æå¾ K ç·é vs å N æåé â (åæ¸, è©å -10~+8)"""
+    """📊 成交量確認：最後 K 線量 vs 前 N 期均量 → (倍數, 評分 -10~+8)"""
     if len(df) < lookback + 1:
         return 1.0, 0
     seg = df[-(lookback + 1):-1]
@@ -1356,20 +1356,20 @@ def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
     elif ratio >= 0.5:
         s = 0
     else:
-        s = -10  # æ²éçè¨èç´æ¥æ£ï¼éæ¿¾åçªç ´
+        s = -10  # 沒量的訊號直接扣，過濾假突破
     return round(ratio, 2), s
 
 
 def adjust_tp_by_sr(
     entry: float, side: str, tp_levels: list, df: list
 ) -> tuple[list, list]:
-    """ð¯ åæ TPï¼è¥åºå® R å TP è½å¨å¼· S/R åæ¹ï¼æ TP æå°ééµä½å
+    """🎯 動態 TP：若固定 R 倍 TP 落在強 S/R 前方，把 TP 拉到關鍵位前
 
-    â ï¸ ä¿®å¾© v14.4 collapse bugï¼æ ¡æ­£å¾è¥ TP é åºäºæï¼TP3 â¤ TP2ï¼ï¼
-       èªååå¾©åå¼æå¼·å¶ä¿çæå°éè·ï¼ç¢ºä¿ TP1 < TP2 < TP3ï¼LONGï¼/
-       TP1 > TP2 > TP3ï¼SHORTï¼
+    ⚠️ 修復 v14.4 collapse bug：校正後若 TP 順序亂掉（TP3 ≤ TP2），
+       自動回復原值或強制保留最小間距，確保 TP1 < TP2 < TP3（LONG）/
+       TP1 > TP2 > TP3（SHORT）
 
-    åå³ï¼(èª¿æ´å¾ TP åè¡¨, èª¿æ´ç´é)
+    回傳：(調整後 TP 列表, 調整紀錄)
     """
     sup, res = calc_snr(df, lookback=100)
     out = list(tp_levels)
@@ -1380,45 +1380,45 @@ def adjust_tp_by_sr(
         for i, tp in enumerate(out):
             if tp > res * 1.001 and ceiling > entry:
                 notes.append(
-                    f"TP{i + 1} ç± {tp:.4f} æ ¡æ­£å° {ceiling:.4f}ï¼é¿éé»å {res:.4f}ï¼"
+                    f"TP{i + 1} 由 {tp:.4f} 校正到 {ceiling:.4f}（避開阻力 {res:.4f}）"
                 )
                 out[i] = ceiling
-        # å¼·å¶ TP1 < TP2 < TP3ï¼è¥æ ¡æ­£å¾éçï¼åå¾©åå¼
+        # 強制 TP1 < TP2 < TP3：若校正後重疊，回復原值
         for i in range(1, len(out)):
             if out[i] <= out[i - 1]:
                 if tp_levels[i] > out[i - 1]:
                     notes.append(
-                        f"TP{i + 1} æ ¡æ­£å¾ â¤ TP{i}ï¼åå¾©åå¼ {tp_levels[i]:.4f}"
+                        f"TP{i + 1} 校正後 ≤ TP{i}，回復原值 {tp_levels[i]:.4f}"
                     )
                     out[i] = tp_levels[i]
                 else:
                     out[i] = out[i - 1] * 1.001
-                    notes.append(f"TP{i + 1} å¼·å¶ +0.1% ç¶­æé åº")
+                    notes.append(f"TP{i + 1} 強制 +0.1% 維持順序")
     else:
         floor = sup * 1.002
         for i, tp in enumerate(out):
             if tp < sup * 0.999 and floor < entry:
                 notes.append(
-                    f"TP{i + 1} ç± {tp:.4f} æ ¡æ­£å° {floor:.4f}ï¼é¿éæ¯æ {sup:.4f}ï¼"
+                    f"TP{i + 1} 由 {tp:.4f} 校正到 {floor:.4f}（避開支撐 {sup:.4f}）"
                 )
                 out[i] = floor
-        # å¼·å¶ TP1 > TP2 > TP3
+        # 強制 TP1 > TP2 > TP3
         for i in range(1, len(out)):
             if out[i] >= out[i - 1]:
                 if tp_levels[i] < out[i - 1]:
                     notes.append(
-                        f"TP{i + 1} æ ¡æ­£å¾ â¥ TP{i}ï¼åå¾©åå¼ {tp_levels[i]:.4f}"
+                        f"TP{i + 1} 校正後 ≥ TP{i}，回復原值 {tp_levels[i]:.4f}"
                     )
                     out[i] = tp_levels[i]
                 else:
                     out[i] = out[i - 1] * 0.999
-                    notes.append(f"TP{i + 1} å¼·å¶ -0.1% ç¶­æé åº")
+                    notes.append(f"TP{i + 1} 強制 -0.1% 維持順序")
 
     return out, notes
 
 
 def calc_vwap(df: list, lookback: int = 20) -> float:
-    """ðª VWAP éå æ¬åå¹ï¼å¸å HLC/3 Ã Volume / sum(V)ï¼"""
+    """🪙 VWAP 量加權均價（典型 HLC/3 × Volume / sum(V)）"""
     if not df:
         return 0.0
     seg = df[-lookback:] if len(df) >= lookback else df
@@ -1428,11 +1428,11 @@ def calc_vwap(df: list, lookback: int = 20) -> float:
 
 
 def calc_vwap_score(df: list, side: str, lookback: int = 20) -> tuple[int, str]:
-    """ðª VWAP åé¢è©å â (-3 ~ +3, æè¿°)
+    """🪙 VWAP 偏離評分 → (-3 ~ +3, 描述)
 
-    å¤å®ï¼å¹å¨ VWAP ä¸æ¹ = å¤é ­å¼·å¢ +3
-    ç©ºå®ï¼å¹å¨ VWAP ä¸æ¹ = ç©ºé ­å¼·å¢ +3
-    éå¢ææ£å
+    多單：價在 VWAP 上方 = 多頭強勢 +3
+    空單：價在 VWAP 下方 = 空頭強勢 +3
+    逆勢時扣分
     """
     if len(df) < 5:
         return 0, ""
@@ -1444,24 +1444,24 @@ def calc_vwap_score(df: list, side: str, lookback: int = 20) -> tuple[int, str]:
 
     if side == "LONG":
         if dist_pct > 0.3:
-            return 3, f"å¹æ¼ VWAP ä¸æ¹ {dist_pct:.2f}%"
+            return 3, f"價於 VWAP 上方 {dist_pct:.2f}%"
         if dist_pct > 0:
-            return 1, "å¹ç¥é«æ¼ VWAP"
+            return 1, "價略高於 VWAP"
         if dist_pct < -0.3:
-            return -3, f"å¹æ¼ VWAP ä¸æ¹ {abs(dist_pct):.2f}% å¤é ­å¼±å¢"
-        return 0, "å¹æ¥è¿ VWAP"
+            return -3, f"價於 VWAP 下方 {abs(dist_pct):.2f}% 多頭弱勢"
+        return 0, "價接近 VWAP"
     else:
         if dist_pct < -0.3:
-            return 3, f"å¹æ¼ VWAP ä¸æ¹ {abs(dist_pct):.2f}%"
+            return 3, f"價於 VWAP 下方 {abs(dist_pct):.2f}%"
         if dist_pct < 0:
-            return 1, "å¹ç¥ä½æ¼ VWAP"
+            return 1, "價略低於 VWAP"
         if dist_pct > 0.3:
-            return -3, f"å¹æ¼ VWAP ä¸æ¹ {dist_pct:.2f}% ç©ºé ­å¼±å¢"
-        return 0, "å¹æ¥è¿ VWAP"
+            return -3, f"價於 VWAP 上方 {dist_pct:.2f}% 空頭弱勢"
+        return 0, "價接近 VWAP"
 
 
 def detect_pullback(df: list, side: str) -> bool:
-    """ð åµæ¸¬åæ¸¬é²å ´ï¼æå¾ä¸æ ¹ K åºç¾æ¹ååè½å½±ç· + æ¶ç·åå"""
+    """🌀 偵測回測進場：最後一根 K 出現方向反轉影線 + 收線回升"""
     if len(df) < 3:
         return False
     last = df[-1]
@@ -1475,9 +1475,9 @@ def detect_pullback(df: list, side: str) -> bool:
     return upper > body * 1.2 and last["c"] < last["o"]
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 7. è©åç³»çµ±ï¼è¦æ ¼ 100 åå¶ï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 7. 評分系統（規格 100 分制）
+# ═════════════════════════════════════════════════════════
 def calc_score(
     df: list,
     side: str,
@@ -1485,13 +1485,13 @@ def calc_score(
     mtf: dict | None = None,
     instId: str | None = None,
 ) -> tuple[int, str, dict]:
-    """ç¸½å = è¶¨å¢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + æµåæ§5 + åè½5 + MTF15 + Volume8 = æé« 138
-    ï¼é«æ¼ 100 æ¯å çº v14 æ°å¢ MTF + Volume å æ¬ï¼éæª»ä»é è¨­ 68ï¼
+    """總分 = 趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 = 最高 138
+    （高於 100 是因為 v14 新增 MTF + Volume 加權，門檻仍預設 68）
     """
     detail = {}
     score = 0
 
-    # è¶¨å¢ (30)
+    # 趨勢 (30)
     st = calc_supertrend(df)
     if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
         score += 30
@@ -1555,19 +1555,19 @@ def calc_score(
     else:
         detail["snr"] = 0
 
-    # å¹æ ¼è¡çº (5)
+    # 價格行為 (5)
     detail["pa"] = 5 if detect_price_action(df, side) else 0
     score += detail["pa"]
 
-    # æµåæ§æè© (5)
+    # 流動性掃蕩 (5)
     detail["liq"] = 5 if detect_liquidity_sweep(df, side) else 0
     score += detail["liq"]
 
-    # åè½ (5)
+    # 動能 (5)
     detail["mom"] = 5 if calc_momentum_ratio(df, side) else 0
     score += detail["mom"]
 
-    # ð¯ MTF å¤ææ¡å±æ¯ (-15 ~ +15)
+    # 🎯 MTF 多時框共振 (-15 ~ +15)
     if mtf is None and instId:
         mtf = fetch_mtf_trend(instId)
     if mtf:
@@ -1576,25 +1576,25 @@ def calc_score(
         detail["mtf"] = mtf_score
         detail["mtf_desc"] = mtf_desc
 
-    # ð æäº¤é (-10 ~ +8)
+    # 📊 成交量 (-10 ~ +8)
     vol_ratio, vol_score = calc_volume_quality(df)
     score += vol_score
     detail["volume"] = vol_score
     detail["volume_ratio"] = vol_ratio
 
-    # ðª EMA å¤é±ææå (-5 ~ +5)
+    # 🪜 EMA 多週期排列 (-5 ~ +5)
     ema_score, ema_desc = calc_ema_alignment(df, side)
     score += ema_score
     detail["ema"] = ema_score
     detail["ema_desc"] = ema_desc
 
-    # ðª VWAP åé¢ï¼èå¾è©åç¨ï¼ä¸é¡¯ç¤ºçµ¦ç¨æ¶ â _ åç¶´ï¼
+    # 🪙 VWAP 偏離（背後評分用，不顯示給用戶 → _ 前綴）
     vwap_score, vwap_desc = calc_vwap_score(df, side)
     score += vwap_score
     detail["_vwap"] = vwap_score
     detail["_vwap_desc"] = vwap_desc
 
-    # ð æ¹ååå¥½èª¿æ´ï¼å¾æ­·å²å­¸ç¿ï¼
+    # 📊 方向偏好調整（從歷史學習）
     bias_dir, bias_amount, bias_note = get_direction_bias()
     if bias_dir:
         if bias_dir == side:
@@ -1607,15 +1607,15 @@ def calc_score(
             detail["direction_bias_note"] = bias_note
 
     grade = (
-        "A+ æ¥µå¼· ð¥"
+        "A+ 極強 🔥"
         if score >= 85
-        else "A å¼·å â­"
+        else "A 強力 ⭐"
         if score >= 70
-        else "B+ åæ ¼ â"
+        else "B+ 合格 ✅"
         if score >= 68
-        else "è§æ âª"
+        else "觀望 ⚪"
     )
-    # ð å³å¥å¸å ´çæä¾æ ¼å¼å¨ä½¿ç¨
+    # 🌐 傳入市場狀態供格式器使用
     regime_info = detect_market_regime(df)
     detail["regime"] = regime_info["regime"]
     detail["adx"]    = regime_info["adx"]
@@ -1623,9 +1623,9 @@ def calc_score(
     return score, grade, detail
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 8. è¨èçæ
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 8. 訊號生成
+# ═════════════════════════════════════════════════════════
 def generate_signal(
     instId: str,
     df: list,
@@ -1635,7 +1635,7 @@ def generate_signal(
     atr_max_pct: float = 0.04,
     signal_expire_hours: int = SIGNAL_EXPIRE_HOURS,
 ) -> dict | None:
-    """ð¯ çææä½³äº¤æè¨è"""
+    """🎯 生成最佳交易訊號"""
     if df is None or len(df) < 50:
         return None
 
@@ -1643,23 +1643,23 @@ def generate_signal(
 
     atr = calc_atr(df)
     if atr / current_price > atr_max_pct:
-        # æ³¢åéå¤§è·³éï¼æ­¢ææè¢«æé£ï¼
+        # 波動過大跳過（止損會被打飛）
         return None
 
-    # æ¥µç«¯è³éè²»çæéåéæ¿¾ï¼å¤é ­æè³éè²»çå¤ªé«ä»£è¡¨å¤æ¹ææ ï¼
+    # 極端資金費率時降分過濾（多頭時資金費率太高代表多方擁擠）
     funding_penalty_long = funding_rate and funding_rate > 0.0008
     funding_penalty_short = funding_rate and funding_rate < -0.0008
 
     coin = instId.split("-")[0]
 
-    # ð å¸å ´çæè­å¥ï¼è¶¨å¢/éçªï¼â å½±é¿éæª»
+    # 🌐 市場狀態識別（趨勢/震盪）→ 影響門檻
     regime_info = detect_market_regime(df)
     if regime_info["regime"] == "range":
-        threshold += 5  # éçªå¸è¦æ±æ´å´æ ¼
+        threshold += 5  # 震盪市要求更嚴格
     if regime_info["volatile"]:
-        threshold += 3  # é«æ³¢åå ç¢¼æé«éæª»
+        threshold += 3  # 高波動加碼提高門檻
 
-    # ð å¤ææ¡æä¸æ¬¡çµ¦å©åæ¹åå±ç¨
+    # 🕒 多時框抓一次給兩個方向共用
     mtf = fetch_mtf_trend(instId)
 
     candidates = []
@@ -1670,17 +1670,17 @@ def generate_signal(
         if side == "SHORT" and funding_penalty_short:
             score -= 5
 
-        # è¨»è¨å¸å ´çæå° detail
+        # 註記市場狀態到 detail
         detail["regime"] = regime_info["regime"]
         detail["adx"] = regime_info["adx"]
         detail["atr_pct"] = regime_info["atr_pct"]
 
-        # ð é²å ´ææ©ï¼æåæ¸¬ K ç· +3 å
+        # 🌀 進場時機：有回測 K 線 +3 分
         if detect_pullback(df, side):
             score += 3
             detail["pullback"] = True
 
-        # ð§  çµ±è¨å­¸ç¿ï¼æ¡¶ + KNN éè·¯ï¼
+        # 🧠 統計學習（桶 + KNN 雙路）
         adj_simple, notes_simple = apply_learning_adjustment(
             score, side, detail, funding_rate, coin
         )
@@ -1705,50 +1705,49 @@ def generate_signal(
         _max_off = 0.015  # 最多離場 1.5%，避免掛太遠
         if side == "LONG":
             if _ob_l and _ob_l < current_price * 0.999:
-                raw_limit = _ob_l         # OB 底部 — 機構支撐入場
+                raw_limit = _ob_l
             elif _fvg_l and _fvg_l < current_price * 0.999:
-                raw_limit = _fvg_l        # FVG 底部填充
+                raw_limit = _fvg_l
             else:
-                raw_limit = current_price * (1 - 0.003)  # 固定回調 0.3%
+                raw_limit = current_price * (1 - 0.003)
             entry = max(raw_limit, current_price * (1 - _max_off))
         else:
             if _ob_h and _ob_h > current_price * 1.001:
-                raw_limit = _ob_h         # OB 頂部 — 機構阻力做空
+                raw_limit = _ob_h
             elif _fvg_h and _fvg_h > current_price * 1.001:
-                raw_limit = _fvg_h        # FVG 頂部填充
+                raw_limit = _fvg_h
             else:
-                raw_limit = current_price * (1 + 0.003)  # 固定反彈 0.3%
+                raw_limit = current_price * (1 + 0.003)
             entry = min(raw_limit, current_price * (1 + _max_off))
         entry = round(entry, 4)
-        _limit_ref_price = current_price  # 掛單時市價，供通知使用
         sl_dist = atr * 1.5
         sl = entry - sl_dist if side == "LONG" else entry + sl_dist
         risk = abs(entry - sl)
 
-        # â è¦æ ¼åçï¼1.5R / 3.0R / 5.0R
+        # ✅ 規格倍率：1.5R / 3.0R / 5.0R
         if side == "LONG":
             tp_levels = [entry + risk * 1.5, entry + risk * 3.0, entry + risk * 5.0]
         else:
             tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
 
-        # ð¯ åæ TP æ ¡æ­£ï¼é è¨­éé â åºå® 1.5R/3R/5R ä¸åï¼
+        # 🎯 動態 TP 校正（預設關閉 → 固定 1.5R/3R/5R 不動）
         cfg_rr_mode = load_config()
         if not cfg_rr_mode.get("fixed_rr_mode", True):
             tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
             if tp_notes:
                 detail["tp_adjust_notes"] = tp_notes
 
-        # âï¸ R:R æä½éæª» â TP1 è³å°è¦æ N Rï¼å¦åæçµï¼å  0.02 å®¹å·®é¿åæµ®é»èª¤å·®ï¼
+        # ⚖️ R:R 最低門檻 — TP1 至少要有 N R，否則拒絕（加 0.02 容差避免浮點誤差）
         cfg_rr = load_config()
         min_rr = cfg_rr.get("min_rr_ratio", 1.5)
         actual_tp1_r = abs(tp_levels[0] - entry) / max(risk, 1e-9)
         if actual_tp1_r < min_rr - 0.02:
             logging.info(
-                f"[{instId}] {side} è¨è R:R={actual_tp1_r:.2f} < {min_rr}ï¼æçµ"
+                f"[{instId}] {side} 訊號 R:R={actual_tp1_r:.2f} < {min_rr}，拒絕"
             )
             continue
 
-        # ð§± æ OB åéå­é²è¨èï¼çµ¦å¤±æéå ´ç¨ï¼
+        # 🧱 把 OB 區間存進訊號（給失效退場用）
         ob_zone = find_order_block(df, side)
 
         candidates.append(
@@ -1767,7 +1766,7 @@ def generate_signal(
                 "funding_rate": funding_rate,
                 "mtf_snapshot": mtf,
                 "regime_snapshot": regime_info,
-                "ob_zone": ob_zone,            # ð§± OB å¤±æéå ´ç¨
+                "ob_zone": ob_zone,            # 🧱 OB 失效退場用
                 "created": time.time(),
                 "expires": time.time() + signal_expire_hours * 3600,
             }
@@ -1776,16 +1775,16 @@ def generate_signal(
     return max(candidates, key=lambda x: x["score"]) if candidates else None
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9. æä¹åï¼å·å» / è¨è / äº¤æï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9. 持久化（冷卻 / 訊號 / 交易）
+# ═════════════════════════════════════════════════════════
 def _load_json(path: str, default):
     try:
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
     except Exception as e:
-        logging.warning(f"â ï¸ è®å {path} å¤±æï¼{e}")
+        logging.warning(f"⚠️ 讀取 {path} 失敗：{e}")
     return default
 
 
@@ -1796,14 +1795,14 @@ def _save_json(path: str, data) -> None:
             json.dump(data, f, ensure_ascii=False, indent=2)
         os.replace(tmp, path)
     except Exception as e:
-        logging.error(f"â å¯«å¥ {path} å¤±æï¼{e}")
+        logging.error(f"❌ 寫入 {path} 失敗：{e}")
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.5 éç½®ç±æ´æ°èé©è­
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.5 配置熱更新與驗證
+# ═════════════════════════════════════════════════════════
 def _deep_merge(base: dict, override: dict) -> dict:
-    """éè¿´åä½µï¼override è¦è baseï¼ä½ä¿ç base ä¸­ override æ²è¦èçéµ"""
+    """遞迴合併：override 覆蓋 base，但保留 base 中 override 沒覆蓋的鍵"""
     out = dict(base)
     for k, v in override.items():
         if isinstance(v, dict) and isinstance(out.get(k), dict):
@@ -1814,45 +1813,45 @@ def _deep_merge(base: dict, override: dict) -> dict:
 
 
 def _validate_config(cfg: dict) -> list:
-    """ð¡ï¸ é©è­ config åçæ§ â åå³é¯èª¤è¨æ¯åè¡¨ï¼ç©ºä»£è¡¨ééï¼"""
+    """🛡️ 驗證 config 合理性 → 回傳錯誤訊息列表（空代表通過）"""
     errs = []
     if not (50 <= cfg.get("score_threshold", 0) <= 100):
-        errs.append("score_threshold å¿é å¨ 50â100")
+        errs.append("score_threshold 必須在 50–100")
     if not (1 <= cfg.get("max_signals", 0) <= 10):
-        errs.append("max_signals å¿é å¨ 1â10")
+        errs.append("max_signals 必須在 1–10")
     if cfg.get("cooldown_hours", -1) < 0:
-        errs.append("cooldown_hours ä¸è½çºè² ")
+        errs.append("cooldown_hours 不能為負")
     if cfg.get("signal_expire_hours", 0) <= 0:
-        errs.append("signal_expire_hours å¿é  > 0")
+        errs.append("signal_expire_hours 必須 > 0")
     pv = cfg.get("price_verification", {})
     if not (0 < pv.get("max_deviation_pct", 0) < 10):
-        errs.append("price_verification.max_deviation_pct æå¨ 0â10%")
+        errs.append("price_verification.max_deviation_pct 應在 0–10%")
     cb = cfg.get("circuit_breaker", {})
     if cb.get("soft_threshold", 0) >= cb.get("hard_threshold", 99):
-        errs.append("soft_threshold æ < hard_threshold")
+        errs.append("soft_threshold 應 < hard_threshold")
     for w in cfg.get("blackout_windows_tw", []):
         try:
             for k in ("start", "end"):
                 hh, mm = map(int, w[k].split(":"))
                 assert 0 <= hh < 24 and 0 <= mm < 60
         except Exception:
-            errs.append(f"blackout_windows_tw ææ®µæ ¼å¼é¯èª¤ï¼{w}")
+            errs.append(f"blackout_windows_tw 時段格式錯誤：{w}")
     return errs
 
 
 def load_config() -> dict:
-    """ð è¼å¥ config.jsonï¼ä¸å­å¨æé©è­å¤±æåç¨é è¨­å¼ï¼"""
+    """🔄 載入 config.json（不存在或驗證失敗則用預設值）"""
     user_cfg = _load_json(CONFIG_FILE, {})
     merged = _deep_merge(DEFAULT_CONFIG, user_cfg) if user_cfg else dict(DEFAULT_CONFIG)
     errs = _validate_config(merged)
     if errs:
-        logging.warning("â ï¸ éç½®é©è­å¤±æï¼å¨é¢ fallback å°é è¨­å¼ï¼" + "; ".join(errs))
+        logging.warning("⚠️ 配置驗證失敗，全面 fallback 到預設值：" + "; ".join(errs))
         return dict(DEFAULT_CONFIG)
     return merged
 
 
 def is_cooling(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> bool:
-    """ð§ æ¯å¦éå¨å·å»æå§ï¼æä¹åçæ¬ï¼"""
+    """🧊 是否還在冷卻期內（持久化版本）"""
     cd = _load_json(COOLDOWN_FILE, {})
     last = cd.get(instId)
     if last is None:
@@ -1863,7 +1862,7 @@ def is_cooling(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> bool:
 def mark_cooldown(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> None:
     cd = _load_json(COOLDOWN_FILE, {})
     cd[instId] = time.time()
-    # é ä¾¿æ¸é¤éæç´é
+    # 順便清除過期紀錄
     cutoff = time.time() - cooldown_hours * 3600 * 3
     cd = {k: v for k, v in cd.items() if float(v) > cutoff}
     _save_json(COOLDOWN_FILE, cd)
@@ -1879,7 +1878,7 @@ def record_trade(
     score: int,
     sig_snapshot: dict | None = None,
 ) -> None:
-    """ð è¨éäº¤ææ­·å² + é¤µçµ¦å­¸ç¿æ©å¶"""
+    """📝 記錄交易歷史 + 餵給學習機制"""
     is_win = close_type in ("TP1", "TP2", "TP3", "LOCK")
     is_be = close_type == "BE"
     pnl = (
@@ -1893,7 +1892,7 @@ def record_trade(
     mtf = snap.get("mtf_snapshot")
     regime = snap.get("regime_snapshot")
 
-    # ð§¬ é²å ´æçç¹å¾µåéï¼çµ¦ KNN å­¸ç¿æ¥ç¸ä¼¼åº¦ç¨ï¼
+    # 🧬 進場時的特徵向量（給 KNN 學習查相似度用）
     features = vectorize_signal(score, side, detail, funding_rate, mtf, regime)
 
     trade = {
@@ -1911,25 +1910,25 @@ def record_trade(
         "score": score,
         "funding_rate": funding_rate,
         "detail": detail,
-        "features": features,        # ð§¬ KNN ç¨
-        "mtf": mtf,                  # é²å ´æ 1H/4H è¶¨å¢
-        "regime": regime,            # é²å ´æå¸å ´çæ
+        "features": features,        # 🧬 KNN 用
+        "mtf": mtf,                  # 進場時 1H/4H 趨勢
+        "regime": regime,            # 進場時市場狀態
     }
     history = _load_json(TRADE_HISTORY_FILE, [])
     history.append(trade)
     _save_json(TRADE_HISTORY_FILE, history)
-    logging.info(f"ð è¨éäº¤æï¼{coin} {order_id} {close_type}")
+    logging.info(f"📝 記錄交易：{coin} {order_id} {close_type}")
 
-    # ð§  é¤µçµ¦å­¸ç¿æ©å¶
+    # 🧠 餵給學習機制
     try:
         update_learning(trade, sig_snapshot)
     except Exception as e:
-        logging.warning(f"â ï¸ æ´æ°å­¸ç¿çæå¤±æï¼{e}")
+        logging.warning(f"⚠️ 更新學習狀態失敗：{e}")
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.6 å­¸ç¿æ©å¶ï¼æ¯ç­äº¤æçµæå¾æ´æ°æ¡¶ â è©åæèªåå¥ç¨èª¿æ´ï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.6 學習機制（每筆交易結束後更新桶 → 評分時自動套用調整）
+# ═════════════════════════════════════════════════════════
 def _bucket_score(score: int) -> str:
     if score >= 90:
         return "score:90+"
@@ -1960,7 +1959,7 @@ def _bucket_funding(fr) -> str:
 
 
 def _bucket_session_tw() -> str:
-    """ä»¥å°ç£æéç²åååäº¤æææ®µ"""
+    """以台灣時間粗分四個交易時段"""
     h = tw_now().hour
     if 0 <= h < 6:
         return "sess:asia_dawn"
@@ -1972,7 +1971,7 @@ def _bucket_session_tw() -> str:
 
 
 def _signal_buckets(score: int, side: str, detail: dict, funding_rate, coin: str) -> list:
-    """æè¨èç¹å¾µææå¤åæ¡¶ â ä¾å­¸ç¿æ¥è©¢"""
+    """把訊號特徵打成多個桶 → 供學習查詢"""
     rsi = (detail or {}).get("rsi_value", 50)
     return [
         _bucket_score(score),
@@ -1985,7 +1984,7 @@ def _signal_buckets(score: int, side: str, detail: dict, funding_rate, coin: str
 
 
 def update_learning(trade: dict, sig_snapshot: dict | None = None) -> None:
-    """ð§  æ¯ç­äº¤æçµæå¾æ´æ°å­¸ç¿æ¡¶èæå¹£ç¨®çµ±è¨"""
+    """🧠 每筆交易結束後更新學習桶與按幣種統計"""
     state = _load_json(LEARNING_FILE, {})
     state.setdefault("buckets", {})
     state.setdefault("by_coin", {})
@@ -2037,7 +2036,7 @@ def apply_learning_adjustment(
     funding_rate,
     coin: str,
 ) -> tuple[int, list]:
-    """ð§  å¥ç¨å­¸ç¿çæ â (èª¿æ´å¾åæ¸, å¥ç¨ç´é)"""
+    """🧠 套用學習狀態 → (調整後分數, 套用紀錄)"""
     cfg = load_config()
     lcfg = cfg.get("learning", {})
     if not lcfg.get("enabled", True):
@@ -2066,7 +2065,7 @@ def apply_learning_adjustment(
         else:
             continue
         adj_total += d
-        notes.append(f"{b} (n={bd['total']}, åç {wr:.0%}) â {d:+d}")
+        notes.append(f"{b} (n={bd['total']}, 勝率 {wr:.0%}) → {d:+d}")
 
     adj_total = max(-max_adj, min(max_adj, adj_total))
     return score + adj_total, notes
@@ -2098,38 +2097,38 @@ def _summarize_trades(trades: list) -> dict:
 
 
 def format_daily_report(date: str | None = None) -> str:
-    """ð æ¥å ±ï¼ç¶å¤©äº¤ææ¦è¦½ + ç¸¾æ"""
+    """📊 日報：當天交易概覽 + 績效"""
     if date is None:
         date = tw_now().strftime("%Y-%m-%d")
     history = _load_json(TRADE_HISTORY_FILE, [])
     today = [t for t in history if t.get("date") == date]
     s = _summarize_trades(today)
     if s["n"] == 0:
-        return f"ð­ *æ¥å ± {date}*\nç¶æ¥å°ç¡äº¤æç´é"
+        return f"📭 *日報 {date}*\n當日尚無交易紀錄"
 
     lines = [
-        f"ð *æ¥å ± {date}*",
-        "ââââââââââââââ",
-        f"äº¤æç­æ¸ï¼{s['n']}",
-        f"å / å¹³ / æï¼{s['win']} / {s['be']} / {s['loss']}",
-        f"åçï¼`{s['wr']:.0f}%`",
-        f"ç¸½ PnLï¼`{s['pnl']:+.2f}%`",
-        f"å¹³åï¼`{s['avg']:+.2f}%/ç­`",
-        f"æå¤§ç²å©ï¼`{s['max_win']:+.2f}%`ãæå¤§è§æï¼`{s['max_loss']:+.2f}%`",
+        f"📊 *日報 {date}*",
+        "━━━━━━━━━━━━━━",
+        f"交易筆數：{s['n']}",
+        f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
+        f"勝率：`{s['wr']:.0f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"平均：`{s['avg']:+.2f}%/筆`",
+        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
         "",
     ]
 
-    # åå¹£ç¨®è¡¨ç¾
+    # 各幣種表現
     by_coin = {}
     for t in today:
         c = t.get("coin", "?")
         by_coin.setdefault(c, []).append(t)
     if by_coin:
-        lines.append("ð *åå¹£ç¨®è¡¨ç¾*ï¼")
+        lines.append("💎 *各幣種表現*：")
         for c, ts in sorted(by_coin.items(), key=lambda x: -sum(t.get("pnl", 0) for t in x[1])):
             sub = _summarize_trades(ts)
             lines.append(
-                f"  {c}: {sub['n']} ç­ (å {sub['win']}/æ {sub['loss']}) "
+                f"  {c}: {sub['n']} 筆 (勝 {sub['win']}/敗 {sub['loss']}) "
                 f"PnL `{sub['pnl']:+.2f}%`"
             )
 
@@ -2137,28 +2136,28 @@ def format_daily_report(date: str | None = None) -> str:
 
 
 def format_monthly_report(year_month: str | None = None) -> str:
-    """ð æå ±ï¼ç¶æç¸¾æ + å­¸ç¿é²å±"""
+    """📈 月報：當月績效 + 學習進展"""
     if year_month is None:
         year_month = tw_now().strftime("%Y-%m")
     history = _load_json(TRADE_HISTORY_FILE, [])
     month = [t for t in history if t.get("date", "").startswith(year_month)]
     s = _summarize_trades(month)
     if s["n"] == 0:
-        return f"ð­ *æå ± {year_month}*\næ¬æå°ç¡äº¤æç´é"
+        return f"📭 *月報 {year_month}*\n本月尚無交易紀錄"
 
     lines = [
-        f"ð *æå ± {year_month}*",
-        "ââââââââââââââ",
-        f"ç¸½äº¤æï¼{s['n']} ç­",
-        f"å / å¹³ / æï¼{s['win']} / {s['be']} / {s['loss']}",
-        f"åçï¼`{s['wr']:.0f}%`",
-        f"ç¸½ PnLï¼`{s['pnl']:+.2f}%`",
-        f"å¹³åï¼`{s['avg']:+.2f}%/ç­`",
-        f"æå¤§ç²å©ï¼`{s['max_win']:+.2f}%`ãæå¤§è§æï¼`{s['max_loss']:+.2f}%`",
+        f"📈 *月報 {year_month}*",
+        "━━━━━━━━━━━━━━",
+        f"總交易：{s['n']} 筆",
+        f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
+        f"勝率：`{s['wr']:.0f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"平均：`{s['avg']:+.2f}%/筆`",
+        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
         "",
     ]
 
-    # é£å / é£æ
+    # 連勝 / 連敗
     cur_streak = 0
     streak_type = None
     max_win_streak = 0
@@ -2182,28 +2181,28 @@ def format_monthly_report(year_month: str | None = None) -> str:
                 cur_streak = 1
             max_loss_streak = max(max_loss_streak, cur_streak)
 
-    lines.append(f"ð¥ æå¤§é£åï¼{max_win_streak}ãâï¸ æå¤§é£æï¼{max_loss_streak}")
+    lines.append(f"🔥 最大連勝：{max_win_streak}　❄️ 最大連敗：{max_loss_streak}")
     lines.append("")
 
-    # åå¹£ç¨®
+    # 各幣種
     by_coin = {}
     for t in month:
         c = t.get("coin", "?")
         by_coin.setdefault(c, []).append(t)
     if by_coin:
-        lines.append("ð *åå¹£ç¨®è¡¨ç¾*ï¼")
+        lines.append("💎 *各幣種表現*：")
         ranked = sorted(by_coin.items(), key=lambda x: -sum(t.get("pnl", 0) for t in x[1]))
         for c, ts in ranked:
             sub = _summarize_trades(ts)
             lines.append(
-                f"  {c}: {sub['n']} ç­ Â· åç `{sub['wr']:.0f}%` Â· PnL `{sub['pnl']:+.2f}%`"
+                f"  {c}: {sub['n']} 筆 · 勝率 `{sub['wr']:.0f}%` · PnL `{sub['pnl']:+.2f}%`"
             )
 
     return "\n".join(lines)
 
 
 def format_learning_report() -> str:
-    """ð§  /learning å½ä»¤ â é¡¯ç¤ºæ©å¨äººå­¸å°äºä»éº¼"""
+    """🧠 /learning 命令 → 顯示機器人學到了什麼"""
     state = _load_json(LEARNING_FILE, {})
     buckets = state.get("buckets", {})
     by_coin = state.get("by_coin", {})
@@ -2211,16 +2210,16 @@ def format_learning_report() -> str:
 
     if not buckets and not by_coin:
         return (
-            "ð§  *æ©å¨äººå­¸ç¿çæ*\n\n"
-            "ð­ ç®åéæ²ç´¯ç©è¶³å¤ è³æ\n"
-            "è³å°éè¦ 5 ç­å·²çµæäº¤æææéå§å¥ç¨å­¸ç¿èª¿æ´"
+            "🧠 *機器人學習狀態*\n\n"
+            "📭 目前還沒累積足夠資料\n"
+            "至少需要 5 筆已結束交易才會開始套用學習調整"
         )
 
-    lines = ["ð§  *æ©å¨äººå­¸ç¿çæ*", "ââââââââââââââ", ""]
+    lines = ["🧠 *機器人學習狀態*", "━━━━━━━━━━━━━━", ""]
 
-    # 1. æå¹£ç¨®åç
+    # 1. 按幣種勝率
     if by_coin:
-        lines.append("ð *åå¹£ç¨®æ°ç¸¾*ï¼")
+        lines.append("📊 *各幣種戰績*：")
         sorted_coins = sorted(by_coin.items(), key=lambda x: -x[1].get("total", 0))
         for coin, d in sorted_coins[:12]:
             n = d.get("total", 0)
@@ -2229,44 +2228,44 @@ def format_learning_report() -> str:
             be = d.get("be", 0)
             wr = w / n * 100 if n else 0
             lines.append(
-                f"  {coin}: {n} ç­ï¼å {w} / å¹³ {be} / æ {l}ï¼åç `{wr:.0f}%`ï¼"
+                f"  {coin}: {n} 筆（勝 {w} / 平 {be} / 敗 {l}，勝率 `{wr:.0f}%`）"
             )
         lines.append("")
 
-    # 2. é«åççµåï¼æ¨£æ¬ â¥ 5ï¼
+    # 2. 高勝率組合（樣本 ≥ 5）
     high_wr = [
         (b, d) for b, d in buckets.items()
         if d.get("total", 0) >= 5 and d["win"] / d["total"] > 0.6
     ]
     if high_wr:
-        lines.append("â *é«åççµåï¼>60%ï¼*ï¼")
+        lines.append("✅ *高勝率組合（>60%）*：")
         for b, d in sorted(high_wr, key=lambda x: -x[1]["win"] / x[1]["total"])[:5]:
             wr = d["win"] / d["total"] * 100
-            lines.append(f"  `{b}` â {d['total']} ç­ï¼åç `{wr:.0f}%`")
+            lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
         lines.append("")
 
-    # 3. ä½åççµå
+    # 3. 低勝率組合
     low_wr = [
         (b, d) for b, d in buckets.items()
         if d.get("total", 0) >= 5 and d["win"] / d["total"] < 0.4
     ]
     if low_wr:
-        lines.append("â ï¸ *ä½åççµåï¼<40%ï¼*ï¼")
+        lines.append("⚠️ *低勝率組合（<40%）*：")
         for b, d in sorted(low_wr, key=lambda x: x[1]["win"] / x[1]["total"])[:5]:
             wr = d["win"] / d["total"] * 100
-            lines.append(f"  `{b}` â {d['total']} ç­ï¼åç `{wr:.0f}%`")
+            lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
         lines.append("")
 
-    # 4. ä¸»è¦æ­¢æåå 
+    # 4. 主要止損原因
     if loss_reasons:
         from collections import Counter
         cnt = Counter(r.get("title", "?") for r in loss_reasons[-30:])
-        lines.append("ð *æè¿ 30 ç­æ­¢æä¸»å  TOP3*ï¼")
+        lines.append("🔍 *最近 30 筆止損主因 TOP3*：")
         for title, c in cnt.most_common(3):
-            lines.append(f"  {title} Ã {c}")
+            lines.append(f"  {title} × {c}")
         lines.append("")
 
-    lines.append("ð¡ _éäºçµ±è¨æ¯ç­äº¤æçµç®å¾èªåæ´æ°ï¼ä¸æ¬¡ç¸ä¼¼æå¢çè¨èè©åæèªåå¾®èª¿_")
+    lines.append("💡 _這些統計每筆交易結算後自動更新；下次相似情境的訊號評分會自動微調_")
     return "\n".join(lines)
 
 
@@ -2278,7 +2277,7 @@ def vectorize_signal(
     mtf: dict | None = None,
     regime: dict | None = None,
 ) -> dict:
-    """ð§¬ æè¨èç¹å¾µææåéï¼çµ¦ KNN ç¨ï¼"""
+    """🧬 把訊號特徵打成向量（給 KNN 用）"""
     rsi = (detail or {}).get("rsi_value", 50)
     return {
         "score": float(score),
@@ -2300,7 +2299,7 @@ _FEATURE_SCALE = {
 
 
 def find_similar_trades(features: dict, history: list, k: int = 10) -> list:
-    """ð§¬ KNNï¼æ¾æç¸ä¼¼ç k ç­æç¹å¾µçæ­·å²äº¤æï¼æ­å¼è·é¢ï¼å·²æ­¸ä¸åï¼"""
+    """🧬 KNN：找最相似的 k 筆有特徵的歷史交易（歐式距離，已歸一化）"""
     candidates = []
     for t in history:
         f = t.get("features")
@@ -2324,7 +2323,7 @@ def apply_knn_learning(
     mtf: dict | None,
     regime: dict | None,
 ) -> tuple[int, list]:
-    """ð§¬ KNN å­¸ç¿ï¼æ¾æç¸ä¼¼ç 10 ç­æ­·å²äº¤æï¼çåç â (èª¿æ´å¾åæ¸, ç´é)"""
+    """🧬 KNN 學習：找最相似的 10 筆歷史交易，看勝率 → (調整後分數, 紀錄)"""
     cfg = load_config()
     if not cfg.get("learning", {}).get("knn_enabled", True):
         return score, []
@@ -2339,23 +2338,23 @@ def apply_knn_learning(
     losses = sum(1 for t in similar if t.get("close_type") == "SL")
     n = len(similar)
     wr = wins / n
-    notes = [f"ð§¬ KNNï¼{n} ç­æç¸ä¼¼è¨è â å {wins} / æ {losses} (åç {wr:.0%})"]
+    notes = [f"🧬 KNN：{n} 筆最相似訊號 → 勝 {wins} / 敗 {losses} (勝率 {wr:.0%})"]
     if wr < 0.30:
-        return score - 8, notes + ["KNN ä½åç â -8"]
+        return score - 8, notes + ["KNN 低勝率 → -8"]
     if wr < 0.40:
-        return score - 4, notes + ["KNN åä½åç â -4"]
+        return score - 4, notes + ["KNN 偏低勝率 → -4"]
     if wr > 0.70:
-        return score + 5, notes + ["KNN é«åç â +5"]
+        return score + 5, notes + ["KNN 高勝率 → +5"]
     if wr > 0.60:
-        return score + 3, notes + ["KNN ä¸­é«åç â +3"]
+        return score + 3, notes + ["KNN 中高勝率 → +3"]
     return score, notes
 
 
 def record_loss_reason(coin: str, side: str, reasons: list) -> None:
-    """è¨éæ­¢æä¸»å å° learning_stateï¼ä¾å¾çºæ¥è©¢ï¼"""
+    """記錄止損主因到 learning_state（供後續查詢）"""
     state = _load_json(LEARNING_FILE, {})
     state.setdefault("loss_reasons", [])
-    for r in reasons[:1]:  # åªè¨ç¬¬ä¸åä¸»å 
+    for r in reasons[:1]:  # 只記第一名主因
         state["loss_reasons"].append({
             "ts": time.time(),
             "coin": coin,
@@ -2363,21 +2362,21 @@ def record_loss_reason(coin: str, side: str, reasons: list) -> None:
             "code": r.get("code"),
             "title": r.get("title"),
         })
-    # åªä¿çæè¿ 100 ç­
+    # 只保留最近 100 筆
     state["loss_reasons"] = state["loss_reasons"][-100:]
     _save_json(LEARNING_FILE, state)
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.65 è¦ç¤åæï¼SL/BE/LOCK å¾è§£éçºä»éº¼ï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.65 覆盤分析（SL/BE/LOCK 後解釋為什麼）
+# ═════════════════════════════════════════════════════════
 def analyze_loss(sig: dict, df_at_loss: list) -> list:
-    """ð æ¯è¼é²å ´éè¿ vs åºå ´éè¿çå¸æ³ï¼åæ¨ä¸»å ï¼æå¤ 3 åï¼"""
+    """🔍 比較進場附近 vs 出場附近的市況，回推主因（最多 3 名）"""
     if not df_at_loss or len(df_at_loss) < 20:
         return [{
             "code": "INSUFFICIENT",
-            "title": "ð è³æä¸è¶³",
-            "detail": "é²å ´å¾ K ç·å¤ªå°ï¼ç¡æ³è©³ç´°åæ",
+            "title": "📋 資料不足",
+            "detail": "進場後 K 線太少，無法詳細分析",
             "severity": 0,
         }]
 
@@ -2389,57 +2388,57 @@ def analyze_loss(sig: dict, df_at_loss: list) -> list:
 
     reasons = []
 
-    # 1. è¶¨å¢åè½
+    # 1. 趨勢反轉
     st_then = calc_supertrend(df_then)
     st_now = calc_supertrend(df_now)
     if st_then == expect and st_now == -expect:
         reasons.append({
             "code": "TREND_REVERSAL",
-            "title": "ð è¶¨å¢åè½",
-            "detail": f"é²å ´æ Supertrend é å¢ï¼{'å¤' if expect == 1 else 'ç©º'}ï¼ï¼æ­¢æåå·²ç¿»ååå",
+            "title": "🔄 趨勢反轉",
+            "detail": f"進場時 Supertrend 順勢（{'多' if expect == 1 else '空'}），止損前已翻向反向",
             "severity": 30,
         })
 
-    # 2. RSI åè½å´©å¡ / åè½
+    # 2. RSI 動能崩塌 / 反轉
     rsi_then = calc_rsi(df_then)
     rsi_now = calc_rsi(df_now)
     if side == "LONG" and rsi_then > 45 and rsi_now < 35 and (rsi_then - rsi_now) > 12:
         reasons.append({
             "code": "RSI_COLLAPSE",
-            "title": "ð å¤é ­åè½ç¦è§£",
-            "detail": f"RSI å¾ {rsi_then:.0f} æ¥è·è³ {rsi_now:.0f}ï¼ä¸è· {rsi_then - rsi_now:.0f} åï¼",
+            "title": "📉 多頭動能瓦解",
+            "detail": f"RSI 從 {rsi_then:.0f} 急跌至 {rsi_now:.0f}（下跌 {rsi_then - rsi_now:.0f} 分）",
             "severity": 25,
         })
     elif side == "SHORT" and rsi_then < 55 and rsi_now > 65 and (rsi_now - rsi_then) > 12:
         reasons.append({
             "code": "RSI_REBOUND",
-            "title": "ð ç©ºé ­åè½åè½",
-            "detail": f"RSI å¾ {rsi_then:.0f} åå½è³ {rsi_now:.0f}ï¼ä¸æ¼² {rsi_now - rsi_then:.0f} åï¼",
+            "title": "📈 空頭動能反轉",
+            "detail": f"RSI 從 {rsi_then:.0f} 反彈至 {rsi_now:.0f}（上漲 {rsi_now - rsi_then:.0f} 分）",
             "severity": 25,
         })
 
-    # 3. æµåæ§æè©ï¼åååçªç ´ï¼
+    # 3. 流動性掃蕩（反向假突破）
     sweep_dir = "SHORT" if side == "LONG" else "LONG"
     if detect_liquidity_sweep(df_now[-12:], sweep_dir):
         reasons.append({
             "code": "LIQ_SWEEP",
-            "title": "ð æµåæ§æè©",
-            "detail": "æ­¢æååºç¾åååçªç ´æéå¾å¿«éæ¶åï¼çä¼¼ä¸»åææ",
+            "title": "🌊 流動性掃蕩",
+            "detail": "止損前出現反向假突破插針後快速收回，疑似主力掃損",
             "severity": 22,
         })
 
-    # 4. æ³¢åçæ¿å¢
+    # 4. 波動率激增
     atr_then = calc_atr(df_then)
     atr_now = calc_atr(df_now)
     if atr_then > 0 and atr_now / atr_then > 1.5:
         reasons.append({
             "code": "VOL_SPIKE",
-            "title": "ðª æ³¢åçæ¿å¢",
-            "detail": f"ATR å¾ {atr_then:.4f} æ´å¼µè³ {atr_now:.4f}ï¼{(atr_now / atr_then - 1) * 100:.0f}% å¢å¹ï¼",
+            "title": "🌪 波動率激增",
+            "detail": f"ATR 從 {atr_then:.4f} 擴張至 {atr_now:.4f}（{(atr_now / atr_then - 1) * 100:.0f}% 增幅）",
             "severity": 18,
         })
 
-    # 5. é£çºåå K ç·
+    # 5. 連續反向 K 線
     last10 = df_now[-10:]
     against = sum(
         1 for b in last10
@@ -2448,12 +2447,12 @@ def analyze_loss(sig: dict, df_at_loss: list) -> list:
     if against >= 7:
         reasons.append({
             "code": "AGAINST_MOMENTUM",
-            "title": "ðª æçºåååè½",
-            "detail": f"åºå ´å 10 æ ¹ K ç·ä¸­ {against} æ ¹ååæ¶ç·ï¼è¶¨å¢å·²è½",
+            "title": "💪 持續反向動能",
+            "detail": f"出場前 10 根 K 線中 {against} 根反向收線，趨勢已轉",
             "severity": 15,
         })
 
-    # 6. OB / FVG çµæ§å¤±æ
+    # 6. OB / FVG 結構失效
     ob = find_order_block(df_then, side)
     if ob:
         breached = (
@@ -2463,16 +2462,16 @@ def analyze_loss(sig: dict, df_at_loss: list) -> list:
         if breached:
             reasons.append({
                 "code": "OB_BROKEN",
-                "title": "ð§± è¨å®å¡è·ç ´",
-                "detail": "é²å ´ä¾æç SMC è¨å®å¡å·²è¢«æ¶ç¤è·ç ´ï¼çµæ§å¤±æ",
+                "title": "🧱 訂單塊跌破",
+                "detail": "進場依據的 SMC 訂單塊已被收盤跌破，結構失效",
                 "severity": 20,
             })
 
     if not reasons:
         reasons.append({
             "code": "NORMAL_NOISE",
-            "title": "ð æ­£å¸¸æ³¢å",
-            "detail": "æªåµæ¸¬å°æç¢ºçè¶¨å¢åè½æçµæ§ç ´å£ï¼å¯è½æ¯ ATR ç¯åå§çæ­£å¸¸éè¨ææ",
+            "title": "📊 正常波動",
+            "detail": "未偵測到明確的趨勢反轉或結構破壞，可能是 ATR 範圍內的正常雜訊掃損",
             "severity": 5,
         })
 
@@ -2481,17 +2480,17 @@ def analyze_loss(sig: dict, df_at_loss: list) -> list:
 
 
 def _generate_lessons(reasons: list) -> list:
-    """æ ¹æä¸»å ç¢çãä¸æ¬¡è©²æéº¼å¤æ·ãçå»ºè­°"""
+    """根據主因產生「下次該怎麼判斷」的建議"""
     advice_map = {
-        "TREND_REVERSAL": "é²å ´å¾è¥ Supertrend ç¿»åååï¼å»ºè­°ç«å³æ¸åæä¸»ååºå ´ï¼ä¸è¦ç­æ­¢æ",
-        "RSI_COLLAPSE": "RSI å¾ä¸­æ§åï¼>45ï¼æ¥è·å°è¶è³£ï¼<35ï¼éå¸¸ä»£è¡¨åè½è½æï¼å¯ä½çºæåé¢å ´ä¿¡è",
-        "RSI_REBOUND": "RSI å¾ä¸­æ§åï¼<55ï¼åå½å°è¶è²·ï¼>65ï¼éå¸¸ä»£è¡¨ç©ºé ­åè½ç¦è§£ï¼ææ©å¹³åé¿æ",
-        "LIQ_SWEEP": "æéåæ­¢æè¥åå K é¨å¾åºç¾ï¼å¤åæ¯ä¸»åèªå¤/èªç©ºï¼ä¸æ¬¡å¯æ SL æé  0.2 ATR",
-        "VOL_SPIKE": "ATR çªç¶æ´å¼µä»£è¡¨é²å¥é«æ³¢ååï¼å»ºè­°è©²å¹£ç¨®æ«å 1â2 å°ææç¸®å°åä½",
-        "AGAINST_MOMENTUM": "åå K é£çº 7 æ ¹ä»¥ä¸ = è¶¨å¢æç¢ºï¼ææ¯åè¨ SL æ´æ©ä¸»åæ­¢æéæ",
-        "OB_BROKEN": "SMC è¨å®å¡ä¸æ¦æ¶ç¤è·ç ´ä»£è¡¨çµæ§å¤±æï¼éæç¹¼çºæ±å®è§æææ¾å¤§",
-        "NORMAL_NOISE": "æ¬æ¬¡å±¬æ­£å¸¸æ³¢åéè¨ï¼å¯è½ SL è¨­å¾å¤ªç·ï¼ä¸æ¬¡ ATRÃ1.5 â ATRÃ1.8 ææ´ç©©",
-        "INSUFFICIENT": "é²å ´å¾è³æä¸è¶³ï¼ç¡æ³è©³ç´°æ­¸å ",
+        "TREND_REVERSAL": "進場後若 Supertrend 翻向反向，建議立即減倉或主動出場，不要等止損",
+        "RSI_COLLAPSE": "RSI 從中性區（>45）急跌到超賣（<35）通常代表動能轉換，可作為提前離場信號",
+        "RSI_REBOUND": "RSI 從中性區（<55）反彈到超買（>65）通常代表空頭動能瓦解，提早平倉避損",
+        "LIQ_SWEEP": "插針型止損若反向 K 隨後出現，多半是主力誘多/誘空，下次可把 SL 拉遠 0.2 ATR",
+        "VOL_SPIKE": "ATR 突然擴張代表進入高波動區，建議該幣種暫停 1–2 小時或縮小倉位",
+        "AGAINST_MOMENTUM": "反向 K 連續 7 根以上 = 趨勢明確，應比原訂 SL 更早主動止損鎖損",
+        "OB_BROKEN": "SMC 訂單塊一旦收盤跌破代表結構失效，這時繼續抱單虧損會放大",
+        "NORMAL_NOISE": "本次屬正常波動雜訊，可能 SL 設得太緊，下次 ATR×1.5 → ATR×1.8 會更穩",
+        "INSUFFICIENT": "進場後資料不足，無法詳細歸因",
     }
     out = []
     seen = set()
@@ -2511,30 +2510,30 @@ def _fmt_postmortem(
     lessons: list,
     similar_stats: tuple | None = None,
 ) -> str:
-    """ð è¦ç¤åæè¨æ¯"""
+    """🔍 覆盤分析訊息"""
     coin = sig["instId"].split("-")[0]
     order_id = sig.get("order_id", "N/A")
     side = sig["side"]
-    direction = "åå¤" if side == "LONG" else "åç©º"
+    direction = "做多" if side == "LONG" else "做空"
     label = (
-        "â æ­¢æ"
+        "❌ 止損"
         if mode == "LOSS"
-        else "ð ä¿æ¬"
+        else "🔒 保本"
         if mode == "BE"
-        else "ð éå©"
+        else "🔐 鎖利"
         if mode == "LOCK"
-        else "ð¯ æ­¢ç"
+        else "🎯 止盈"
     )
 
     lines = [
-        f"ð *{coin} è¦ç¤åæ*",
-        f"ââââââââââââââ",
-        f"ð è¨å®ï¼`{order_id}`",
-        f"â° æéï¼{tw_ts()}",
-        f"æ¹åï¼{direction}ãçµç®ï¼{label}",
-        f"åå§è©åï¼{sig.get('score', 0)} å",
+        f"🔍 *{coin} 覆盤分析*",
+        f"━━━━━━━━━━━━━━",
+        f"🆔 訂單：`{order_id}`",
+        f"⏰ 時間：{tw_ts()}",
+        f"方向：{direction}　結算：{label}",
+        f"原始評分：{sig.get('score', 0)} 分",
         "",
-        "ð *ä¸»è¦åå ï¼ä¾å´éåº¦ï¼*ï¼",
+        "📋 *主要原因（依嚴重度）*：",
     ]
     for i, r in enumerate(reasons, 1):
         lines.append(f"{i}. {r['title']}")
@@ -2542,9 +2541,9 @@ def _fmt_postmortem(
 
     if lessons:
         lines.append("")
-        lines.append("ð¡ *ä¸æ¬¡è©²æéº¼å¤æ·*ï¼")
+        lines.append("💡 *下次該怎麼判斷*：")
         for l in lessons:
-            lines.append(f"  â¢ {l}")
+            lines.append(f"  • {l}")
 
     if similar_stats:
         n, w, l, be = similar_stats
@@ -2552,19 +2551,19 @@ def _fmt_postmortem(
             wr = w / n * 100
             lines.append("")
             lines.append(
-                f"ð åé¡è¨­å®æ­·å²ï¼{n} ç­ï¼å {w} / å¹³ {be} / æ {l}ï¼åç `{wr:.0f}%`ï¼"
+                f"📊 同類設定歷史：{n} 筆（勝 {w} / 平 {be} / 敗 {l}，勝率 `{wr:.0f}%`）"
             )
 
     lines.append("")
-    lines.append("ð§  _æ­¤æ¬¡ä¸»å å·²å¯«å¥å­¸ç¿è³æï¼ä¸æ¬¡ç¸ä¼¼ææ³è©åèªåèª¿æ´_")
+    lines.append("🧠 _此次主因已寫入學習資料，下次相似情況評分自動調整_")
     return "\n".join(lines)
 
 
 def get_similar_stats(score: int, side: str, detail: dict, funding_rate, coin: str) -> tuple:
-    """å¾å­¸ç¿çæåãåé¡è¨­å®ãçæ­·å²åè² """
+    """從學習狀態取「同類設定」的歷史勝負"""
     state = _load_json(LEARNING_FILE, {})
     buckets = state.get("buckets", {})
-    # åãcoin_sideãéåæå·é«çæ¡¶
+    # 取「coin_side」這個最具體的桶
     key = f"coin_side:{coin}_{side}"
     bd = buckets.get(key, {})
     n = bd.get("total", 0)
@@ -2574,9 +2573,9 @@ def get_similar_stats(score: int, side: str, detail: dict, funding_rate, coin: s
     return (n, w, l, be)
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.7 ç³»çµ±çæï¼çæ·ç´éï¼
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.7 系統狀態（熔斷紀錄）
+# ═════════════════════════════════════════════════════════
 def get_system_state() -> dict:
     return _load_json(SYSTEM_STATE_FILE, {})
 
@@ -2586,86 +2585,86 @@ def set_system_state(state: dict) -> None:
 
 
 def check_health() -> tuple[bool, str]:
-    """ð©º ç³»çµ±å¥åº·æª¢æ¥ â (æåé¡?, è¨æ¯)
+    """🩺 系統健康檢查 → (有問題?, 訊息)
 
-    è§¸ç¼æ¢ä»¶ï¼
-      1. è¶é 24 å°ææ²æåééä»»ä½ TG è¨æ¯
-      2. é£çº 5 æ¬¡ææç°å¸¸çµæ
-    ï¼6 å°æå§ä¸éè¤è­¦å ±ï¼
+    觸發條件：
+      1. 超過 24 小時沒成功送過任何 TG 訊息
+      2. 連續 5 次掃描異常結束
+    （6 小時內不重複警報）
     """
     state = get_system_state()
     last_tg = state.get("last_tg_sent", 0)
     last_warn = state.get("last_health_warning", 0)
     fail_count = state.get("scan_failure_count", 0)
 
-    # 6h å§ä¸éè¤è­¦å ±
+    # 6h 內不重複警報
     if time.time() - last_warn < 6 * 3600:
         return False, ""
 
-    # æ¢ä»¶ 1ï¼24h æ²éé TG
+    # 條件 1：24h 沒送過 TG
     if last_tg > 0:
         hours_since = (time.time() - last_tg) / 3600
         if hours_since > 24:
             state["last_health_warning"] = time.time()
             set_system_state(state)
             return True, (
-                f"â ï¸ *ç³»çµ±å¥åº·è­¦å ±*\n"
-                f"ââââââââââââââ\n"
-                f"â° æéï¼{tw_ts()}\n"
+                f"⚠️ *系統健康警報*\n"
+                f"━━━━━━━━━━━━━━\n"
+                f"⏰ 時間：{tw_ts()}\n"
                 f"\n"
-                f"å·²è¶é *{hours_since:.0f} å°æ*æ²ç¼åºä»»ä½è¨è / éç¥\n"
+                f"已超過 *{hours_since:.0f} 小時*沒發出任何訊號 / 通知\n"
                 f"\n"
-                f"ð¡ å¯è½åå ï¼\n"
-                f"  â¢ TG_TOKEN å¤±æ\n"
-                f"  â¢ OKX API ç°å¸¸\n"
-                f"  â¢ è¨èå¨è¢«å­¸ç¿æ©å¶ / é¢¨æ§éæ¿¾\n"
-                f"  â¢ GitHub Actions éé¡èç¡\n"
+                f"💡 可能原因：\n"
+                f"  • TG_TOKEN 失效\n"
+                f"  • OKX API 異常\n"
+                f"  • 訊號全被學習機制 / 風控過濾\n"
+                f"  • GitHub Actions 配額耗盡\n"
                 f"\n"
-                f"è«æª¢æ¥ GitHub Actions é é¢è Telegram bot çæ"
+                f"請檢查 GitHub Actions 頁面與 Telegram bot 狀態"
             )
 
-    # æ¢ä»¶ 2ï¼é£çºå¤±æ 5 æ¬¡
+    # 條件 2：連續失敗 5 次
     if fail_count >= 5:
         state["last_health_warning"] = time.time()
         set_system_state(state)
         return True, (
-            f"â ï¸ *ç³»çµ±å¥åº·è­¦å ±*\n"
-            f"ââââââââââââââ\n"
-            f"â° æéï¼{tw_ts()}\n"
+            f"⚠️ *系統健康警報*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"⏰ 時間：{tw_ts()}\n"
             f"\n"
-            f"ä¸»ææå·²é£çºå¤±æ *{fail_count} æ¬¡*\n"
+            f"主掃描已連續失敗 *{fail_count} 次*\n"
             f"\n"
-            f"ð¡ è«é² GitHub Actions æ¥æè¿ä¸æ¬¡å¤±æç logï¼æ @ æå¹«ä½  debug"
+            f"💡 請進 GitHub Actions 查最近一次失敗的 log，或 @ 我幫你 debug"
         )
     return False, ""
 
 
 def increment_failure_count() -> None:
-    """ææå¤±ææå¼å« â å¤±æè¨æ¸ +1"""
+    """掃描失敗時呼叫 → 失敗計數 +1"""
     state = get_system_state()
     state["scan_failure_count"] = state.get("scan_failure_count", 0) + 1
     set_system_state(state)
 
 
 def reset_failure_count() -> None:
-    """æææåæå¼å« â éç½®å¤±æè¨æ¸"""
+    """掃描成功時呼叫 → 重置失敗計數"""
     state = get_system_state()
     if state.get("scan_failure_count", 0) > 0:
         state["scan_failure_count"] = 0
         set_system_state(state)
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.8 é£çºè§æçæ·
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.8 連續虧損熔斷
+# ═════════════════════════════════════════════════════════
 def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
-    """ð æª¢æ¥é£çºè§æçæ· â (æ¯å¦æ«å, è¨æ¯, é£ææ¬¡æ¸)"""
+    """🛑 檢查連續虧損熔斷 → (是否暫停, 訊息, 連敗次數)"""
     cb = cfg.get("circuit_breaker", {})
     if not cb.get("enabled", True):
         return False, "", 0
 
     history = _load_json(TRADE_HISTORY_FILE, [])
-    # åªçæè¿ 20 ç­å·²çµæäº¤æï¼å« LOCK éå©ï¼
+    # 只看最近 20 筆已結束交易（含 LOCK 鎖利）
     recent = [
         t for t in history
         if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")
@@ -2673,7 +2672,7 @@ def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
     if not recent:
         return False, "", 0
 
-    # å¾å°¾å·´å¾åæ¸é£æï¼SL è¨æãTP1/2/3/BE ä¸­æ·é£æï¼
+    # 從尾巴往前數連敗（SL 計敗、TP1/2/3/BE 中斷連敗）
     losses = 0
     last_loss_time: datetime | None = None
     for t in reversed(recent):
@@ -2702,25 +2701,25 @@ def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
     if losses >= hard_n and elapsed_h < hard_h:
         return (
             True,
-            f"ð¨ *ç¡¬çæ·è§¸ç¼*\né£çº {losses} æ¬¡æ­¢æï¼ç³»çµ±æ«å {hard_h} å°æ\n"
-            f"å©é¤ç´ `{hard_h - elapsed_h:.1f}` å°ææ¢å¾©",
+            f"🚨 *硬熔斷觸發*\n連續 {losses} 次止損，系統暫停 {hard_h} 小時\n"
+            f"剩餘約 `{hard_h - elapsed_h:.1f}` 小時恢復",
             losses,
         )
     if losses >= soft_n and elapsed_h < soft_h:
         return (
             True,
-            f"â ï¸ *è»çæ·è§¸ç¼*\né£çº {losses} æ¬¡æ­¢æï¼æ«å {soft_h} å°æ\n"
-            f"å©é¤ç´ `{soft_h - elapsed_h:.1f}` å°ææ¢å¾©",
+            f"⚠️ *軟熔斷觸發*\n連續 {losses} 次止損，暫停 {soft_h} 小時\n"
+            f"剩餘約 `{soft_h - elapsed_h:.1f}` 小時恢復",
             losses,
         )
     return False, "", losses
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.85 v14.1 èªåæ«åçå¹£ + é£æå·éæ
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.85 v14.1 自動暫停爛幣 + 連敗冷靜期
+# ═════════════════════════════════════════════════════════
 def is_coin_underperforming(coin: str, cfg: dict) -> tuple[bool, str]:
-    """â¸ï¸ æª¢æ¥å®ä¸å¹£ç¨®éå» N å¤©æ¯å¦è¡¨ç¾å¤ªå·®ï¼è¦èªåæ«å"""
+    """⏸️ 檢查單一幣種過去 N 天是否表現太差，要自動暫停"""
     cap_cfg = cfg.get("coin_auto_pause", {})
     if not cap_cfg.get("enabled", True):
         return False, ""
@@ -2750,14 +2749,14 @@ def is_coin_underperforming(coin: str, cfg: dict) -> tuple[bool, str]:
     wr = wins / len(recent)
     if wr < max_wr:
         return True, (
-            f"{coin} éå» {days} å¤© {len(recent)} ç­ï¼"
-            f"åç `{wr:.0%}` < `{max_wr:.0%}` â æ«å {cap_cfg.get('pause_hours', 24)}h"
+            f"{coin} 過去 {days} 天 {len(recent)} 筆，"
+            f"勝率 `{wr:.0%}` < `{max_wr:.0%}` → 暫停 {cap_cfg.get('pause_hours', 24)}h"
         )
     return False, ""
 
 
 def get_direction_bias() -> tuple[str | None, int, str]:
-    """ð å¾æ­·å²äº¤æç®åºå¤ç©ºæ¹ååå¥½ â (åå¥½æ¹å, å åé, èªªæ)"""
+    """📊 從歷史交易算出多空方向偏好 → (偏好方向, 加分量, 說明)"""
     cfg = load_config()
     db_cfg = cfg.get("direction_bias", {})
     if not db_cfg.get("enabled", True):
@@ -2784,11 +2783,11 @@ def get_direction_bias() -> tuple[str | None, int, str]:
     if abs(diff) < min_diff:
         return None, 0, ""
     preferred = "LONG" if diff > 0 else "SHORT"
-    return preferred, bonus, f"{preferred} æ­·å²åç {long_wr if preferred == 'LONG' else short_wr:.0f}% è¼é«ï¼å·® {abs(diff):.0f}%ï¼"
+    return preferred, bonus, f"{preferred} 歷史勝率 {long_wr if preferred == 'LONG' else short_wr:.0f}% 較高（差 {abs(diff):.0f}%）"
 
 
 def format_direction_stats() -> str:
-    """ð æ¹ååççµ±è¨å ±è¡¨ï¼çµ¦ /direction å½ä»¤ç¨ï¼"""
+    """📊 方向勝率統計報表（給 /direction 命令用）"""
     history = _load_json(TRADE_HISTORY_FILE, [])
     closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
     longs = [t for t in closed if t.get("side") == "LONG"]
@@ -2807,44 +2806,44 @@ def format_direction_stats() -> str:
     l = calc_stats(longs)
     s = calc_stats(shorts)
 
-    lines = ["ð *æ¹ååççµ±è¨*", "ââââââââââââââ"]
+    lines = ["📊 *方向勝率統計*", "━━━━━━━━━━━━━━"]
     if l:
         lines.append(
-            f"ð¢ LONGï¼{l['n']} ç­ï¼å {l['win']} / å¹³ {l['be']} / æ {l['loss']}ï¼"
+            f"🟢 LONG：{l['n']} 筆（勝 {l['win']} / 平 {l['be']} / 敗 {l['loss']}）"
         )
-        lines.append(f"   åç `{l['wr']:.0f}%` Â· PnL `{l['pnl']:+.2f}%`")
+        lines.append(f"   勝率 `{l['wr']:.0f}%` · PnL `{l['pnl']:+.2f}%`")
     else:
-        lines.append("ð¢ LONGï¼æ«ç¡è³æ")
+        lines.append("🟢 LONG：暫無資料")
     if s:
         lines.append(
-            f"ð´ SHORTï¼{s['n']} ç­ï¼å {s['win']} / å¹³ {s['be']} / æ {s['loss']}ï¼"
+            f"🔴 SHORT：{s['n']} 筆（勝 {s['win']} / 平 {s['be']} / 敗 {s['loss']}）"
         )
-        lines.append(f"   åç `{s['wr']:.0f}%` Â· PnL `{s['pnl']:+.2f}%`")
+        lines.append(f"   勝率 `{s['wr']:.0f}%` · PnL `{s['pnl']:+.2f}%`")
     else:
-        lines.append("ð´ SHORTï¼æ«ç¡è³æ")
+        lines.append("🔴 SHORT：暫無資料")
 
     bias_dir, bias_amount, bias_note = get_direction_bias()
     if bias_dir:
         lines.append("")
-        lines.append(f"ð¯ *ç³»çµ±ç¶ååå¥½ï¼{bias_dir}*")
+        lines.append(f"🎯 *系統當前偏好：{bias_dir}*")
         lines.append(f"   {bias_note}")
-        lines.append(f"   ä¸æ¬¡åæ¹åè¨è +{bias_amount} / åæ¹å -{bias_amount}")
+        lines.append(f"   下次同方向訊號 +{bias_amount} / 反方向 -{bias_amount}")
     else:
         lines.append("")
-        lines.append("âï¸ ç³»çµ±æªåå¥½æ¹åï¼è³æä¸è¶³æåçæ¥è¿ï¼")
+        lines.append("⚖️ 系統未偏好方向（資料不足或勝率接近）")
     return "\n".join(lines)
 
 
 def format_audit_report() -> str:
-    """ð¬ ææ¨æææ§å¯©æ¥ â æäº¤æåæãæ»¿è¶³ X æ¢ä»¶ vs ä¸æ»¿è¶³ãå°æ¯åç
+    """🔬 指標有效性審查 — 把交易切成「滿足 X 條件 vs 不滿足」對比勝率
 
-    é©è­ v14 å çææè©åé æ¯å¦ççææï¼
-      - ç¥ç´è¨èï¼95+ï¼vs ä¸è¬ï¼80-94ï¼
-      - MTF 1H é å¢ vs ä¸­æ§ / åå
-      - é«éè½ï¼â¥1.5Ãï¼vs ä½éè½ï¼<1Ãï¼
-      - å¤é ­ vs ç©ºé ­
-      - è¶¨å¢å¸ vs éçªå¸
-      - EMA å®ç¾æå vs å¶ä»
+    驗證 v14 加的所有評分項是否真的有效：
+      - 神級訊號（95+）vs 一般（80-94）
+      - MTF 1H 順勢 vs 中性 / 反向
+      - 高量能（≥1.5×）vs 低量能（<1×）
+      - 多頭 vs 空頭
+      - 趨勢市 vs 震盪市
+      - EMA 完美排列 vs 其他
     """
     history = _load_json(TRADE_HISTORY_FILE, [])
     closed = [
@@ -2854,9 +2853,9 @@ def format_audit_report() -> str:
     n_closed = len(closed)
     if n_closed < 10:
         return (
-            f"ð­ *ææ¨æææ§å¯©æ¥*\n\n"
-            f"è³æä¸è¶³ï¼{n_closed} ç­ < 10ï¼ã\n"
-            f"è³å°ç´¯ç© 10 ç­å·²çµæäº¤ææè½å¯©æ¥ææ¨æåº¦ã"
+            f"📭 *指標有效性審查*\n\n"
+            f"資料不足（{n_closed} 筆 < 10）。\n"
+            f"至少累積 10 筆已結束交易才能審查指標效度。"
         )
 
     def stats(trades):
@@ -2868,23 +2867,23 @@ def format_audit_report() -> str:
 
     def _verdict(diff_pct: float) -> str:
         if diff_pct > 10:
-            return "â"
+            return "✅"
         if diff_pct > 0:
-            return "â ï¸"
-        return "â"
+            return "⚠️"
+        return "❌"
 
     overall = stats(closed)
     lines = [
-        f"ð¬ *ææ¨æææ§å¯©æ¥*",
-        f"ââââââââââââââ",
-        f"æ¨£æ¬ï¼{n_closed} ç­å·²çµæäº¤æ",
-        f"æ´é«åçï¼`{overall['wr']:.0f}%`",
+        f"🔬 *指標有效性審查*",
+        f"━━━━━━━━━━━━━━",
+        f"樣本：{n_closed} 筆已結束交易",
+        f"整體勝率：`{overall['wr']:.0f}%`",
         f"",
     ]
 
     sections = []
 
-    # 1ï¸â£ ç¥ç´è¨èï¼95+ï¼vs ä¸è¬ï¼80-94ï¼
+    # 1️⃣ 神級訊號（95+）vs 一般（80-94）
     god = [t for t in closed if t.get("score", 0) >= 95]
     normal = [t for t in closed if 80 <= t.get("score", 0) < 95]
     if len(god) >= 2 and len(normal) >= 5:
@@ -2892,13 +2891,13 @@ def format_audit_report() -> str:
         nm = stats(normal)
         diff = g["wr"] - nm["wr"]
         sections.append(
-            f"{_verdict(diff)} *ç¥ç´è¨è vs ä¸è¬*\n"
-            f"  ç¥ç´ï¼95+ï¼ï¼{g['n']} ç­ / `{g['wr']:.0f}%`\n"
-            f"  ä¸è¬ï¼80-94ï¼ï¼{nm['n']} ç­ / `{nm['wr']:.0f}%`\n"
-            f"  å·®ç°ï¼`{diff:+.0f}%`"
+            f"{_verdict(diff)} *神級訊號 vs 一般*\n"
+            f"  神級（95+）：{g['n']} 筆 / `{g['wr']:.0f}%`\n"
+            f"  一般（80-94）：{nm['n']} 筆 / `{nm['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
         )
 
-    # 2ï¸â£ MTF 1H é å¢ vs ä¸­æ§
+    # 2️⃣ MTF 1H 順勢 vs 中性
     mtf_aligned = [t for t in closed if (t.get("features") or {}).get("mtf_h1", 0) == 1.0]
     mtf_other = [t for t in closed if (t.get("features") or {}).get("mtf_h1", 1.0) == 0.0]
     if len(mtf_aligned) >= 3 and len(mtf_other) >= 3:
@@ -2906,13 +2905,13 @@ def format_audit_report() -> str:
         o = stats(mtf_other)
         diff = a["wr"] - o["wr"]
         sections.append(
-            f"{_verdict(diff)} *MTF 1H é å¢ vs ä¸­æ§*\n"
-            f"  é å¢ï¼{a['n']} ç­ / `{a['wr']:.0f}%`\n"
-            f"  ä¸­æ§ï¼{o['n']} ç­ / `{o['wr']:.0f}%`\n"
-            f"  å·®ç°ï¼`{diff:+.0f}%`"
+            f"{_verdict(diff)} *MTF 1H 順勢 vs 中性*\n"
+            f"  順勢：{a['n']} 筆 / `{a['wr']:.0f}%`\n"
+            f"  中性：{o['n']} 筆 / `{o['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
         )
 
-    # 3ï¸â£ é«éè½ vs ä½éè½
+    # 3️⃣ 高量能 vs 低量能
     high_vol = [t for t in closed if (t.get("features") or {}).get("vol_ratio", 1.0) >= 1.5]
     low_vol = [t for t in closed if (t.get("features") or {}).get("vol_ratio", 1.0) < 1.0]
     if len(high_vol) >= 3 and len(low_vol) >= 3:
@@ -2920,13 +2919,13 @@ def format_audit_report() -> str:
         l = stats(low_vol)
         diff = h["wr"] - l["wr"]
         sections.append(
-            f"{_verdict(diff)} *é«éè½ vs ä½éè½*\n"
-            f"  é«éï¼â¥1.5Ãï¼ï¼{h['n']} ç­ / `{h['wr']:.0f}%`\n"
-            f"  ä½éï¼<1Ãï¼ï¼{l['n']} ç­ / `{l['wr']:.0f}%`\n"
-            f"  å·®ç°ï¼`{diff:+.0f}%`"
+            f"{_verdict(diff)} *高量能 vs 低量能*\n"
+            f"  高量（≥1.5×）：{h['n']} 筆 / `{h['wr']:.0f}%`\n"
+            f"  低量（<1×）：{l['n']} 筆 / `{l['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
         )
 
-    # 4ï¸â£ ADX è¶¨å¢å¸ vs éçªå¸
+    # 4️⃣ ADX 趨勢市 vs 震盪市
     trend_mkt = [t for t in closed if (t.get("regime") or {}).get("regime") == "trend"]
     range_mkt = [t for t in closed if (t.get("regime") or {}).get("regime") == "range"]
     if len(trend_mkt) >= 3 and len(range_mkt) >= 3:
@@ -2934,43 +2933,43 @@ def format_audit_report() -> str:
         r_st = stats(range_mkt)
         diff = t_st["wr"] - r_st["wr"]
         sections.append(
-            f"{_verdict(diff)} *è¶¨å¢å¸ vs éçªå¸*\n"
-            f"  è¶¨å¢å¸ï¼ADX>25ï¼ï¼{t_st['n']} ç­ / `{t_st['wr']:.0f}%`\n"
-            f"  éçªå¸ï¼ADX<18ï¼ï¼{r_st['n']} ç­ / `{r_st['wr']:.0f}%`\n"
-            f"  å·®ç°ï¼`{diff:+.0f}%`"
+            f"{_verdict(diff)} *趨勢市 vs 震盪市*\n"
+            f"  趨勢市（ADX>25）：{t_st['n']} 筆 / `{t_st['wr']:.0f}%`\n"
+            f"  震盪市（ADX<18）：{r_st['n']} 筆 / `{r_st['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
         )
 
-    # 5ï¸â£ å¤ç©ºæ¹å
+    # 5️⃣ 多空方向
     longs = [t for t in closed if t.get("side") == "LONG"]
     shorts = [t for t in closed if t.get("side") == "SHORT"]
     if longs and shorts:
         l_st = stats(longs)
         s_st = stats(shorts)
         diff = l_st["wr"] - s_st["wr"]
-        balance_emoji = "â" if abs(diff) < 10 else "â ï¸" if abs(diff) < 20 else "â"
+        balance_emoji = "✅" if abs(diff) < 10 else "⚠️" if abs(diff) < 20 else "❌"
         sections.append(
-            f"{balance_emoji} *æ¹åå¹³è¡¡*\n"
-            f"  LONGï¼{l_st['n']} ç­ / `{l_st['wr']:.0f}%`\n"
-            f"  SHORTï¼{s_st['n']} ç­ / `{s_st['wr']:.0f}%`\n"
-            f"  å·®ç°ï¼`{diff:+.0f}%`"
+            f"{balance_emoji} *方向平衡*\n"
+            f"  LONG：{l_st['n']} 筆 / `{l_st['wr']:.0f}%`\n"
+            f"  SHORT：{s_st['n']} 筆 / `{s_st['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
         )
 
     if sections:
         lines.append("\n\n".join(sections))
         lines.append("")
     else:
-        lines.append("åé åçµæ¨£æ¬ä¸è¶³ï¼éç´¯ç©æ´å¤äº¤æ")
+        lines.append("各項分組樣本不足，需累積更多交易")
         lines.append("")
 
-    lines.append("ð¡ *å¤è®æ¨æº*")
-    lines.append("  â = è©²é ææ¨ææï¼å·®ç° > 10%ï¼")
-    lines.append("  â ï¸ = ééææï¼å·®ç° 0â10%ï¼")
-    lines.append("  â = ååéä¿ï¼å»ºè­°éæ¬æééï¼")
+    lines.append("💡 *判讀標準*")
+    lines.append("  ✅ = 該項指標有效（差異 > 10%）")
+    lines.append("  ⚠️ = 邊際有效（差異 0–10%）")
+    lines.append("  ❌ = 反向關係（建議降權或關閉）")
     return "\n".join(lines)
 
 
 def is_coin_overheating(coin: str, cfg: dict) -> tuple[bool, str]:
-    """ð¥ éåº¦éä¸­ä¿è­·ï¼æå¹£é£ N åå¾æ«åä¸è¼ª"""
+    """🔥 過度集中保護：某幣連 N 勝後暫停一輪"""
     oh_cfg = cfg.get("overheating", {})
     if not oh_cfg.get("enabled", True):
         return False, ""
@@ -3000,13 +2999,13 @@ def is_coin_overheating(coin: str, cfg: dict) -> tuple[bool, str]:
     if elapsed_h < cooldown_h:
         remaining = cooldown_h - elapsed_h
         return True, (
-            f"{coin} å·²é£ {threshold} åï¼æ«åä¸è¼ªé¿åéåº¦ä¾è³´ï¼å©é¤ `{remaining:.1f}h`ï¼"
+            f"{coin} 已連 {threshold} 勝，暫停一輪避免過度依賴（剩餘 `{remaining:.1f}h`）"
         )
     return False, ""
 
 
 def check_cooling_off(cfg: dict) -> tuple[bool, int, str]:
-    """âï¸ é£æå·éæ â (æ¯å¦å·éä¸­, å©é¤ç§æ¸, èªªæ)"""
+    """❄️ 連敗冷靜期 → (是否冷靜中, 剩餘秒數, 說明)"""
     co_cfg = cfg.get("cooling_off", {})
     if not co_cfg.get("enabled", True):
         return False, 0, ""
@@ -3033,16 +3032,16 @@ def check_cooling_off(cfg: dict) -> tuple[bool, int, str]:
     if elapsed < cooling_sec:
         remaining = int(cooling_sec - elapsed)
         return True, remaining, (
-            f"é£ {threshold} æå·éæï¼å©é¤ `{remaining // 60}` åéå¾æ¢å¾©éæ°å®"
+            f"連 {threshold} 敗冷靜期，剩餘 `{remaining // 60}` 分鐘後恢復開新單"
         )
     return False, 0, ""
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.87 v14.6 å´æ ¼æ¯æ¥é¢¨æ§
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.87 v14.6 嚴格每日風控
+# ═════════════════════════════════════════════════════════
 def get_today_stats() -> dict:
-    """ð ä»æ¥äº¤æçµ±è¨ï¼ä¾å°ç£æéæ¥æï¼"""
+    """📊 今日交易統計（依台灣時間日期）"""
     today_str = tw_now().strftime("%Y-%m-%d")
     history = _load_json(TRADE_HISTORY_FILE, [])
     today_trades = [t for t in history if t.get("date") == today_str]
@@ -3060,12 +3059,12 @@ def get_today_stats() -> dict:
 
 
 def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
-    """ð¡ï¸ æ¯æ¥é¢¨æ§æª¢æ¥ â (æ¯å¦æ«å, è¨æ¯)
+    """🛡️ 每日風控檢查 → (是否暫停, 訊息)
 
-    ä¸æ¢ç´ç·ï¼
-      1. åææåæ¸ä¸éï¼max_concurrent_positionsï¼
-      2. ç¶æ¥æå¤±ä¸éï¼daily_loss_limit_pctï¼
-      3. æ¯æ¥è¨èæ¸ä¸éï¼max_daily_signalsï¼
+    三條紅線：
+      1. 同時持倉數上限（max_concurrent_positions）
+      2. 當日損失上限（daily_loss_limit_pct）
+      3. 每日訊號數上限（max_daily_signals）
     """
     dl_cfg = cfg.get("daily_limits", {})
     if not dl_cfg.get("enabled", True):
@@ -3073,7 +3072,7 @@ def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
 
     stats = get_today_stats()
 
-    # â  åææåæ¸
+    # ① 同時持倉數
     max_concurrent = dl_cfg.get("max_concurrent_positions", 2)
     open_count = sum(
         1 for s in tracker.signals.values()
@@ -3081,42 +3080,42 @@ def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
     )
     if open_count >= max_concurrent:
         return True, (
-            f"ð¦ æåæ¸å·²éä¸éï¼éå®ä¸­ *{open_count}* / ä¸é *{max_concurrent}*"
+            f"📦 持倉數已達上限：開單中 *{open_count}* / 上限 *{max_concurrent}*"
         )
 
-    # â¡ ç¶æ¥ç´¯è¨æå¤±
+    # ② 當日累計損失
     loss_limit = dl_cfg.get("daily_loss_limit_pct", 5.0)
     if stats["pnl_pct"] < -loss_limit:
         return True, (
-            f"â ï¸ ç¶æ¥ PnL `{stats['pnl_pct']:.2f}%` å·²è·ç ´åæç´ç· `-{loss_limit}%`"
-            f"ï¼{stats['losses']} æ / {stats['wins']} åï¼ï¼åæ­¢éæ°å®å°éå¤©"
+            f"⚠️ 當日 PnL `{stats['pnl_pct']:.2f}%` 已跌破停損紅線 `-{loss_limit}%`"
+            f"（{stats['losses']} 敗 / {stats['wins']} 勝），停止開新單到隔天"
         )
 
-    # â¢ æ¯æ¥è¨èæ¸
+    # ③ 每日訊號數
     max_daily = dl_cfg.get("max_daily_signals", 6)
     if stats["trades_count"] >= max_daily:
         return True, (
-            f"ð ä»æ¥è¨èæ¸ *{stats['trades_count']}* å·²éä¸é *{max_daily}*ï¼åæ­¢éæ°å®"
+            f"📊 今日訊號數 *{stats['trades_count']}* 已達上限 *{max_daily}*，停止開新單"
         )
 
     return False, ""
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 9.9 ééµææ®µéæ¿¾
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 9.9 關鍵時段過濾
+# ═════════════════════════════════════════════════════════
 def _in_window(cur_min: int, start_min: int, end_min: int) -> bool:
-    """æ¯æ´è·¨åå¤ææ®µï¼å¦ 23:50â00:10ï¼"""
+    """支援跨午夜時段（如 23:50–00:10）"""
     if start_min <= end_min:
         return start_min <= cur_min < end_min
     return cur_min >= start_min or cur_min < end_min
 
 
 def is_in_news_window(cfg: dict) -> tuple[bool, str]:
-    """ð° æ°èäºä»¶ææ®µæª¢æ¥ï¼èªè¨äºä»¶ + NFP èªåè¦åï¼"""
+    """📰 新聞事件時段檢查（自訂事件 + NFP 自動規則）"""
     now = tw_now()
 
-    # 1. config ä¸­çèªè¨äºä»¶
+    # 1. config 中的自訂事件
     for nb in cfg.get("news_blackouts", []):
         try:
             start = datetime.fromisoformat(nb["start"])
@@ -3125,30 +3124,30 @@ def is_in_news_window(cfg: dict) -> tuple[bool, str]:
                 start = start.replace(tzinfo=TW_TZ)
                 end = end.replace(tzinfo=TW_TZ)
             if start <= now <= end:
-                return True, nb.get("reason", "æ°èäºä»¶")
+                return True, nb.get("reason", "新聞事件")
         except Exception:
             continue
 
-    # 2. NFP èªåè¦åï¼æ¯æç¬¬ä¸åé±äº 21:25â22:30ï¼å°ç£æéï¼
+    # 2. NFP 自動規則：每月第一個週五 21:25–22:30（台灣時間）
     auto = cfg.get("auto_news_blackout", {})
     if auto.get("nfp", True):
         if now.weekday() == 4 and now.day <= 7:
             cur = now.hour * 60 + now.minute
             if 21 * 60 + 25 <= cur < 22 * 60 + 30:
-                return True, "NFP éè¾²ï¼èªååµæ¸¬ï¼"
+                return True, "NFP 非農（自動偵測）"
 
-    # 3. CPI ç´è«æ¯æä¸­æ¬ 21:25â22:30
+    # 3. CPI 約莫每月中旬 21:25–22:30
     if auto.get("cpi", True):
         if 10 <= now.day <= 16:
             cur = now.hour * 60 + now.minute
             if 21 * 60 + 25 <= cur < 22 * 60 + 30:
-                return True, "CPI æ¸æææ®µï¼èªååµæ¸¬ï¼"
+                return True, "CPI 數據時段（自動偵測）"
 
     return False, ""
 
 
 def is_blackout_time(cfg: dict) -> tuple[bool, str]:
-    """ð æª¢æ¥ç¶åæ¯å¦å¨ç¦æ­¢äº¤æææ®µï¼å°ç£æéï¼"""
+    """🕒 檢查當前是否在禁止交易時段（台灣時間）"""
     windows = cfg.get("blackout_windows_tw", [])
     now = tw_now()
     cur_min = now.hour * 60 + now.minute
@@ -3157,15 +3156,15 @@ def is_blackout_time(cfg: dict) -> tuple[bool, str]:
             sh, sm = map(int, w["start"].split(":"))
             eh, em = map(int, w["end"].split(":"))
             if _in_window(cur_min, sh * 60 + sm, eh * 60 + em):
-                return True, w.get("reason", "ç¦æ­¢ææ®µ")
+                return True, w.get("reason", "禁止時段")
         except Exception:
             continue
     return False, ""
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 10. è¨èè¿½è¹¤
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 10. 訊號追蹤
+# ═════════════════════════════════════════════════════════
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
         self.filepath = filepath
@@ -3176,7 +3175,7 @@ class SignalTracker:
         _save_json(self.filepath, self.signals)
 
     def add(self, signal: dict, active: bool = False) -> tuple[str, str]:
-        """æ°å¢è¨è â åå³ (key, order_id)"""
+        """新增訊號 → 回傳 (key, order_id)"""
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
         now_ts = time.time()
@@ -3189,11 +3188,11 @@ class SignalTracker:
             "hit_tp3": False,
             "activated_at": now_ts if active else None,
             "entry_message_id": None,
-            # ðª¡ æ­·å²æéè£æçæ¸¸æ¨ï¼ç§ï¼ï¼ä¸æ¬¡ _check_one å¾éä¹å¾ç K ç·éå§æ
+            # 🪡 歷史插針補抓的游標（秒）：下次 _check_one 從這之後的 K 線開始掃
             "last_checked_ts": now_ts if active else None,
         }
         self._save()
-        logging.info(f"ð æ°å¢è¨å®ï¼{order_id} ({signal['instId']} {signal['side']})")
+        logging.info(f"📌 新增訂單：{order_id} ({signal['instId']} {signal['side']})")
         return key, order_id
 
     def set_entry_message_id(self, key: str, message_id: int | None) -> None:
@@ -3202,7 +3201,7 @@ class SignalTracker:
             self._save()
 
     def _send_postmortem(self, sig: dict, mode: str) -> None:
-        """ð SL/BE/LOCK/OB_FAIL å¾éè¦ç¤åæè¨æ¯ï¼ä¸åéé»å¤±æï¼"""
+        """🔍 SL/BE/LOCK/OB_FAIL 後送覆盤分析訊息（不再靜默失敗）"""
         coin = sig.get("instId", "?").split("-")[0]
         order_id = sig.get("order_id", "?")
 
@@ -3212,7 +3211,7 @@ class SignalTracker:
             if not pm_cfg.get("enabled", True):
                 return
             if mode == "LOCK" and pm_cfg.get("loss_only", False):
-                return  # LOCK ä¸ç®æï¼loss_only æ¨¡å¼ä¸è·³é
+                return  # LOCK 不算敗，loss_only 模式下跳過
 
             activated_at = sig.get("activated_at") or sig.get("created") or 0
             all_candles = fetch_candles_full(sig["instId"], limit=100)
@@ -3222,21 +3221,21 @@ class SignalTracker:
                 if (c["ts"] / 1000) >= (activated_at - 900)
             ]
 
-            # ð¡ï¸ è³æä¸è¶³ä¹è¦éï¼é¿åãçºä»éº¼æ²åå ï¼ã
+            # 🛡️ 資料不足也要送，避免「為什麼沒原因？」
             if len(df_at_loss) < 10:
                 send_tg(
-                    f"ð *{coin} è¦ç¤*\n"
-                    f"ââââââââââââââ\n"
-                    f"ð è¨å®ï¼`{order_id}`\n"
-                    f"â° æéï¼{tw_ts()}\n"
+                    f"🔍 *{coin} 覆盤*\n"
+                    f"━━━━━━━━━━━━━━\n"
+                    f"🆔 訂單：`{order_id}`\n"
+                    f"⏰ 時間：{tw_ts()}\n"
                     f"\n"
-                    f"ð *çµè«ï¼é²å ´å¾è³æå¤ªå°ï¼å {len(df_at_loss)} æ ¹ K ç·ï¼*\n"
+                    f"📋 *結論：進場後資料太少（僅 {len(df_at_loss)} 根 K 線）*\n"
                     f"\n"
-                    f"ð¡ å¯è½åå ï¼\n"
-                    f"  â¢ è¨èåéæ²å¤ä¹å°±è¢«æéææ\n"
-                    f"  â¢ é²å ´æéè·ç¾å¨ < 15 åé\n"
+                    f"💡 可能原因：\n"
+                    f"  • 訊號剛開沒多久就被插針掃損\n"
+                    f"  • 進場時間距現在 < 15 分鐘\n"
                     f"\n"
-                    f"å»ºè­°æåç¿» K ç·çæ¯åªæ ¹ K è§¸ç¼ SLï¼ä¸¦æ³¨ææ¯å¦é«æ³¢åææ®µ",
+                    f"建議手動翻 K 線看是哪根 K 觸發 SL，並注意是否高波動時段",
                     reply_to_message_id=sig.get("entry_message_id"),
                 )
                 return
@@ -3257,26 +3256,26 @@ class SignalTracker:
             if mode == "LOSS":
                 record_loss_reason(coin, sig["side"], reasons)
         except Exception as e:
-            logging.error(f"â è¦ç¤åæå¤±æï¼{e}")
-            # ð¡ï¸ ä¾å¤ä¹é fallbackï¼ä¸åéé»
+            logging.error(f"❌ 覆盤分析失敗：{e}")
+            # 🛡️ 例外也送 fallback，不再靜默
             try:
                 send_tg(
-                    f"ð *{coin} è¦ç¤é¯èª¤*\n"
-                    f"ââââââââââââââ\n"
-                    f"ð è¨å®ï¼`{order_id}`\n"
+                    f"🔍 *{coin} 覆盤錯誤*\n"
+                    f"━━━━━━━━━━━━━━\n"
+                    f"🆔 訂單：`{order_id}`\n"
                     f"\n"
-                    f"â ï¸ è¦ç¤åæç¼çä¾å¤ï¼`{str(e)[:120]}`\n"
+                    f"⚠️ 覆盤分析發生例外：`{str(e)[:120]}`\n"
                     f"\n"
-                    f"è¨å®å·²æ­£å¸¸å¹³åï¼è«æåæª¢è¦ K ç·ã",
+                    f"訂單已正常平倉，請手動檢視 K 線。",
                     reply_to_message_id=sig.get("entry_message_id"),
                 )
             except Exception:
                 pass
 
     def has_open_position(self, instId: str) -> bool:
-        """ð è©²å¹£ç¨®æ¯å¦éææªçµæçè¨èï¼PENDING / ACTIVE / BE / TRAILï¼
+        """🔒 該幣種是否還有未結束的訊號（PENDING / ACTIVE / BE / TRAIL）
 
-        ç¨éï¼é¿åå¨å¹³ååå°åä¸å¹£ç¨®éè¤éåã
+        用途：避免在平倉前對同一幣種重複開倉。
         """
         for sig in self.signals.values():
             if sig.get("instId") == instId and sig.get("status") in (
@@ -3286,7 +3285,7 @@ class SignalTracker:
         return False
 
     def check_all(self) -> None:
-        """æª¢æ¥ææè¨èä¸¦ç¼ééç¥"""
+        """檢查所有訊號並發送通知"""
         self.transitions = 0
         to_remove = []
         for key, sig in list(self.signals.items()):
@@ -3298,14 +3297,14 @@ class SignalTracker:
             self._save()
 
     def _check_one(self, key: str, sig: dict) -> bool:
-        """æª¢æ¥å®ä¸è¨è â True ä»£è¡¨çµæï¼è¦å¾è¿½è¹¤ç§»é¤ï¼
+        """檢查單一訊號 → True 代表結束（要從追蹤移除）
 
-        v12.2ï¼æ­·å² K ç·è£æç
-          - PENDINGï¼å¹æ ¼é²å¥è§¸ç¼åéæè½ ACTIVE
-          - ACTIVE/BE/TRAILï¼æ last_checked_ts ä¹å¾ææ K ç·ï¼ä¾æåºéæ ¹èç
-            â³ æ¯æ ¹ K ç·æª¢æ¥ TP1 â TP2 â TP3 â SLï¼SL ç¨æ´æ°å¾çå¼ï¼
-            â³ å³ä¾¿ cron æ¼è·ãè¨èæ´»äº 3 å°æææª¢æ¥ï¼æ­·å²æéä¹ä¸ææ¼
-          - SL è§¸ç¼æä¾çæèªååé¡ï¼æ­¢æ(LOSS) / ä¿æ¬(BE) / éå©(LOCK)
+        v12.2：歷史 K 線補抓版
+          - PENDING：價格進入觸發區間時轉 ACTIVE
+          - ACTIVE/BE/TRAIL：抓 last_checked_ts 之後所有 K 線，依時序逐根處理
+            ↳ 每根 K 線檢查 TP1 → TP2 → TP3 → SL（SL 用更新後的值）
+            ↳ 即便 cron 漏跑、訊號活了 3 小時才檢查，歷史插針也不會漏
+          - SL 觸發時依狀態自動分類：止損(LOSS) / 保本(BE) / 鎖利(LOCK)
         """
         try:
             price = fetch_price(sig["instId"])
@@ -3315,14 +3314,14 @@ class SignalTracker:
             sig["current_price"] = price
             status = sig["status"]
 
-            # ââ PENDINGï¼ç­å¾é²å ´ ââ
+            # ── PENDING：等待進場 ──
             if status == "PENDING":
                 return self._check_pending(sig, price)
 
             if status not in ("ACTIVE", "BE", "TRAIL"):
                 return False
 
-            # ââ æ last_checked_ts ä¹å¾çææ K ç·ï¼ä¾æåºèç ââ
+            # ── 抓 last_checked_ts 之後的所有 K 線，依時序處理 ──
             all_candles = fetch_candles_full(sig["instId"])
             last_ts_s = (
                 sig.get("last_checked_ts")
@@ -3333,8 +3332,8 @@ class SignalTracker:
             last_ts_ms = int(last_ts_s * 1000)
             new_candles = [c for c in all_candles if c["ts"] > last_ts_ms]
 
-            # ðª v14.7ï¼å³æå¹åä½µé²æå¾ä¸æ ¹ K ç·ï¼OKX K ç· API å¶æ 5â10 ç§å»¶é²ï¼
-            # å³æ ticker æ¯ K ç·æ´å¿«åæ ååçæéï¼
+            # 🪙 v14.7：即時價合併進最後一根 K 線（OKX K 線 API 偶有 5–10 秒延遲，
+            # 即時 ticker 比 K 線更快反映剛剛的插針）
             if new_candles and price > 0:
                 last = dict(new_candles[-1])
                 last["h"] = max(last["h"], price)
@@ -3345,7 +3344,7 @@ class SignalTracker:
                 if self._process_candle(sig, c):
                     return True
 
-            # ææ¸¸æ¨æ¨é²å°æå¾ä¸æ ¹ãå·²æ¶ç·ãK ç·ï¼æªæ¶ç·ä¸æ¬¡åæï¼
+            # 把游標推進到最後一根「已收線」K 線（未收線下次再掃）
             confirmed = [c for c in new_candles if c["confirmed"]]
             if confirmed:
                 sig["last_checked_ts"] = max(c["ts"] for c in confirmed) / 1000.0
@@ -3353,11 +3352,11 @@ class SignalTracker:
             self._save()
             return False
         except Exception as e:
-            logging.error(f"â check_one [{key}] é¯èª¤ï¼{e}")
+            logging.error(f"❌ check_one [{key}] 錯誤：{e}")
             return False
 
     def _check_pending(self, sig: dict, price: float) -> bool:
-        """PENDING çææª¢æ¥ï¼ç­å¾å¹æ ¼é²å¥åéè½ ACTIVEï¼éæèªååæ¶"""
+        """PENDING 狀態檢查：等待價格進入區間轉 ACTIVE，過期自動取消"""
         coin = sig["instId"].split("-")[0]
         order_id = sig.get("order_id", "N/A")
         side = sig["side"]
@@ -3367,9 +3366,9 @@ class SignalTracker:
 
         if time.time() > sig["expires"]:
             send_tg(
-                f"â° *{coin} è¨èéæ*\n"
-                f"ð è¨å®ï¼`{order_id}`\n"
-                f"é²å ´ `{entry:.4f}` æªè§¸ç¼ï¼å·²èªååæ¶"
+                f"⏰ *{coin} 訊號過期*\n"
+                f"🆔 訂單：`{order_id}`\n"
+                f"進場 `{entry:.4f}` 未觸發，已自動取消"
             )
             self.transitions += 1
             return True
@@ -3401,11 +3400,11 @@ class SignalTracker:
         return False
 
     def _process_candle(self, sig: dict, candle: dict) -> bool:
-        """å°å®ä¸ K ç·æª¢æ¥ TP1 â TP2 â TP3 â SL â True ä»£è¡¨è¨èçµæ
+        """對單一 K 線檢查 TP1 → TP2 → TP3 → SL → True 代表訊號結束
 
-        - ç¨ K ç·ç high / low ä½æ¥µå¼ï¼èªç¶æ¶µèæéï¼
-        - å¤ TP å¨åä¸æ ¹ K ç·é½è§¸å°æï¼ä¾åºæ´æ° SLï¼TP1âä¿æ¬ãTP2âéå©ï¼
-        - èçå®ææ TP å¾ï¼åç¨ãæçµ SL å¼ãæª¢æ¥ SL æ¯å¦è§¸ç¼
+        - 用 K 線的 high / low 作極值（自然涵蓋插針）
+        - 多 TP 在同一根 K 線都觸到時，依序更新 SL（TP1→保本、TP2→鎖利）
+        - 處理完所有 TP 後，再用「最終 SL 值」檢查 SL 是否觸發
         """
         side = sig["side"]
         entry = sig["entry"]
@@ -3420,15 +3419,15 @@ class SignalTracker:
         if side == "LONG":
             favor_hit = lambda t: ch >= t
             against_hit = lambda t: cl <= t
-            wick_favor = lambda t: cc < t and ch >= t        # æ¶ç¤æªå°ãå½±ç·è§¸å
-            wick_against = lambda t: cc > t and cl <= t      # æ¶ç¤æªç ´ãå½±ç·æé
+            wick_favor = lambda t: cc < t and ch >= t        # 收盤未到、影線觸及
+            wick_against = lambda t: cc > t and cl <= t      # 收盤未破、影線插針
         else:
             favor_hit = lambda t: cl <= t
             against_hit = lambda t: ch >= t
             wick_favor = lambda t: cc > t and cl <= t
             wick_against = lambda t: cc < t and ch >= t
 
-        # ð§± OB å¤±æéå ´ï¼åå¨éæ²å° TP1 åæª¢æ¥ï¼
+        # 🧱 OB 失效退場（僅在還沒到 TP1 前檢查）
         if not sig.get("hit_tp1"):
             ob_zone = sig.get("ob_zone")
             cfg_oi = load_config().get("ob_invalidation", {})
@@ -3436,8 +3435,8 @@ class SignalTracker:
                 buf = cfg_oi.get("break_buffer_pct", 0.2) / 100
                 ob_low = ob_zone.get("low", 0)
                 ob_high = ob_zone.get("high", 0)
-                # LONGï¼OB low æ¶ç¤è¢«æç©¿ â å¤±æ
-                # SHORTï¼OB high æ¶ç¤è¢«çªç ´ â å¤±æ
+                # LONG：OB low 收盤被擊穿 → 失效
+                # SHORT：OB high 收盤被突破 → 失效
                 broken = (
                     side == "LONG" and cc < ob_low * (1 - buf)
                 ) or (
@@ -3450,26 +3449,26 @@ class SignalTracker:
                         else (entry - cc) / entry * 100
                     )
                     send_tg(
-                        f"â ï¸ *{coin} OB å¤±æï¼ä¸»åéå ´*\n"
-                        f"ââââââââââââââ\n"
-                        f"ð è¨å®ï¼`{order_id}`\n"
-                        f"â° æéï¼{tw_ts()}\n"
-                        f"æ¹åï¼{'åå¤' if side == 'LONG' else 'åç©º'}\n"
-                        f"éå ´å¹ï¼`{cc:.4f}`\n"
-                        f"çµç®ï¼`{pnl:+.2f}%`\n"
+                        f"⚠️ *{coin} OB 失效，主動退場*\n"
+                        f"━━━━━━━━━━━━━━\n"
+                        f"🆔 訂單：`{order_id}`\n"
+                        f"⏰ 時間：{tw_ts()}\n"
+                        f"方向：{'做多' if side == 'LONG' else '做空'}\n"
+                        f"退場價：`{cc:.4f}`\n"
+                        f"結算：`{pnl:+.2f}%`\n"
                         f"\n"
-                        f"ð¡ é²å ´ä¾æç SMC è¨å®å¡å·²è¢«æ¶ç¤è·ç ´\n"
-                        f"   çµæ§å¤±æï¼æåéå ´é¿åæ´å¤§è§æ",
+                        f"💡 進場依據的 SMC 訂單塊已被收盤跌破\n"
+                        f"   結構失效，提前退場避免擴大虧損",
                         reply_markup=kb,
                         reply_to_message_id=reply_to,
                     )
                     record_trade(coin, side, order_id, entry, cc, "OB_FAIL", sig["score"], sig)
-                    # ð OB å¤±æä¹éè¦ç¤åæ
+                    # 🔍 OB 失效也送覆盤分析
                     self._send_postmortem(sig, "LOSS")
                     self.transitions += 1
                     return True
 
-        # ð¥ TP1
+        # 🥇 TP1
         if not sig.get("hit_tp1") and favor_hit(tp1):
             sig["hit_tp1"] = True
             sig["sl"] = entry
@@ -3492,7 +3491,7 @@ class SignalTracker:
             self._save()
             self.transitions += 1
 
-        # ð¥ TP2
+        # 🥈 TP2
         if not sig.get("hit_tp2") and favor_hit(tp2):
             sig["hit_tp2"] = True
             sig["sl"] = tp1
@@ -3515,7 +3514,7 @@ class SignalTracker:
             self._save()
             self.transitions += 1
 
-        # ð TP3 â çµæ
+        # 🏆 TP3 → 結束
         if not sig.get("hit_tp3") and favor_hit(tp3):
             sig["hit_tp3"] = True
             pnl = (
@@ -3535,7 +3534,7 @@ class SignalTracker:
             self.transitions += 1
             return True
 
-        # ð SLï¼ç¨æ´æ°å¾ç sl å¼ï¼â ä¾çæåé¡
+        # 🛑 SL（用更新後的 sl 值）→ 依狀態分類
         if against_hit(sl):
             if sig.get("hit_tp2"):
                 mode, r_value, close_type = "LOCK", 1.5, "LOCK"
@@ -3557,7 +3556,7 @@ class SignalTracker:
                 reply_to_message_id=reply_to,
             )
             record_trade(coin, side, order_id, entry, sl, close_type, sig["score"], sig)
-            # ð è¦ç¤åæ
+            # 🔍 覆盤分析
             self._send_postmortem(sig, mode)
             self.transitions += 1
             return True
@@ -3565,15 +3564,15 @@ class SignalTracker:
         return False
 
     def send_position_updates(self) -> None:
-        """ð ç¼éæææåçé²åº¦æ´æ°
+        """📊 發送所有持倉的進度更新
 
-        v14.7 å  15 åé throttleï¼æ¯ 15 åéæå¤éä¸æ¬¡ï¼
-        é¿å 1 åé cron æ TP/SL éæ¨ç­éè¦è¨æ¯æ´å°ä¸é¢å»ã
+        v14.7 加 15 分鐘 throttle：每 15 分鐘最多送一次，
+        避免 1 分鐘 cron 把 TP/SL 達標等重要訊息洗到上面去。
         """
         state = get_system_state()
         now = time.time()
         last_sent = state.get("last_position_update_ts", 0)
-        interval = 15 * 60  # 15 åé
+        interval = 15 * 60  # 15 分鐘
         if now - last_sent < interval:
             return
 
@@ -3593,75 +3592,75 @@ class SignalTracker:
         if cnt:
             state["last_position_update_ts"] = now
             set_system_state(state)
-            logging.info(f"ð å·²ç¼é {cnt} ç­æåæ´æ°ï¼ä¸æ¬¡ææ© 15 åéå¾ï¼")
+            logging.info(f"📊 已發送 {cnt} 筆持倉更新（下次最早 15 分鐘後）")
 
     def get_position_stats(self) -> str:
-        """ð æåçµ±è¨ï¼çµ¦ /stats å½ä»¤ç¨ï¼"""
+        """📋 持倉統計（給 /stats 命令用）"""
         positions = list(self.signals.values())
         if not positions:
-            return "ð­ *ç®åç¡æå*\n\nð ç³»çµ±æçºææä¸­..."
+            return "📭 *目前無持倉*\n\n🔄 系統持續掃描中..."
 
-        lines = [f"ð *è¿½è¹¤ä¸­è¨èï¼{len(positions)} ç­ï¼*", "â" * 22, ""]
+        lines = [f"📊 *追蹤中訊號（{len(positions)} 筆）*", "═" * 22, ""]
         for i, p in enumerate(positions):
             price = fetch_price(p["instId"]) or p["entry"]
             coin = p["instId"].split("-")[0]
             coin_emoji = (
-                "ð " if "BTC" in p["instId"] else "ð·" if "ETH" in p["instId"] else "ð£"
+                "🟠" if "BTC" in p["instId"] else "🔷" if "ETH" in p["instId"] else "🟣"
             )
-            side_emoji = "ð¢" if p["side"] == "LONG" else "ð´"
+            side_emoji = "🟢" if p["side"] == "LONG" else "🔴"
             order_id = p.get("order_id", "N/A")
             pnl = (
                 (price - p["entry"]) / p["entry"] * 100
                 if p["side"] == "LONG"
                 else (p["entry"] - price) / p["entry"] * 100
             )
-            pnl_emoji = "ð¢" if pnl >= 0 else "ð´"
+            pnl_emoji = "🟢" if pnl >= 0 else "🔴"
             progress = (
-                "ð TP3"
+                "🏆 TP3"
                 if p.get("hit_tp3")
-                else "ð¥ TP2"
+                else "🥈 TP2"
                 if p.get("hit_tp2")
-                else "ð¥ TP1"
+                else "🥇 TP1"
                 if p.get("hit_tp1")
-                else "â³ ç­å¾"
+                else "⏳ 等待"
             )
             lines.append(
-                f"{coin_emoji} *#{coin}* Â· {side_emoji} {p['side']} Â· {p.get('score', 0)} å\n"
-                f"ð è¨å®ï¼`{order_id}`\n"
-                f"çæï¼{p['status']}\n"
-                f"ç¶å `{price:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
-                f"é²å ´ `{p['entry']:.4f}` Â· æ­¢æ `{p['sl']:.4f}`\n"
-                f"TP1 `{p['tp1']:.4f}` Â· TP2 `{p['tp2']:.4f}` Â· TP3 `{p['tp3']:.4f}`\n"
-                f"é²åº¦ï¼{progress}"
+                f"{coin_emoji} *#{coin}* · {side_emoji} {p['side']} · {p.get('score', 0)} 分\n"
+                f"🆔 訂單：`{order_id}`\n"
+                f"狀態：{p['status']}\n"
+                f"當前 `{price:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
+                f"進場 `{p['entry']:.4f}` · 止損 `{p['sl']:.4f}`\n"
+                f"TP1 `{p['tp1']:.4f}` · TP2 `{p['tp2']:.4f}` · TP3 `{p['tp3']:.4f}`\n"
+                f"進度：{progress}"
             )
             if i < len(positions) - 1:
-                lines.append("â" * 22)
+                lines.append("─" * 22)
         return "\n".join(lines)
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 11. ä¸»ææ
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 11. 主掃描
+# ═════════════════════════════════════════════════════════
 def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: int = 30) -> None:
-    """ð é«é »ç£æ§æ¨¡å¼ â åªæª¢æ¥æ¢æè¨èç PENDING é²å ´ / TP / SLï¼ä¸çææ°è¨è
+    """🔔 高頻監控模式 — 只檢查既有訊號的 PENDING 進場 / TP / SL，不生成新訊號
 
-    in_run_polls: ä¸æ¬¡ cron å·è¡å§è¼ªè©¢å¹¾æ¬¡ï¼æ­é poll_interval ç§ééï¼
-      é è¨­ 1 æ¬¡ = ç´é  cron é »çï¼è¨­æ 3 + interval=20 â ä¸æ¬¡ cron å§ 1 åéå§æ 3 æ¬¡
+    in_run_polls: 一次 cron 執行內輪詢幾次（搭配 poll_interval 秒間隔）
+      預設 1 次 = 純靠 cron 頻率；設成 3 + interval=20 → 一次 cron 內 1 分鐘內掃 3 次
 
-    ç¨æ³ï¼python main.py monitor
-    å»ºè­°æ­é monitor-only.yml workflowï¼æ¯ 3 åé cronï¼
+    用法：python main.py monitor
+    建議搭配 monitor-only.yml workflow（每 3 分鐘 cron）
     """
     if not tracker.signals:
-        logging.info("ð­ ç¡è¿½è¹¤ä¸­è¨èï¼monitor è·³é")
+        logging.info("📭 無追蹤中訊號，monitor 跳過")
         return
 
     n = len(tracker.signals)
-    logging.info(f"ð monitor æ¨¡å¼ååï¼è¿½è¹¤ä¸­ {n} ç­è¨è Ã {in_run_polls} è¼ª")
+    logging.info(f"🔔 monitor 模式啟動，追蹤中 {n} 筆訊號 × {in_run_polls} 輪")
 
     total_transitions = 0
     for poll_idx in range(in_run_polls):
         if not tracker.signals:
-            logging.info("ð­ ææè¨èå·²çµæï¼ææ©æ¶å·¥")
+            logging.info("📭 所有訊號已結束，提早收工")
             break
         try:
             tracker.check_all()
@@ -3669,21 +3668,21 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
             if poll_idx < in_run_polls - 1:
                 time.sleep(poll_interval)
         except Exception as e:
-            logging.error(f"â monitor poll {poll_idx + 1} åºé¯ï¼{e}")
+            logging.error(f"❌ monitor poll {poll_idx + 1} 出錯：{e}")
 
-    logging.info(f"â monitor å®æï¼{in_run_polls} è¼ªå±è§¸ç¼ {total_transitions} æ¬¡çæè®å")
+    logging.info(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
 
 
 def run_scan(tracker: SignalTracker) -> int:
-    """ð å·è¡ææï¼æ´å v12 å¨é¨é¢¨æ§ï¼"""
-    logging.info("ð éå§ææ...")
+    """🔍 執行掃描（整合 v12 全部風控）"""
+    logging.info("🚀 開始掃描...")
 
-    # ð©º å¥åº·ç£æ§ï¼åæª¢æ¥èªå·±æ¯å¦ç°å¸¸ï¼
+    # 🩺 健康監控（先檢查自己是否異常）
     unhealthy, health_msg = check_health()
     if unhealthy:
         send_tg(health_msg)
 
-    # ââ 0. ç±è¼å¥éç½® ââ
+    # ── 0. 熱載入配置 ──
     cfg = load_config()
     coins = cfg.get("coins", ALL_COINS)
     max_signals = cfg.get("max_signals", MAX_SIGNALS)
@@ -3698,7 +3697,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
     state = get_system_state()
 
-    # ââ 1. é£çºè§æçæ· ââ
+    # ── 1. 連續虧損熔斷 ──
     paused, msg, losses = check_circuit_breaker(cfg)
     if paused:
         if not state.get("circuit_active"):
@@ -3706,51 +3705,51 @@ def run_scan(tracker: SignalTracker) -> int:
             state["circuit_active"] = True
             state["circuit_since"] = time.time()
             set_system_state(state)
-        logging.warning(f"ð çæ·ä¸­ï¼é£æ {losses}ï¼â ä»æçºç£æ§æ¢æè¨è")
-        # çæ·æéä¸éæ°å®ï¼ä½è¦ç¹¼çºè¿½æ¢æå®
+        logging.warning(f"🛑 熔斷中（連敗 {losses}）→ 仍持續監控既有訊號")
+        # 熔斷期間不開新單，但要繼續追既有單
         tracker.check_all()
         tracker.send_position_updates()
         return 0
     else:
         if state.get("circuit_active"):
-            send_tg("â *çæ·å·²è§£é¤*\nç³»çµ±æ¢å¾©æ­£å¸¸ææï¼ç¹¼çºå æ²¹ ð")
+            send_tg("✅ *熔斷已解除*\n系統恢復正常掃描，繼續加油 🚀")
             state["circuit_active"] = False
             state["circuit_since"] = None
             set_system_state(state)
 
-    # ââ 2. ééµææ®µéæ¿¾ ââ
+    # ── 2. 關鍵時段過濾 ──
     blocked, btime_reason = is_blackout_time(cfg)
     if blocked:
-        logging.info(f"ð ç¦æ­¢äº¤æææ®µï¼{btime_reason}ï¼ï¼ä¸éæ°å®ä½ç¹¼çºç£æ§")
+        logging.info(f"🕒 禁止交易時段（{btime_reason}），不開新單但繼續監控")
         tracker.check_all()
         tracker.send_position_updates()
         return 0
 
-    # ââ 2.5 æ°èäºä»¶ææ®µéæ¿¾ ââ
+    # ── 2.5 新聞事件時段過濾 ──
     in_news, news_reason = is_in_news_window(cfg)
     if in_news:
-        logging.info(f"ð° æ°èäºä»¶ææ®µï¼{news_reason}ï¼ï¼ä¸éæ°å®ä½ç¹¼çºç£æ§")
+        logging.info(f"📰 新聞事件時段（{news_reason}），不開新單但繼續監控")
         tracker.check_all()
         tracker.send_position_updates()
         return 0
 
-    # ââ 2.7 é£æå·éæ ââ
+    # ── 2.7 連敗冷靜期 ──
     cooling, remaining_sec, cool_msg = check_cooling_off(cfg)
     if cooling:
-        logging.info(f"âï¸ {cool_msg}")
+        logging.info(f"❄️ {cool_msg}")
         tracker.check_all()
         tracker.send_position_updates()
         return 0
 
-    # ââ 2.8 ð¡ï¸ æ¯æ¥é¢¨æ§ç´ç·ï¼æåæ¸ / ç´¯è¨æå¤± / è¨èæ¸ï¼ââ
+    # ── 2.8 🛡️ 每日風控紅線（持倉數 / 累計損失 / 訊號數）──
     limit_hit, limit_msg = check_daily_limits(cfg, tracker)
     if limit_hit:
-        logging.info(f"ð¡ï¸ {limit_msg}")
+        logging.info(f"🛡️ {limit_msg}")
         tracker.check_all()
         tracker.send_position_updates()
         return 0
 
-    # ââ 2.9 â¡ æ©æéåºï¼ææå¹£ç¨®é½ä¸å¯éå®æè·³éé API å¼å« ââ
+    # ── 2.9 ⚡ 早期退出：所有幣種都不可開單時跳過重 API 呼叫 ──
     eligible_coins = []
     for instId in coins:
         if tracker.has_open_position(instId):
@@ -3765,15 +3764,15 @@ def run_scan(tracker: SignalTracker) -> int:
         eligible_coins.append(instId)
 
     if not eligible_coins:
-        logging.info(f"ð­ ææ {len(coins)} å¹£ç¨®é½ä¸å¯éå®ï¼å·å» / æå / æ«åï¼ï¼åè·ç£æ§")
+        logging.info(f"📭 所有 {len(coins)} 幣種都不可開單（冷卻 / 持倉 / 暫停），僅跑監控")
         tracker.check_all()
         tracker.send_position_updates()
         reset_failure_count()
         return 0
 
-    # ââ 3. ææå¯éå®çå¹£ç¨®ï¼å·²ç¯©é¸éå·å» / æå / æ«å / éç±ï¼ââ
+    # ── 3. 掃描可開單的幣種（已篩選過冷卻 / 持倉 / 暫停 / 過熱）──
     sent = 0
-    logging.info(f"ð¯ å¯éå®å¹£ç¨®ï¼{len(eligible_coins)} å â {[c.split('-')[0] for c in eligible_coins]}")
+    logging.info(f"🎯 可開單幣種：{len(eligible_coins)} 個 → {[c.split('-')[0] for c in eligible_coins]}")
     for instId in eligible_coins:
         if sent >= max_signals:
             break
@@ -3782,23 +3781,23 @@ def run_scan(tracker: SignalTracker) -> int:
         try:
             okx_price = fetch_price(instId)
             if okx_price <= 0:
-                logging.warning(f"[{instId}] ç¡æ³åå¾ OKX å¹æ ¼")
+                logging.warning(f"[{instId}] 無法取得 OKX 價格")
                 continue
 
-            # 3.3 ð¡ TradingView ç¬¬äºä¾æºé©è­
+            # 3.3 📡 TradingView 第二來源驗證
             if pv_enabled:
                 ok, tv_price, diff = verify_price(
                     instId, okx_price, pv_max_dev, pv_block_unverified
                 )
                 if not ok:
                     if tv_price is None:
-                        logging.warning(f"[{instId}] TV ç¡æ³é©è­ï¼æ ¹æè¨­å®æä¸")
+                        logging.warning(f"[{instId}] TV 無法驗證，根據設定擋下")
                     else:
                         send_tg(
-                            f"â ï¸ *{instId.split('-')[0]} å¹æ ¼ç°å¸¸*\n"
+                            f"⚠️ *{instId.split('-')[0]} 價格異常*\n"
                             f"OKX `{okx_price:.4f}` vs TV `{tv_price:.4f}`\n"
-                            f"åé¢ `{diff:.3f}%` > é¾å¼ `{pv_max_dev}%`\n"
-                            f"â¸ æ¬è¼ªè·³éè©²å¹£ç¨®"
+                            f"偏離 `{diff:.3f}%` > 閾值 `{pv_max_dev}%`\n"
+                            f"⏸ 本輪跳過該幣種"
                         )
                     continue
 
@@ -3846,10 +3845,10 @@ def run_scan(tracker: SignalTracker) -> int:
                 )
                 msg_id = send_tg(msg, reply_markup=_order_keyboard(order_id))
                 tracker.set_entry_message_id(key, msg_id)
-                logging.info(f"â {instId} é²å ´éç¥å·²éåºï¼è¨å® {order_id}")
+                logging.info(f"✅ {instId} 進場通知已送出，訂單 {order_id}")
             else:
                 _d = signal.get("detail") or {}
-                _lref = signal.get("_limit_ref_price", okx_price)
+                _lref = okx_price
                 _diff_pct = (signal["entry"] - _lref) / _lref * 100
                 _wait_label = (
                     f"等待回調 `{abs(_diff_pct):.2f}%`" if signal["side"] == "LONG"
@@ -3861,10 +3860,10 @@ def run_scan(tracker: SignalTracker) -> int:
                     else "FVG 填充區" if _d.get("fvg_low") or _d.get("fvg_high")
                     else "固定 0.3% 回調"
                 )
-                _emoji = "🟢" if signal["side"] == "LONG" else "🔴"
+                _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
                 send_tg(
-                    f"{_emoji} *{instId.split('-')[0]} 限價掛單*\n"
+                    f"{_ord_emoji} *{instId.split('-')[0]} 限價掛單*\n"
                     f"──────────────\n"
                     f"🔖 單號：`{order_id}`\n"
                     f"⏰ 時間：{tw_ts()}\n"
@@ -3878,72 +3877,71 @@ def run_scan(tracker: SignalTracker) -> int:
                     reply_markup=_order_keyboard(order_id),
                 )
                 logging.info(f"⏳ {instId} 限價掛單已建立 {signal['entry']:.4f}，單號 {order_id}")
-
             mark_cooldown(instId, cooldown_h)
             sent += 1
         except Exception as e:
-            logging.error(f"[{instId}] ææå¤±æï¼{e}")
+            logging.error(f"[{instId}] 掃描失敗：{e}")
             continue
 
-    # ââ 4. æ¢æè¨èæª¢æ¥ + æåæ´æ° ââ
+    # ── 4. 既有訊號檢查 + 持倉更新 ──
     tracker.check_all()
     tracker.send_position_updates()
 
-    logging.info(f"â ææå®æï¼æ¬è¼ªæ°å¢ {sent} ç­è¨è")
-    # ð©º éç½®å¤±æè¨æ¸
+    logging.info(f"✅ 掃描完成，本輪新增 {sent} 筆訊號")
+    # 🩺 重置失敗計數
     reset_failure_count()
     return sent
 
 
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# 12. ä¸»å¥å£
-# âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ═════════════════════════════════════════════════════════
+# 12. 主入口
+# ═════════════════════════════════════════════════════════
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("ð¤ Alpha Oracle Pro v11.0 åå")
-        logging.info(f"â° å°ç£æéï¼{tw_ts()}")
+        logging.info("🤖 Alpha Oracle Pro v11.0 啟動")
+        logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
 
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
 
-        # å½ä»¤èç
+        # 命令處理
         if len(sys.argv) > 1:
             cmd = sys.argv[1]
-            if cmd in ("/stats", "/æå", "stats"):
+            if cmd in ("/stats", "/持倉", "stats"):
                 send_tg(tracker.get_position_stats())
                 return
-            if cmd in ("/learning", "/å­¸ç¿", "/coach", "learning"):
+            if cmd in ("/learning", "/學習", "/coach", "learning"):
                 send_tg(format_learning_report())
                 return
-            if cmd in ("/daily", "/æ¥å ±", "daily"):
+            if cmd in ("/daily", "/日報", "daily"):
                 date = sys.argv[2] if len(sys.argv) > 2 else None
                 send_tg(format_daily_report(date))
                 return
-            if cmd in ("/monthly", "/æå ±", "monthly"):
+            if cmd in ("/monthly", "/月報", "monthly"):
                 ym = sys.argv[2] if len(sys.argv) > 2 else None
                 send_tg(format_monthly_report(ym))
                 return
-            if cmd in ("/direction", "/æ¹å", "direction"):
+            if cmd in ("/direction", "/方向", "direction"):
                 send_tg(format_direction_stats())
                 return
-            if cmd in ("/audit", "/å¯©æ¥", "audit"):
+            if cmd in ("/audit", "/審查", "audit"):
                 send_tg(format_audit_report())
                 return
-            if cmd in ("monitor", "/monitor", "/ç£æ§"):
-                # é«é »è¼éç£æ§æ¨¡å¼ï¼åªè¿½æ¢æè¨èï¼
-                # å¯é¸ï¼python main.py monitor 3 20 â ä¸æ¬¡ cron å§æ 3 æ¬¡ãæ¯æ¬¡éé 20s
+            if cmd in ("monitor", "/monitor", "/監控"):
+                # 高頻輕量監控模式（只追既有訊號）
+                # 可選：python main.py monitor 3 20 → 一次 cron 內掃 3 次、每次間隔 20s
                 polls = int(sys.argv[2]) if len(sys.argv) > 2 else 1
                 interval = int(sys.argv[3]) if len(sys.argv) > 3 else 30
                 run_monitor(tracker, in_run_polls=polls, poll_interval=interval)
                 return
 
         run_scan(tracker)
-        logging.info("ð ç¨å¼å·è¡å®æ")
+        logging.info("🎉 程式執行完成")
 
     except Exception as e:
-        logging.error(f"ð¥ ç³»çµ±é¯èª¤ï¼{e}")
-        # ð©º å¤±æè¨æ¸ +1ï¼è§¸ç¼å¥åº·è­¦å ±ï¼
+        logging.error(f"🔥 系統錯誤：{e}")
+        # 🩺 失敗計數 +1（觸發健康警報）
         try:
             increment_failure_count()
         except Exception:
