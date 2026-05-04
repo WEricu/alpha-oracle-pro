@@ -484,51 +484,92 @@ def calc_position_sizing(
 
 
 def _format_score_breakdown(detail: dict | None) -> str:
-    """📊 產生「為什麼 N 分」的分數細項拆解"""
+    """📊 強化版評分細項"""
     if not detail:
         return ""
-    lines = ["", "📊 *評分細項：*"]
-    base_items = [
-        ("🌊 趨勢", "trend", 30),
-        ("📊 RSI", "rsi", 25),
-        ("🧱 OB", "ob", 20),
-        ("⚡ FVG", "fvg", 15),
-        ("📏 SNR", "snr", 5),
-        ("📊 PA", "pa", 5),
-        ("💧 流動性", "liq", 5),
-        ("📈 動能", "mom", 5),
-    ]
-    for name, key, max_v in base_items:
-        v = detail.get(key, 0)
-        lines.append(f"  {name}：`{v}/{max_v}`")
-
+    out = ["", "📊 *評分明細：*"]
+    trend_v=detail.get("trend",0); rsi_val=detail.get("rsi_value",0); rsi_v=detail.get("rsi",0)
+    if trend_v==30: out.append("  🌊 趨勢：`30/30` — Supertrend 順勢，主方向確認")
+    elif trend_v==15: out.append("  🌊 趨勢：`15/30` — Supertrend 中性")
+    else: out.append("  🌊 趨勢：`0/30` ⚠️ Supertrend 逆勢")
+    if rsi_v==25:
+        lbl="超賣回升" if rsi_val<50 else "超買回落"
+        out.append(f"  📊 RSI：`25/25` — RSI {rsi_val:.1f}，{lbl}")
+    elif rsi_v==15: out.append(f"  📊 RSI：`15/25` — RSI {rsi_val:.1f}，中性區間")
+    else: out.append(f"  📊 RSI：`0/25` — RSI {rsi_val:.1f}，不在理想區")
+    ob_v=detail.get("ob",0); ob_low=detail.get("ob_low"); ob_high=detail.get("ob_high")
+    if ob_v==20 and ob_low and ob_high: out.append(f"  🧱 OB：`20/20` — 機構訂單塊 `{ob_low:.4f}–{ob_high:.4f}`")
+    elif ob_v==20: out.append("  🧱 OB：`20/20` — 訂單塊確認")
+    else: out.append("  🧱 OB：`0/20` — 無有效訂單塊")
+    fvg_v=detail.get("fvg",0); fvg_low=detail.get("fvg_low"); fvg_high=detail.get("fvg_high")
+    if fvg_v==15 and fvg_low and fvg_high: out.append(f"  ⚡ FVG：`15/15` — 公允缺口 `{fvg_low:.4f}–{fvg_high:.4f}`")
+    elif fvg_v==15: out.append("  ⚡ FVG：`15/15` — FVG 共振")
+    else: out.append("  ⚡ FVG：`0/15` — 無 FVG")
+    extras=[]
+    if detail.get("snr"): extras.append("SNR ✅")
+    if detail.get("pa"): extras.append("K線型態 ✅")
+    if detail.get("liq"): extras.append("流動性掃蕩 ✅")
+    if detail.get("mom"): extras.append("動能 ✅")
+    out.append("  📌 附加："+(" | ".join(extras) if extras else "均未觸發"))
     if "mtf" in detail:
-        mtf_v = detail["mtf"]
-        mtf_desc = detail.get("mtf_desc", "")
-        sign = "+" if mtf_v >= 0 else ""
-        lines.append(f"  🕒 MTF（{mtf_desc}）：`{sign}{mtf_v}`")
+        mtf_v=detail["mtf"]; mtf_d=detail.get("mtf_desc",""); sign="+" if mtf_v>=0 else ""
+        color="🟢 完美" if mtf_v>=13 else "🟡 部分" if mtf_v>=5 else "🔴 逆框" if mtf_v<0 else "⚪ 微弱"
+        out.append(f"  🕒 MTF ({mtf_d})：`{sign}{mtf_v}` {color}")
     if "volume" in detail:
-        vol_v = detail["volume"]
-        vol_r = detail.get("volume_ratio", 0)
-        sign = "+" if vol_v >= 0 else ""
-        lines.append(f"  📊 量能（{vol_r}×）：`{sign}{vol_v}`")
-    if detail.get("pullback"):
-        lines.append(f"  🌀 回測進場：`+3`")
-    if "regime" in detail:
-        regime_zh = {"trend": "趨勢市", "range": "震盪市", "transitional": "過渡"}.get(
-            detail["regime"], detail["regime"]
-        )
-        lines.append(f"  🌐 市場狀態：{regime_zh}（ADX `{detail.get('adx', 0)}`）")
-    if "learning_adjust" in detail and detail["learning_adjust"] != 0:
-        adj = detail["learning_adjust"]
-        sign = "+" if adj >= 0 else ""
-        lines.append(f"  🧬 學習調整：`{sign}{adj}`")
-    return "\n".join(lines)
+        vol_v=detail["volume"]; vol_r=detail.get("volume_ratio",0); sign="+" if vol_v>=0 else ""
+        out.append(f"  📊 量能：`{sign}{vol_v}` — {vol_r}×均量")
+    regime=detail.get("regime"); adx=detail.get("adx")
+    if regime and adx:
+        rm={"trend":"趨勢行情","range":"震盪行情","transitional":"過渡期"}
+        out.append(f"  🌐 市場：{rm.get(regime,regime)}（ADX `{adx:.1f}`）")
+    return "\n".join(out)
 
 
-# ═════════════════════════════════════════════════════════
-# 3. 通知格式
-# ═════════════════════════════════════════════════════════
+def _fmt_analysis_narrative(detail: dict | None, side: str, score: int) -> str:
+    """🔍 為什麼進場 — 白話文分析段落（永遠顯示）"""
+    if not detail:
+        return ""
+    reasons=[]; warnings=[]
+    rsi_val=detail.get("rsi_value",50); trend_v=detail.get("trend",0)
+    if trend_v==30: reasons.append("Supertrend 15m 順勢確認，主方向明確")
+    elif trend_v==15: warnings.append("Supertrend 中性，無明確趨勢方向")
+    else: warnings.append("⚠️ Supertrend 逆勢，屬逆市操作")
+    rsi_v=detail.get("rsi",0)
+    if rsi_v==25:
+        if side=="LONG": reasons.append(f"RSI {rsi_val:.0f} 從超賣區回升，多方動能剛轉正")
+        else: reasons.append(f"RSI {rsi_val:.0f} 從超買區回落，空方動能主導")
+    elif rsi_v==15: reasons.append(f"RSI {rsi_val:.0f} 中性區間，方向可行但非最佳點")
+    else:
+        if rsi_val>=70: warnings.append(f"⚠️ RSI {rsi_val:.0f} 超買，追多風險高")
+        elif rsi_val<30: warnings.append(f"⚠️ RSI {rsi_val:.0f} 超賣但動能未轉向")
+    smc=[]
+    if detail.get("ob",0)==20:
+        ol=detail.get("ob_low"); oh=detail.get("ob_high")
+        smc.append(f"OB機構塊 {ol:.4f}–{oh:.4f}" if ol and oh else "OB機構訂單塊確認")
+    if detail.get("fvg",0)==15:
+        fl=detail.get("fvg_low"); fh=detail.get("fvg_high")
+        smc.append(f"FVG缺口 {fl:.4f}–{fh:.4f}" if fl and fh else "FVG公允缺口共振")
+    if detail.get("liq"): smc.append("流動性掃蕩完成")
+    if smc: reasons.append("SMC："+"、".join(smc))
+    if "mtf" in detail:
+        mtf_v=detail["mtf"]; mtf_d=detail.get("mtf_desc","")
+        if mtf_v>=13: reasons.append(f"三時框（{mtf_d}）完美共振，大方向一致")
+        elif mtf_v>=5: reasons.append(f"MTF 部分共振（{mtf_d}），大框架支持")
+        elif mtf_v<0: warnings.append(f"⚠️ MTF 逆框（{mtf_d}），大週期方向相反")
+    vol_v=detail.get("volume",0); vol_r=detail.get("volume_ratio",0)
+    if vol_v>0 and vol_r>=1.5: reasons.append(f"量能 {vol_r:.1f}×均量放大，資金流入佐證")
+    elif vol_v<0: warnings.append(f"量能 {vol_r:.1f}×偏弱，注意假突破")
+    if detail.get("pa"): reasons.append("K線型態確認（錘子/吞噬/針型）")
+    regime=detail.get("regime"); adx=detail.get("adx",0)
+    if regime=="range": warnings.append(f"市場震盪（ADX {adx:.0f}），注意假突破")
+    elif regime=="trend": reasons.append(f"ADX {adx:.0f} 趨勢行情，跟勢勝率較高")
+    if not reasons and not warnings: return ""
+    out=["\n🔍 *為什麼進場：*"]
+    for r in reasons[:5]: out.append(f"  ✅ {r}")
+    for w in warnings[:3]: out.append(f"  🚩 {w}")
+    return "\n".join(out)
+
+
 def _fmt_entry(
     coin: str,
     side: str,
@@ -597,7 +638,10 @@ def _fmt_entry(
     tp2_r = abs(tp2 - entry) / risk if risk > 0 else 0
     tp3_r = abs(tp3 - entry) / risk if risk > 0 else 0
 
-    # 分數細項（預設關閉，太雜亂）
+    # ★ 分析解說段落（永遠顯示）
+    narrative_block = _fmt_analysis_narrative(detail, side, score)
+
+    # 分數細項（預設關閉）
     breakdown = ""
     if cfg.get("show_score_breakdown", False):
         breakdown = _format_score_breakdown(detail)
@@ -614,6 +658,7 @@ def _fmt_entry(
         f"{pos_line}"
         f"{funding_line}"
         f"{sizing_block}"
+        f"{narrative_block}\n"
         f"{breakdown}\n"
         f"\n"
         f"🎯 止盈目標：\n"
@@ -1475,6 +1520,8 @@ def calc_score(
     if ob and ob["low"] * 0.995 <= current_price <= ob["high"] * 1.005:
         score += 20
         detail["ob"] = 20
+        detail["ob_low"]  = ob["low"]
+        detail["ob_high"] = ob["high"]
     else:
         detail["ob"] = 0
 
@@ -1483,6 +1530,8 @@ def calc_score(
     if fvg and fvg["low"] * 0.997 <= current_price <= fvg["high"] * 1.003:
         score += 15
         detail["fvg"] = 15
+        detail["fvg_low"]  = fvg["low"]
+        detail["fvg_high"] = fvg["high"]
     else:
         detail["fvg"] = 0
 
@@ -1557,6 +1606,11 @@ def calc_score(
         if score >= 68
         else "觀望 ⚪"
     )
+    # 🌐 傳入市場狀態供格式器使用
+    regime_info = detect_market_regime(df)
+    detail["regime"] = regime_info["regime"]
+    detail["adx"]    = regime_info["adx"]
+
     return score, grade, detail
 
 
