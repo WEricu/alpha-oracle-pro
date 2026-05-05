@@ -75,7 +75,166 @@
     "hit_tp3": false,
     "activated_at": 1777921133.4591012,
     "entry_message_id": 663,
-    "last_checked_ts": 1778001300.0,
-    "current_price": 81267.9
+    "last_checked_ts": 1778002200.0,
+    "current_price": 81250.3
+  },
+  "BNB-USDT-SWAP_LONG_1778003693-861CF4E3": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 627.0133,
+    "sl": 624.9669,
+    "tp1": 630.0829,
+    "tp2": 633.1526,
+    "tp3": 637.2454,
+    "score": 87,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 0,
+      "rsi_value": 45.3,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 628.7,
+      "ob_high": 630.6,
+      "fvg": 15,
+      "fvg_low": 630.5,
+      "fvg_high": 630.7,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": -3,
+      "_vwap_desc": "價於 VWAP 下方 0.31% 多頭弱勢",
+      "regime": "trend",
+      "adx": 45.9,
+      "atr_pct": 0.217,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=8, 勝率 75%) → +2",
+        "fund:neutral (n=21, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 7
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 45.9,
+      "atr_pct": 0.217,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 628.7,
+      "high": 630.6
+    },
+    "created": 1778003693.1064143,
+    "expires": 1778090093.1064146,
+    "order_id": "1778003693-861CF4E3",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": null,
+    "last_checked_ts": null
+  },
+  "XRP-USDT-SWAP_LONG_1778003695-3BD13881": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.403,
+    "sl": 1.3951,
+    "tp1": 1.4149,
+    "tp2": 1.4268,
+    "tp3": 1.4426,
+    "score": 92,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 51.9,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 1.403,
+      "ob_high": 1.411,
+      "fvg": 15,
+      "fvg_low": 1.411,
+      "fvg_high": 1.412,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.33,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 0,
+      "_vwap_desc": "價接近 VWAP",
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.375,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=8, 勝率 75%) → +2",
+        "rsi_long:50-59 (n=12, 勝率 75%) → +2",
+        "fund:neutral (n=21, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 9
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.375,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 1.403,
+      "high": 1.411
+    },
+    "created": 1778003695.1044757,
+    "expires": 1778090095.104476,
+    "order_id": "1778003695-3BD13881",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": null,
+    "last_checked_ts": null
   }
 }
