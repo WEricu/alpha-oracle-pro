@@ -1,83 +1,4 @@
 {
-  "BTC-USDT-SWAP_LONG_1777913296-C523045A": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 80042.7,
-    "sl": 81162.7661,
-    "tp1": 81162.7661,
-    "tp2": 82282.8321,
-    "tp3": 83776.2536,
-    "score": 83,
-    "grade": "A å¼·å â­",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 70.3,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 15,
-      "fvg_low": 80042.7,
-      "fvg_high": 80113.4,
-      "snr": 0,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=é  / 4H=é ",
-      "volume": 0,
-      "volume_ratio": 0.52,
-      "ema": 0,
-      "ema_desc": "EMA è³æä¸è¶³",
-      "_vwap": 3,
-      "_vwap_desc": "å¹æ¼ VWAP ä¸æ¹ 0.78%",
-      "regime": "trend",
-      "adx": 39.7,
-      "atr_pct": 0.62,
-      "pullback": true,
-      "learning_notes": [
-        "fund:neutral (n=20, åç 70%) â +1",
-        "coin:BTC (n=6, åç 67%) â +1",
-        "coin_side:BTC_LONG (n=5, åç 80%) â +2",
-        "ð§¬ KNNï¼10 ç­æç¸ä¼¼è¨è â å 7 / æ 0 (åç 70%)",
-        "KNN ä¸­é«åç â +3"
-      ],
-      "learning_adjust": 7
-    },
-    "funding_rate": -4.1132172898e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 52.9
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 64.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 39.7,
-      "atr_pct": 0.62,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 78683.0,
-      "high": 78900.0
-    },
-    "created": 1777913296.2507904,
-    "expires": 1777999696.2507908,
-    "order_id": "1777913296-C523045A",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1777921133.4591012,
-    "entry_message_id": 663,
-    "last_checked_ts": 1778067900.0,
-    "current_price": 82480.7
-  },
   "BNB-USDT-SWAP_LONG_1778003693-861CF4E3": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
@@ -155,7 +76,8 @@
     "hit_tp3": false,
     "activated_at": null,
     "entry_message_id": null,
-    "last_checked_ts": null
+    "last_checked_ts": null,
+    "current_price": 646.3
   },
   "XRP-USDT-SWAP_LONG_1778003695-3BD13881": {
     "instId": "XRP-USDT-SWAP",
@@ -235,6 +157,7 @@
     "hit_tp3": false,
     "activated_at": null,
     "entry_message_id": null,
-    "last_checked_ts": null
+    "last_checked_ts": null,
+    "current_price": 1.418
   }
 }
