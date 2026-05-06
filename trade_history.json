@@ -1524,5 +1524,82 @@
       "atr_pct": 0.62,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-06 19:49",
+    "date": "2026-05-06",
+    "order_id": "1777913296-C523045A",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 80042.7,
+    "close": 82282.8321,
+    "close_type": "TP2",
+    "pnl": 2.8,
+    "is_win": true,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": -4.1132172898e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 70.3,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 80042.7,
+      "fvg_high": 80113.4,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=é  / 4H=é ",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "ema": 0,
+      "ema_desc": "EMA è³æä¸è¶³",
+      "_vwap": 3,
+      "_vwap_desc": "å¹æ¼ VWAP ä¸æ¹ 0.78%",
+      "regime": "trend",
+      "adx": 39.7,
+      "atr_pct": 0.62,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=20, åç 70%) â +1",
+        "coin:BTC (n=6, åç 67%) â +1",
+        "coin_side:BTC_LONG (n=5, åç 80%) â +2",
+        "ð§¬ KNNï¼10 ç­æç¸ä¼¼è¨è â å 7 / æ 0 (åç 70%)",
+        "KNN ä¸­é«åç â +3"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 70.3,
+      "atr_pct": 0.62,
+      "funding": -0.041132172898,
+      "vol_ratio": 0.52,
+      "adx": 39.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.7,
+      "atr_pct": 0.62,
+      "volatile": false
+    }
   }
 ]

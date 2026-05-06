@@ -13,22 +13,22 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 15,
+      "win": 16,
       "loss": 1,
       "be": 5,
-      "total": 21
+      "total": 22
     },
     "sess:europe": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
       "be": 2,
-      "total": 10
+      "total": 11
     },
     "coin:BTC": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
@@ -97,16 +97,16 @@
       "total": 4
     },
     "coin_side:BTC_LONG": {
-      "win": 5,
-      "loss": 0,
-      "be": 1,
-      "total": 6
-    },
-    "score:80-89": {
       "win": 6,
       "loss": 0,
+      "be": 1,
+      "total": 7
+    },
+    "score:80-89": {
+      "win": 7,
+      "loss": 0,
       "be": 2,
-      "total": 8
+      "total": 9
     },
     "coin:SOL": {
       "win": 6,
@@ -145,18 +145,18 @@
       "total": 3
     },
     "rsi_long:70-79": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "by_coin": {
     "BTC": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "AVAX": {
       "win": 0,
@@ -184,5 +184,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1777961890.806818
+  "updated_at": 1778068194.4633064
 }
