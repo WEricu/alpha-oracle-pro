@@ -78,7 +78,7 @@
     "activated_at": 1778108382.5350442,
     "entry_message_id": null,
     "last_checked_ts": 1778108382.5350442,
-    "current_price": 81307.7
+    "current_price": 81169.9
   },
   "SOL-USDT-SWAP_LONG_1778099102-F06DC1FE": {
     "instId": "SOL-USDT-SWAP",
@@ -159,6 +159,6 @@
     "activated_at": 1778108382.7981114,
     "entry_message_id": null,
     "last_checked_ts": 1778108382.7981114,
-    "current_price": 89.06
+    "current_price": 88.97
   }
 }
