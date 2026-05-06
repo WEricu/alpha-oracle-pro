@@ -1815,7 +1815,7 @@ def _deep_merge(base: dict, override: dict) -> dict:
 def _validate_config(cfg: dict) -> list:
     """🛡️ 驗證 config 合理性 → 回傳錯誤訊息列表（空代表通過）"""
     errs = []
-    if not (50 <= cfg.get("score_threshold", 0) <= 100):
+    if not (50 <= cfg.get("score_threshold", 0) <= 150):
         errs.append("score_threshold 必須在 50–100")
     if not (1 <= cfg.get("max_signals", 0) <= 10):
         errs.append("max_signals 必須在 1–10")
