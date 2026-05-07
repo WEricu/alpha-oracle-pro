@@ -4,7 +4,7 @@
       "win": 9,
       "loss": 2,
       "be": 3,
-      "total": 16
+      "total": 17
     },
     "rsi_short:50-59": {
       "win": 0,
@@ -16,7 +16,7 @@
       "win": 17,
       "loss": 1,
       "be": 5,
-      "total": 25
+      "total": 26
     },
     "sess:europe": {
       "win": 7,
@@ -64,7 +64,7 @@
       "win": 2,
       "loss": 0,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "coin:ETH": {
       "win": 2,
@@ -130,7 +130,7 @@
       "win": 3,
       "loss": 0,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "sess:asia_day": {
       "win": 4,
@@ -149,6 +149,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:ADA": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ADA_LONG": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -181,6 +193,12 @@
       "loss": 0,
       "be": 0,
       "total": 7
+    },
+    "ADA": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -199,5 +217,5 @@
       "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1778126201.4685488
+  "updated_at": 1778181448.1754816
 }

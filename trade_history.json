@@ -1836,5 +1836,83 @@
       "atr_pct": 0.352,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-08 03:17",
+    "date": "2026-05-08",
+    "order_id": "1778146195-9AEB3297",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2645,
+    "close": 0.263,
+    "close_type": "OB_FAIL",
+    "pnl": -0.57,
+    "is_win": false,
+    "is_be": false,
+    "score": 113,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.0,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 0.2645,
+      "ob_high": 0.2661,
+      "fvg": 15,
+      "fvg_low": 0.2654,
+      "fvg_high": 0.2665,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.02,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.39%",
+      "regime": "range",
+      "adx": 16.1,
+      "atr_pct": 0.413,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=25, 勝率 68%) → +1",
+        "sess:europe (n=11, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 113.0,
+      "rsi": 60.0,
+      "atr_pct": 0.413,
+      "funding": 0.1,
+      "vol_ratio": 1.02,
+      "adx": 16.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 73.6
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.1,
+      "atr_pct": 0.413,
+      "volatile": false
+    }
   }
 ]
