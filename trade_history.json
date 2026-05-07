@@ -1678,5 +1678,163 @@
       "atr_pct": 0.62,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-07 11:56",
+    "date": "2026-05-07",
+    "order_id": "1778099100-505CDA35",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 81166.0,
+    "close": 80991.4,
+    "close_type": "OB_FAIL",
+    "pnl": -0.22,
+    "is_win": false,
+    "is_be": false,
+    "score": 113,
+    "funding_rate": 2.50084650585e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 48.0,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 81166.0,
+      "ob_high": 81389.1,
+      "fvg": 15,
+      "fvg_low": 81360.0,
+      "fvg_high": 81372.3,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.86,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "transitional",
+      "adx": 19.9,
+      "atr_pct": 0.234,
+      "learning_notes": [
+        "score:90+ (n=14, 勝率 64%) → +1",
+        "fund:neutral (n=23, 勝率 74%) → +2",
+        "coin:BTC (n=9, 勝率 78%) → +2",
+        "coin_side:BTC_LONG (n=8, 勝率 88%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 10
+    },
+    "features": {
+      "score": 113.0,
+      "rsi": 48.0,
+      "atr_pct": 0.234,
+      "funding": 0.0250084650585,
+      "vol_ratio": 0.86,
+      "adx": 19.9,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.9,
+      "atr_pct": 0.234,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 11:56",
+    "date": "2026-05-07",
+    "order_id": "1778099102-F06DC1FE",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 88.91,
+    "close": 88.61,
+    "close_type": "OB_FAIL",
+    "pnl": -0.34,
+    "is_win": false,
+    "is_be": false,
+    "score": 115,
+    "funding_rate": 1.74109112854e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.0,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 88.91,
+      "ob_high": 89.15,
+      "fvg": 15,
+      "fvg_low": 89.15,
+      "fvg_high": 89.16,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.81,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.60%",
+      "regime": "range",
+      "adx": 3.5,
+      "atr_pct": 0.352,
+      "learning_notes": [
+        "score:90+ (n=14, 勝率 64%) → +1",
+        "fund:neutral (n=23, 勝率 74%) → +2",
+        "coin:SOL (n=6, 勝率 100%) → +2",
+        "coin_side:SOL_LONG (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12
+    },
+    "features": {
+      "score": 115.0,
+      "rsi": 60.0,
+      "atr_pct": 0.352,
+      "funding": 0.0174109112854,
+      "vol_ratio": 0.81,
+      "adx": 3.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 81.7
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 3.5,
+      "atr_pct": 0.352,
+      "volatile": false
+    }
   }
 ]

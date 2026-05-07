@@ -4,7 +4,7 @@
       "win": 9,
       "loss": 2,
       "be": 3,
-      "total": 14
+      "total": 16
     },
     "rsi_short:50-59": {
       "win": 0,
@@ -16,7 +16,7 @@
       "win": 17,
       "loss": 1,
       "be": 5,
-      "total": 23
+      "total": 25
     },
     "sess:europe": {
       "win": 7,
@@ -28,7 +28,7 @@
       "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
@@ -64,7 +64,7 @@
       "win": 2,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "coin:ETH": {
       "win": 2,
@@ -100,7 +100,7 @@
       "win": 7,
       "loss": 0,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "score:80-89": {
       "win": 8,
@@ -112,13 +112,13 @@
       "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:SOL_LONG": {
       "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "sess:us": {
       "win": 3,
@@ -136,13 +136,13 @@
       "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 7
     },
     "rsi_long:40-49": {
       "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsi_long:70-79": {
       "win": 3,
@@ -156,7 +156,7 @@
       "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "AVAX": {
       "win": 0,
@@ -180,9 +180,24 @@
       "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1778077156.4445682
+  "loss_reasons": [
+    {
+      "ts": 1778126200.9229708,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1778126201.4694216,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
+    }
+  ],
+  "updated_at": 1778126201.4685488
 }
