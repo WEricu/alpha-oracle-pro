@@ -3872,7 +3872,14 @@ def run_scan(tracker: SignalTracker) -> int:
                     f"📊 掛單時市價：`{_lref:.4f}`\n"
                     f"📉 {_wait_label}\n"
                     f"📌 掛單依據：{_limit_src}\n"
-                    f"評分：*{signal['score']} 分*\n\n"
+                    f"評分：*{signal['score']} 分*\n"
+                    f"\n"
+                    f"🎯 止盈目標：\n"
+                    f"  TP1 `{signal['tp1']:.4f}`\n"
+                    f"  TP2 `{signal['tp2']:.4f}`\n"
+                    f"  TP3 `{signal['tp3']:.4f}`\n"
+                    f"🛑 止損：`{signal['sl']:.4f}`\n"
+                    f"\n"
                     f"⏳ 等價格回到限價區間，自動發進場確認",
                     reply_markup=_order_keyboard(order_id),
                 )
