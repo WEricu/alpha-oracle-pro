@@ -4014,7 +4014,7 @@ def run_scan(tracker: SignalTracker) -> int:
                 _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
                 _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
-_pending_msg_id = send_tg(
+                _pending_msg_id = send_tg(
                     f"{_ord_emoji} *{instId.split('-')[0]} 限價掛單*\n"
                     f"──────────────\n"
                     f"🔖 單號：`{order_id}`\n"
