@@ -3811,10 +3811,8 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
                 coin = sig["instId"].split("-")[0]
                 order_id = sig.get("order_id", "N/A")
                 send_tg(
-                    f"⏱️ *{coin} 掛單自動取消*
-"
-                    f"🆔 `{order_id}`
-"
+                    f"⏱️ *{coin} 掛單自動取消*\n"
+                    f"🆔 `{order_id}`\n"
                     f"超過 5 分鐘未選擇，已自動放棄此訊號"
                 )
                 m_id = sig.get("entry_message_id")
