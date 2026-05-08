@@ -673,6 +673,8 @@ def _fmt_entry(
         f"進場價：`{entry:.4f}`\n"
         f"當前價：`{price:.4f}`\n"
         f"評分：*{score} 分*\n"
+        f"⏱ 進場框架：`{detail.get('entry_tf', '15m') if detail else '15m'}`　📐 分析框架：`{detail.get('analysis_tfs', '1H / 4H') if detail else '1H / 4H'}`\n"
+        f"🔀 MTF 方向：`{detail.get('mtf_desc', 'N/A') if detail else 'N/A'}`\n"
         f"{pos_line}"
         f"{funding_line}"
         f"{sizing_block}"
@@ -1629,6 +1631,8 @@ def calc_score(
     regime_info = detect_market_regime(df)
     detail["regime"] = regime_info["regime"]
     detail["adx"]    = regime_info["adx"]
+    detail["entry_tf"] = "15m"
+    detail["analysis_tfs"] = "1H / 4H"
 
     return score, grade, detail
 
@@ -4023,6 +4027,8 @@ _pending_msg_id = send_tg(
                     f"📉 {_wait_label}\n"
                     f"📌 掛單依據：{_limit_src}\n"
                     f"評分：*{signal['score']} 分*\n"
+                    f"⏱ 進場框架：`{signal.get('detail', {}).get('entry_tf', '15m')}`　📐 分析框架：`{signal.get('detail', {}).get('analysis_tfs', '1H / 4H')}`\n"
+                    f"🔀 MTF 方向：`{signal.get('detail', {}).get('mtf_desc', 'N/A')}`\n"
                     f"\n"
                     + _pending_narrative + "\n"
                     + f"\n"
