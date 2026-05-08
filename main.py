@@ -667,7 +667,6 @@ def _fmt_entry(
     return (
         f"{emoji} *{coin} 進場提醒* {grade}\n"
         f"━━━━━━━━━━━━━━\n"
-        f"🆔 訂單編號：`{order_id}`\n"
         f"⏰ 時間：{tw_ts()}\n"
         f"方向：{direction}\n"
         f"進場價：`{entry:.4f}`\n"
@@ -716,7 +715,6 @@ def _fmt_tp(
     return (
         f"🎯 *{coin} {tp_level} 達標！*\n"
         f"━━━━━━━━━━━━━━\n"
-        f"🆔 訂單編號：`{order_id}`\n"
         f"⏰ 時間：{tw_ts()}\n"
         f"方向：{direction}\n"
         f"觸發價：`{price:.4f}`{wick_note}\n"
@@ -765,7 +763,6 @@ def _fmt_sl(
     return (
         f"{label} *{coin}*\n"
         f"━━━━━━━━━━━━━━\n"
-        f"🆔 訂單編號：`{order_id}`\n"
         f"⏰ 時間：{tw_ts()}\n"
         f"方向：{direction}\n"
         f"觸發價：`{price:.4f}`{wick_note}\n"
@@ -800,7 +797,6 @@ def _fmt_position(sig: dict, current_price: float) -> str:
     return (
         f"📊 *{coin} 持倉更新*\n"
         f"━━━━━━━━━━━━━━\n"
-        f"🆔 訂單編號：`{sig.get('order_id', 'N/A')}`\n"
         f"⏰ 時間：{tw_ts()}\n"
         f"方向：{direction}\n"
         f"當前：`{current_price:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
