@@ -3786,6 +3786,8 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
                 answer_callback(cq_id, "✅ 已確認開單，等待限價進場")
                 edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "✅ 已確認開單", "callback_data": "noop"}]]})
                 logging.info(f"✅ 用戶確認開單：{order_id}")
+                _inst = tracker.signals[key].get("instId", "").split("-")[0]
+                send_tg(f"✅ 收到！*{_inst}* 已確認開單，等待限價進場 🎯")
             else:
                 answer_callback(cq_id, "此訊號已處理")
 
@@ -3798,6 +3800,8 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
                 answer_callback(cq_id, "❌ 已取消，不追蹤此單")
                 edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "❌ 已取消", "callback_data": "noop"}]]})
                 logging.info(f"❌ 用戶取消開單：{order_id}")
+                              _inst = tracker.signals[key].get("instId", "").split("-")[0]
+                              send_tg(f"❌ 收到！*{_inst}* 已取消，略過本次訊號。")
             else:
                 answer_callback(cq_id, "此訊號已處理")
 
