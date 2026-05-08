@@ -3862,6 +3862,7 @@ def run_scan(tracker: SignalTracker) -> int:
                 )
                 _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
+                _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
                 send_tg(
                     f"{_ord_emoji} *{instId.split('-')[0]} 限價掛單*\n"
                     f"──────────────\n"
@@ -3874,13 +3875,15 @@ def run_scan(tracker: SignalTracker) -> int:
                     f"📌 掛單依據：{_limit_src}\n"
                     f"評分：*{signal['score']} 分*\n"
                     f"\n"
-                    f"🎯 止盈目標：\n"
-                    f"  TP1 `{signal['tp1']:.4f}`\n"
-                    f"  TP2 `{signal['tp2']:.4f}`\n"
-                    f"  TP3 `{signal['tp3']:.4f}`\n"
-                    f"🛑 止損：`{signal['sl']:.4f}`\n"
-                    f"\n"
-                    f"⏳ 等價格回到限價區間，自動發進場確認",
+                    + _pending_narrative + "\n"
+                    + f"\n"
+                    + f"🎯 止盈目標：\n"
+                    + f"  TP1 `{signal['tp1']:.4f}`\n"
+                    + f"  TP2 `{signal['tp2']:.4f}`\n"
+                    + f"  TP3 `{signal['tp3']:.4f}`\n"
+                    + f"🛑 止損：`{signal['sl']:.4f}`\n"
+                    + f"\n"
+                    + f"⏳ 等價格回到限價區間，自動發進場確認",
                     reply_markup=_order_keyboard(order_id),
                 )
                 logging.info(f"⏳ {instId} 限價掛單已建立 {signal['entry']:.4f}，單號 {order_id}")
