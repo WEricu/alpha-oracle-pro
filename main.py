@@ -401,6 +401,16 @@ def _order_keyboard(order_id: str) -> dict:
     }
 
 
+def _pending_keyboard(order_id: str) -> dict:
+    """🔘 掛單確認按鈕：用戶選擇是否開單（5分鐘無回應自動取消）"""
+    return {
+        "inline_keyboard": [[
+            {"text": "✅ 開單", "callback_data": f"confirm_{order_id}"},
+            {"text": "❌ 不開", "callback_data": f"reject_{order_id}"},
+        ]]
+    }
+
+
 # ═════════════════════════════════════════════════════════
 # 2.5 v14.1 倉位建議 + 分數細項格式化
 # ═════════════════════════════════════════════════════════
@@ -3190,6 +3200,9 @@ class SignalTracker:
             "entry_message_id": None,
             # 🪡 歷史插針補抓的游標（秒）：下次 _check_one 從這之後的 K 線開始掃
             "last_checked_ts": now_ts if active else None,
+            # 🔔 用戶開單確認（None=待確認, True=確認, False=拒絕）
+            "user_confirmed": True if active else None,
+            "pending_since": None if active else now_ts,
         }
         self._save()
         logging.info(f"📌 新增訂單：{order_id} ({signal['instId']} {signal['side']})")
@@ -3284,6 +3297,13 @@ class SignalTracker:
                 return True
         return False
 
+    def find_key_by_order_id(self, order_id: str) -> str | None:
+        """依 order_id 找回訊號 key"""
+        for key, sig in self.signals.items():
+            if sig.get("order_id") == order_id:
+                return key
+        return None
+
     def check_all(self) -> None:
         """檢查所有訊號並發送通知"""
         self.transitions = 0
@@ -3357,6 +3377,12 @@ class SignalTracker:
 
     def _check_pending(self, sig: dict, price: float) -> bool:
         """PENDING 狀態檢查：等待價格進入區間轉 ACTIVE，過期自動取消"""
+        # 🔔 用戶確認守衛
+        confirmed = sig.get("user_confirmed")
+        if confirmed is False:
+            return True   # 用戶拒絕或超時取消 → 移除
+        if confirmed is None:
+            return False  # 尚未選擇 → 繼續等待
         coin = sig["instId"].split("-")[0]
         order_id = sig.get("order_id", "N/A")
         side = sig["side"]
@@ -3673,6 +3699,126 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
     logging.info(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
 
 
+# ── Telegram callback helpers ──
+_TG_OFFSET_FILE = "tg_update_offset.json"
+PENDING_APPROVAL_TIMEOUT = 5 * 60  # 5 分鐘
+
+
+def get_tg_updates() -> list:
+    """📥 拉取 Telegram callback_query 更新"""
+    if not TG_TOKEN:
+        return []
+    offset_data = _load_json(_TG_OFFSET_FILE, {"offset": 0})
+    offset = offset_data.get("offset", 0)
+    try:
+        resp = requests.get(
+            f"https://api.telegram.org/bot{TG_TOKEN}/getUpdates",
+            params={"offset": offset, "timeout": 5, "allowed_updates": ["callback_query"]},
+            timeout=10,
+        )
+        data = resp.json()
+        if not data.get("ok"):
+            return []
+        updates = data.get("result", [])
+        if updates:
+            _save_json(_TG_OFFSET_FILE, {"offset": updates[-1]["update_id"] + 1})
+        return updates
+    except Exception as e:
+        logging.warning(f"get_tg_updates 失敗：{e}")
+        return []
+
+
+def answer_callback(cq_id: str, text: str = "") -> None:
+    """✅ 回應 callback query（消除按鈕 loading）"""
+    if not TG_TOKEN:
+        return
+    try:
+        requests.post(
+            f"https://api.telegram.org/bot{TG_TOKEN}/answerCallbackQuery",
+            json={"callback_query_id": cq_id, "text": text},
+            timeout=5,
+        )
+    except Exception as e:
+        logging.warning(f"answer_callback 失敗：{e}")
+
+
+def edit_tg_reply_markup(message_id: int, reply_markup: dict | None = None) -> None:
+    """✏️ 更新訊息的 inline keyboard（選完後改成靜態文字）"""
+    if not TG_TOKEN or not CHAT_ID or not message_id:
+        return
+    try:
+        payload: dict = {"chat_id": CHAT_ID, "message_id": message_id}
+        payload["reply_markup"] = json.dumps(
+            reply_markup if reply_markup is not None else {"inline_keyboard": []}
+        )
+        requests.post(
+            f"https://api.telegram.org/bot{TG_TOKEN}/editMessageReplyMarkup",
+            json=payload,
+            timeout=5,
+        )
+    except Exception as e:
+        logging.warning(f"edit_tg_reply_markup 失敗：{e}")
+
+
+def process_pending_approvals(tracker: "SignalTracker") -> None:
+    """🔔 處理開單確認：讀 TG callback → 確認/拒絕；超時自動取消"""
+    now = time.time()
+    updates = get_tg_updates()
+
+    for upd in updates:
+        cq = upd.get("callback_query")
+        if not cq:
+            continue
+        data = cq.get("data", "")
+        cq_id = cq["id"]
+        msg_id = cq.get("message", {}).get("message_id")
+
+        if data.startswith("confirm_"):
+            order_id = data[len("confirm_"):]
+            key = tracker.find_key_by_order_id(order_id)
+            if key and tracker.signals[key].get("user_confirmed") is None:
+                tracker.signals[key]["user_confirmed"] = True
+                tracker._save()
+                answer_callback(cq_id, "✅ 已確認開單，等待限價進場")
+                edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "✅ 已確認開單", "callback_data": "noop"}]]})
+                logging.info(f"✅ 用戶確認開單：{order_id}")
+            else:
+                answer_callback(cq_id, "此訊號已處理")
+
+        elif data.startswith("reject_"):
+            order_id = data[len("reject_"):]
+            key = tracker.find_key_by_order_id(order_id)
+            if key and tracker.signals[key].get("user_confirmed") is None:
+                tracker.signals[key]["user_confirmed"] = False
+                tracker._save()
+                answer_callback(cq_id, "❌ 已取消，不追蹤此單")
+                edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "❌ 已取消", "callback_data": "noop"}]]})
+                logging.info(f"❌ 用戶取消開單：{order_id}")
+            else:
+                answer_callback(cq_id, "此訊號已處理")
+
+    # 自動過期：5 分鐘無回應 → 取消
+    for key, sig in list(tracker.signals.items()):
+        if sig.get("status") == "PENDING" and sig.get("user_confirmed") is None:
+            pending_since = sig.get("pending_since", now)
+            if now - pending_since > PENDING_APPROVAL_TIMEOUT:
+                tracker.signals[key]["user_confirmed"] = False
+                tracker._save()
+                coin = sig["instId"].split("-")[0]
+                order_id = sig.get("order_id", "N/A")
+                send_tg(
+                    f"⏱️ *{coin} 掛單自動取消*
+"
+                    f"🆔 `{order_id}`
+"
+                    f"超過 5 分鐘未選擇，已自動放棄此訊號"
+                )
+                m_id = sig.get("entry_message_id")
+                if m_id:
+                    edit_tg_reply_markup(m_id, {"inline_keyboard": [[{"text": "⏱️ 超時自動取消", "callback_data": "noop"}]]})
+                logging.info(f"⏱️ 掛單超時自動取消：{order_id}")
+
+
 def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行掃描（整合 v12 全部風控）"""
     logging.info("🚀 開始掃描...")
@@ -3681,6 +3827,9 @@ def run_scan(tracker: SignalTracker) -> int:
     unhealthy, health_msg = check_health()
     if unhealthy:
         send_tg(health_msg)
+
+    # ── -1. 處理用戶開單確認（callback queries + 超時取消） ──
+    process_pending_approvals(tracker)
 
     # ── 0. 熱載入配置 ──
     cfg = load_config()
@@ -3863,7 +4012,7 @@ def run_scan(tracker: SignalTracker) -> int:
                 _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
                 _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
-                send_tg(
+_pending_msg_id = send_tg(
                     f"{_ord_emoji} *{instId.split('-')[0]} 限價掛單*\n"
                     f"──────────────\n"
                     f"🔖 單號：`{order_id}`\n"
@@ -3883,9 +4032,10 @@ def run_scan(tracker: SignalTracker) -> int:
                     + f"  TP3 `{signal['tp3']:.4f}`\n"
                     + f"🛑 止損：`{signal['sl']:.4f}`\n"
                     + f"\n"
-                    + f"⏳ 等價格回到限價區間，自動發進場確認",
-                    reply_markup=_order_keyboard(order_id),
+                    + f"⏳ 請選擇是否開單（5 分鐘無回應自動取消）",
+                    reply_markup=_pending_keyboard(order_id),
                 )
+                tracker.set_entry_message_id(key, _pending_msg_id)
                 logging.info(f"⏳ {instId} 限價掛單已建立 {signal['entry']:.4f}，單號 {order_id}")
             mark_cooldown(instId, cooldown_h)
             sent += 1
