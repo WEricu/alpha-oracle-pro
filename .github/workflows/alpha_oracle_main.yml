@@ -3,7 +3,7 @@ name: Alpha Oracle Pro - Optimized Main
 on:
   workflow_dispatch: # 允許手動點擊 Run workflow 啟動
   schedule:
-    - cron: '*/5 * * * *' # 每 5 分鐘執行一次
+    - cron: '*/10 * * * *' # 每 5 分鐘執行一次
 
 concurrency:
   group: alpha-oracle-main-${{ github.ref }}
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   run-bot:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latesth
     permissions:
       contents: write # 賦予權限，讓機器人能自動把學習狀態存回 GitHub
 
