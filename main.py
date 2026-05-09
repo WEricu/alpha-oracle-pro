@@ -11,7 +11,7 @@ Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
      ↳ 訊息送達率從 ~95% → ~99.9%
 
 ✨ v14.6：
-  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）h
   🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
   🛡️ 嚴格每日風控三紅線：
      ① 同時持倉數上限（預設 2 個）
@@ -100,7 +100,7 @@ Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
   🆕 系統狀態持久化（system_state.json）：熔斷狀態跨 Actions 不漏
   🆕 同幣種未平倉不重複開倉
 
-✨ v11.0 既有重點：
+✨ v14.7 既有重點：
   ✅ 修復所有 Markdown 鏈接化的語法錯誤
   ✅ 完整 SMC（OB）/ ICT（FVG、流動性掃蕩）/ SNR / 價格行為 / 盤口動能
   ✅ 評分 100 分制（趨勢30+RSI25+OB20+FVG15+SNR5+PA5+流動性5+動能5）
@@ -4063,7 +4063,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("🤖 Alpha Oracle Pro v11.0 啟動")
+        logging.info("🤖 Alpha Oracle Pro v14.7 啟動")
         logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
 
