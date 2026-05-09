@@ -8,3 +8,6 @@ numpy
 
 # 如果您有連結交易所，通常需要這個
 ccxt
+
+# TradingView 技術分析
+tradingview-ta
