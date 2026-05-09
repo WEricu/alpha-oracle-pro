@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: '*/5 * * * *' # 每 5 分鐘執行一次
 
+concurrency:
+  group: alpha-oracle-main-${{ github.ref }}
+  cancel-in-progress: false  # 不取消進行中的，避免中斷寫入狀態
+
 jobs:
   run-bot:
     runs-on: ubuntu-latest
@@ -34,9 +38,16 @@ jobs:
       - name: 4. 執行機器人 (Run Bot)
         env:
           PYTHONUNBUFFERED: 1
-          # 請確保您已在 GitHub Secrets 設定以下變數
+          TZ: Asia/Taipei
+          # OKX API
           API_KEY: ${{ secrets.API_KEY }}
           API_SECRET: ${{ secrets.API_SECRET }}
+          # Telegram
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          # 訊號參數
+          MAX_SIGNALS: 2
+          SETUP_SCORE_THRESHOLD: 80
         run: python main.py
 
       - name: 5. 自動保存數據與學習狀態 (Auto Save State)
