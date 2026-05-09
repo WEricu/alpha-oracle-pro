@@ -1914,5 +1914,84 @@
       "atr_pct": 0.413,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-09 12:24",
+    "date": "2026-05-09",
+    "order_id": "1778287409-BFD1CE84",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 80259.7,
+    "close": 80402.1357,
+    "close_type": "SL",
+    "pnl": -0.18,
+    "is_win": false,
+    "is_be": false,
+    "score": 113,
+    "funding_rate": -2.3835742101e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.4,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 80142.9,
+      "ob_high": 80259.7,
+      "fvg": 15,
+      "fvg_low": 80153.6,
+      "fvg_high": 80170.0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 2,
+      "mtf_desc": "1H=反 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.76,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "regime": "range",
+      "adx": 8.5,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.119,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=26, 勝率 65%) → +1",
+        "coin:BTC (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 2 (勝率 40%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 113.0,
+      "rsi": 51.4,
+      "atr_pct": 0.119,
+      "funding": -0.0023835742101,
+      "vol_ratio": 0.76,
+      "adx": 8.5,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 8.5,
+      "atr_pct": 0.119,
+      "volatile": false
+    }
   }
 ]

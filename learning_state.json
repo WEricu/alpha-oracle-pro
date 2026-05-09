@@ -2,21 +2,21 @@
   "buckets": {
     "score:90+": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 17
+      "total": 18
     },
     "rsi_short:50-59": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "fund:neutral": {
       "win": 17,
-      "loss": 1,
+      "loss": 2,
       "be": 5,
-      "total": 26
+      "total": 27
     },
     "sess:europe": {
       "win": 7,
@@ -26,15 +26,15 @@
     },
     "coin:BTC": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsi_short:30-39": {
       "win": 0,
@@ -134,9 +134,9 @@
     },
     "sess:asia_day": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "rsi_long:40-49": {
       "win": 3,
@@ -166,9 +166,9 @@
   "by_coin": {
     "BTC": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "AVAX": {
       "win": 0,
@@ -215,7 +215,14 @@
       "side": "LONG",
       "code": "AGAINST_MOMENTUM",
       "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1778300673.3553598,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778181448.1754816
+  "updated_at": 1778300673.3544676
 }
