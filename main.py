@@ -11,7 +11,7 @@ Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
      ↳ 訊息送達率從 ~95% → ~99.9%
 
 ✨ v14.6：
-  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）hh
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）hhh
   🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
   🛡️ 嚴格每日風控三紅線：
      ① 同時持倉數上限（預設 2 個）
@@ -171,7 +171,7 @@ ALL_COINS = [
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
 
-SIGNAL_EXPIRE_HOURS = 24
+PENDING_APPROVAL_TIMEOUT = 4
 COOLDOWN_HOURS = 2
 
 ACTIVE_SIGNALS_FILE = "active_signals.json"
@@ -192,7 +192,7 @@ DEFAULT_CONFIG: dict = {
     "max_signals": 3,
     "score_threshold": 68,
     "cooldown_hours": 2,
-    "signal_expire_hours": 24,
+    "signal_expire_hours": 4,
     "atr_max_pct": 0.04,
     "post_mortem": {
         "enabled": True,
@@ -402,7 +402,7 @@ def _order_keyboard(order_id: str) -> dict:
 
 
 def _pending_keyboard(order_id: str) -> dict:
-    """🔘 掛單確認按鈕：用戶選擇是否開單（5分鐘無回應自動取消）"""
+    """🔘 掛單確認按鈕：用戶選擇是否開單（10分鐘無回應自動取消）"""
     return {
         "inline_keyboard": [[
             {"text": "✅ 開單", "callback_data": f"confirm_{order_id}"},
@@ -4036,7 +4036,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     + f"  TP3 `{signal['tp3']:.4f}`\n"
                     + f"🛑 止損：`{signal['sl']:.4f}`\n"
                     + f"\n"
-                    + f"⏳ 請選擇是否開單（5 分鐘無回應自動取消）",
+                    + f"⏳ 請選擇是否開單（10 分鐘無回應自動取消）",
                     reply_markup=_pending_keyboard(order_id),
                 )
                 tracker.set_entry_message_id(key, _pending_msg_id)
