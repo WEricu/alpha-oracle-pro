@@ -7,9 +7,7 @@ name: Alpha Oracle (1 分鐘掃描)
 #   實際耗時：5–60 秒不等（看有幾個幣種值得掃）
 
 on:
-  schedule:
-    - cron: "* * * * *"
-  workflow_dispatch:
+  workflow_dispatch:  # 已停用自動排程（由 alpha_oracle_main.yml 接管）
 
 permissions:
   contents: write
