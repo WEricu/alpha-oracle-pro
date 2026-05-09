@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 9,
+      "win": 10,
       "loss": 3,
       "be": 3,
-      "total": 19
+      "total": 20
     },
     "rsi_short:50-59": {
-      "win": 0,
+      "win": 1,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "fund:neutral": {
-      "win": 17,
+      "win": 18,
       "loss": 2,
       "be": 5,
-      "total": 28
+      "total": 29
     },
     "sess:europe": {
       "win": 7,
@@ -121,10 +121,10 @@
       "total": 7
     },
     "sess:us": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "sess:asia_dawn": {
       "win": 3,
@@ -173,6 +173,18 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "coin:BCH": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BCH_SHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -217,6 +229,12 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "BCH": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -249,5 +267,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778310479.5711675
+  "updated_at": 1778337277.6363213
 }
