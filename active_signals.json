@@ -1,1 +1,83 @@
-{}
+{
+  "BCH-USDT-SWAP_SHORT_1778333086-7719F74E": {
+    "instId": "BCH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 450.3,
+    "sl": 451.1571,
+    "tp1": 449.0143,
+    "tp2": 447.7286,
+    "tp3": 446.0143,
+    "score": 106,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 50.0,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 449.9,
+      "ob_high": 450.3,
+      "fvg": 15,
+      "fvg_low": 450.6,
+      "fvg_high": 450.8,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 5,
+      "volume_ratio": 1.67,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 0,
+      "_vwap_desc": "價接近 VWAP",
+      "regime": "trend",
+      "adx": 64.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.127,
+      "learning_notes": [
+        "fund:neutral (n=28, 勝率 61%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 1 (勝率 50%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": -7.4022151544e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 19.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 64.7,
+      "atr_pct": 0.127,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 449.9,
+      "high": 450.3
+    },
+    "created": 1778333086.8576705,
+    "expires": 1778419486.857671,
+    "order_id": "1778333086-7719F74E",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778333086.8577068,
+    "entry_message_id": null,
+    "last_checked_ts": 1778333086.8577068,
+    "user_confirmed": true,
+    "pending_since": null,
+    "current_price": 449.8
+  }
+}
