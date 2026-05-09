@@ -11,7 +11,7 @@ Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
      ↳ 訊息送達率從 ~95% → ~99.9%
 
 ✨ v14.6：
-  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）h
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）hh
   🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
   🛡️ 嚴格每日風控三紅線：
      ① 同時持倉數上限（預設 2 個）
@@ -3701,7 +3701,7 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
 
 # ── Telegram callback helpers ──
 _TG_OFFSET_FILE = "tg_update_offset.json"
-PENDING_APPROVAL_TIMEOUT = 5 * 60  # 5 分鐘
+PENDING_APPROVAL_TIMEOUT = 10 * 60  # 5 分鐘
 
 
 def get_tg_updates() -> list:
