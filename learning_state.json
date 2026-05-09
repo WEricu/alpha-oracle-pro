@@ -4,7 +4,7 @@
       "win": 9,
       "loss": 3,
       "be": 3,
-      "total": 18
+      "total": 19
     },
     "rsi_short:50-59": {
       "win": 0,
@@ -16,13 +16,13 @@
       "win": 17,
       "loss": 2,
       "be": 5,
-      "total": 27
+      "total": 28
     },
     "sess:europe": {
       "win": 7,
       "loss": 2,
       "be": 2,
-      "total": 11
+      "total": 12
     },
     "coin:BTC": {
       "win": 7,
@@ -82,7 +82,7 @@
       "win": 9,
       "loss": 0,
       "be": 3,
-      "total": 12
+      "total": 13
     },
     "coin:BNB": {
       "win": 2,
@@ -161,6 +161,18 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "coin:LINK": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINK_LONG": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -199,6 +211,12 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "LINK": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -222,7 +240,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778310480.1144598,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778300673.3544676
+  "updated_at": 1778310479.5711675
 }

@@ -1993,5 +1993,84 @@
       "atr_pct": 0.119,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-09 15:07",
+    "date": "2026-05-09",
+    "order_id": "1778302385-2A2CA3FA",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 10.514,
+    "close": 10.466,
+    "close_type": "OB_FAIL",
+    "pnl": -0.46,
+    "is_win": false,
+    "is_be": false,
+    "score": 111,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.2,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 10.514,
+      "ob_high": 10.569,
+      "fvg": 15,
+      "fvg_low": 10.517,
+      "fvg_high": 10.526,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.38%",
+      "regime": "trend",
+      "adx": 61.4,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.519,
+      "learning_notes": [
+        "rsi_long:50-59 (n=12, 勝率 75%) → +2",
+        "fund:neutral (n=27, 勝率 63%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8
+    },
+    "features": {
+      "score": 111.0,
+      "rsi": 59.2,
+      "atr_pct": 0.519,
+      "funding": 0.1,
+      "vol_ratio": 0.55,
+      "adx": 61.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 83.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 61.4,
+      "atr_pct": 0.519,
+      "volatile": false
+    }
   }
 ]
