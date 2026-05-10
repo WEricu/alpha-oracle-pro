@@ -89,7 +89,7 @@
     "user_confirmed": true,
     "pending_since": 1778434273.66606,
     "confirmed_at": 1778435799.7078006,
-    "current_price": 10.853
+    "current_price": 10.841
   },
   "AVAX-USDT-SWAP_LONG_1778442484-524A0269": {
     "instId": "AVAX-USDT-SWAP",
@@ -179,7 +179,8 @@
     "entry_message_id": 1660,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778442484.8610904
+    "pending_since": 1778442484.8610904,
+    "current_price": 10.467
   },
   "BCH-USDT-SWAP_LONG_1778442488-94AF19ED": {
     "instId": "BCH-USDT-SWAP",
@@ -271,7 +272,8 @@
     "entry_message_id": 1661,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778442488.6547658
+    "pending_since": 1778442488.6547658,
+    "current_price": 461.6
   },
   "LTC-USDT-SWAP_LONG_1778442561-FD8A4653": {
     "instId": "LTC-USDT-SWAP",
@@ -362,7 +364,8 @@
     "activated_at": null,
     "entry_message_id": 1662,
     "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778442561.2815402
+    "user_confirmed": false,
+    "pending_since": 1778442561.2815402,
+    "current_price": 59.82
   }
 }
