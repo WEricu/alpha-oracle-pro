@@ -168,13 +168,13 @@ ALL_COINS = [
     "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
     "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
     "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP",
-      "UNI-USDT-SWAP", "LTC-USDT-SWAP", "BCH-USDT-SWAP",
-      "APT-USDT-SWAP", "OP-USDT-SWAP", "ARB-USDT-SWAP",
-      "SUI-USDT-SWAP", "ATOM-USDT-SWAP",
-      "XAU-USDT-SWAP", "XAG-USDT-SWAP",
-      "TRX-USDT-SWAP", "SHIB-USDT-SWAP", "PENGU-USDT-SWAP",
-      "RIVER-USDT-SWAP", "HYPE-USDT-SWAP", "OKB-USDT-SWAP", "PEPE-USDT-SWAP",
+    "UNI-USDT-SWAP", "LTC-USDT-SWAP", "BCH-USDT-SWAP",
+    "APT-USDT-SWAP", "OP-USDT-SWAP", "ARB-USDT-SWAP",
+    "SUI-USDT-SWAP", "ATOM-USDT-SWAP",
+    "TRX-USDT-SWAP", "SHIB-USDT-SWAP",
+    "HYPE-USDT-SWAP", "OKB-USDT-SWAP", "PEPE-USDT-SWAP",
 ]
+# v14.8: 移除 XAU/XAG（商品非加密）、RIVER/PENGU（流動性不足）
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 100)
 
@@ -1964,6 +1964,14 @@ def generate_signal(
         # 波動過大跳過（止損會被打飛）
         return None
 
+    # 📊 成交量過濾：最新K線量 < 20根均量50% → 市場無興趣，跳過
+    if len(df) >= 20:
+        _vols = [float(c.get("vol", 0)) for c in df[-20:]]
+        _avg_vol = sum(_vols) / len(_vols)
+        if _avg_vol > 0 and float(df[-1].get("vol", 0)) < _avg_vol * 0.5:
+            logging.debug(f"[{instId}] 成交量不足，跳過")
+            return None
+
     # 極端資金費率時降分過濾（多頭時資金費率太高代表多方擁擠）
     funding_penalty_long = funding_rate and funding_rate > 0.0008
     funding_penalty_short = funding_rate and funding_rate < -0.0008
@@ -1977,12 +1985,40 @@ def generate_signal(
     if regime_info["volatile"]:
         threshold += 3  # 高波動加碼提高門檻
 
+    # ⏰ 時段門檻調整：亞洲盤假突破多，要求更嚴
+    _utc_h = datetime.utcnow().hour
+    if 0 <= _utc_h < 7:
+        threshold += 15  # 亞洲盤
+    elif 7 <= _utc_h < 13:
+        threshold += 5   # 歐洲盤
+
     # 🕒 多時框抓一次給兩個方向共用
     mtf = fetch_mtf_trend(instId)
 
     candidates = []
     for side in ("LONG", "SHORT"):
+        # 🚦 MTF 硬性封鎖：1H + 4H 同時反向直接跳過
+        _t1h = mtf.get("1H", {}).get("trend", "side")
+        _t4h = mtf.get("4H", {}).get("trend", "side")
+        if side == "LONG" and _t1h == "down" and _t4h == "down":
+            continue
+        if side == "SHORT" and _t1h == "up" and _t4h == "up":
+            continue
         score, grade, detail = calc_score(df, side, current_price, mtf=mtf)
+        # 🧱 OB 磁性衰退：OB被反覆測試則降分
+        if detail.get("ob_low") and detail.get("ob_high"):
+            _ob_l, _ob_h = float(detail["ob_low"]), float(detail["ob_high"])
+            _ob_hits = sum(
+                1 for _c in df[-50:]
+                if float(_c.get("l", 0)) <= _ob_h and float(_c.get("h", 0)) >= _ob_l
+            )
+            if _ob_hits >= 4:
+                score -= 20
+                detail["ob_test_count"] = _ob_hits
+                detail["ob_degraded"] = True
+            elif _ob_hits >= 2:
+                score -= 8
+                detail["ob_test_count"] = _ob_hits
         if side == "LONG" and funding_penalty_long:
             score -= 5
         if side == "SHORT" and funding_penalty_short:
