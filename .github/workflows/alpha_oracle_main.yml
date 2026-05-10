@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   run-bot:
-    runs-on: ubuntu-latesth
+    runs-on: ubuntu-latest
     permissions:
       contents: write # 賦予權限，讓機器人能自動把學習狀態存回 GitHub
 
