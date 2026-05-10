@@ -1084,6 +1084,32 @@ def calc_rsi(df: list, period: int = 14) -> float:
 # ═════════════════════════════════════════════════════════
 # 6. SMC / ICT / SNR / 價格行為 / 流動性 / 動能
 # ═════════════════════════════════════════════════════════
+
+
+def calc_macd(df: list, fast: int = 12, slow: int = 26, sig_period: int = 9) -> tuple[float, float, float]:
+    """MACD 指標：回傳 (macd線, 訊號線, 柱狀圖)"""
+    if len(df) < slow + sig_period:
+        return 0.0, 0.0, 0.0
+    closes = [float(c[4]) for c in df]
+
+    def _ema(prices, period):
+        k = 2.0 / (period + 1)
+        result = [prices[0]]
+        for p in prices[1:]:
+            result.append(p * k + result[-1] * (1 - k))
+        return result
+
+    fast_ema = _ema(closes, fast)
+    slow_ema = _ema(closes, slow)
+    macd_line = [f - s for f, s in zip(fast_ema, slow_ema)]
+    valid = macd_line[slow - 1:]
+    if len(valid) < sig_period:
+        return 0.0, 0.0, 0.0
+    signal_line = _ema(valid, sig_period)
+    histogram = valid[-1] - signal_line[-1]
+    return valid[-1], signal_line[-1], histogram
+
+
 def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
     """🧱 訂單塊（OB）
 
@@ -1500,8 +1526,8 @@ def calc_score(
     mtf: dict | None = None,
     instId: str | None = None,
 ) -> tuple[int, str, dict]:
-    """總分 = 趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 = 最高 138
-    （高於 100 是因為 v14 新增 MTF + Volume 加權，門檻仍預設 68）
+    """總分 = 趨勢30 + RSI25 + MACD8 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 + EMA5 + VWAP3 = 最高 146
+    （v14.8 新增 MACD 動能確認，門檻仍預設 68）
     """
     detail = {}
     score = 0
@@ -1581,6 +1607,28 @@ def calc_score(
     # 動能 (5)
     detail["mom"] = 5 if calc_momentum_ratio(df, side) else 0
     score += detail["mom"]
+
+    # 📈 MACD 動能確認 (-4 ~ +8)
+    macd_val, macd_sig, macd_hist = calc_macd(df)
+    if side == "LONG":
+        if macd_val > macd_sig and macd_hist > 0:
+            score += 8; detail["macd"] = 8
+        elif macd_val > 0:
+            score += 4; detail["macd"] = 4
+        elif macd_val < macd_sig and macd_hist < 0:
+            score -= 4; detail["macd"] = -4
+        else:
+            detail["macd"] = 0
+    else:  # SHORT
+        if macd_val < macd_sig and macd_hist < 0:
+            score += 8; detail["macd"] = 8
+        elif macd_val < 0:
+            score += 4; detail["macd"] = 4
+        elif macd_val > macd_sig and macd_hist > 0:
+            score -= 4; detail["macd"] = -4
+        else:
+            detail["macd"] = 0
+
 
     # 🎯 MTF 多時框共振 (-15 ~ +15)
     if mtf is None and instId:
@@ -3842,6 +3890,35 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
                 logging.info(f"⏱️ 掛單超時自動取消：{order_id}")
 
 
+
+
+def _maybe_send_patrol(tracker, sent: int) -> None:
+    """每小時發一次巡邏報告（無新訊號才發，避免重複）"""
+    if sent > 0:
+        return
+    state = get_system_state()
+    now = time.time()
+    if now - state.get("last_patrol_ts", 0) < 3600:
+        return
+    state["last_patrol_ts"] = now
+    save_system_state(state)
+
+    active = [s for s in tracker.signals.values() if s["status"] in ("ACTIVE", "BE", "TRAIL")]
+    pending = [s for s in tracker.signals.values() if s["status"] == "PENDING"]
+    tw_time = tw_now().strftime("%H:%M")
+
+    lines = [f"🔍 *{tw_time} 巡邏報告*", "📊 幣種掃描完成", "💤 本輪無新訊號"]
+    if active:
+        coins = " / ".join(s["instId"].split("-")[0] for s in active)
+        lines.append(f"🟢 追蹤中：{len(active)} 筆（{coins}）")
+    if pending:
+        coins = " / ".join(s["instId"].split("-")[0] for s in pending)
+        lines.append(f"⏳ 待確認：{len(pending)} 筆（{coins}）")
+    if not active and not pending:
+        lines.append("📭 目前無持倉")
+    send_tg("\n".join(lines))
+
+
 def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行掃描（整合 v12 全部風控）"""
     logging.info("🚀 開始掃描...")
@@ -4073,6 +4150,7 @@ def run_scan(tracker: SignalTracker) -> int:
     tracker.send_position_updates()
 
     logging.info(f"✅ 掃描完成，本輪新增 {sent} 筆訊號")
+    _maybe_send_patrol(tracker, sent)
     # 🩺 重置失敗計數
     reset_failure_count()
     return sent
