@@ -4325,26 +4325,38 @@ def run_scan(tracker: SignalTracker) -> int:
                 and signal["entry"] * (1 - 0.002) <= okx_price <= signal["entry"] * (1 + 0.006)
             )
 
-            key, order_id = tracker.add(signal, active=in_zone)
+            key, order_id = tracker.add(signal, active=False)  # FIX: 永遠 PENDING，等使用者確認
 
             if in_zone:
-                msg = _fmt_entry(
-                    coin=instId.split("-")[0],
-                    side=signal["side"],
-                    order_id=order_id,
-                    price=okx_price,
-                    entry=signal["entry"],
-                    sl=signal["sl"],
-                    tp1=signal["tp1"],
-                    tp2=signal["tp2"],
-                    tp3=signal["tp3"],
-                    score=signal["score"],
-                    funding_rate=funding,
-                    detail=signal.get("detail"),
+                # ⚡ 價格已在進場區間 — 仍需使用者確認才進場（不自動進單）
+                _d = signal.get("detail") or {}
+                _dir = "做多" if signal["side"] == "LONG" else "做空"
+                _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
+                _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
+                _urgent_msg_id = send_tg(
+                    f"⚡ *{instId.split('-')[0]} 價格已到位！請確認進場*\n"
+                    f"─────────────\n"
+                    f"🔑 單號：`{order_id}`\n"
+                    f"⏰ 時間：{tw_ts()}\n"
+                    f"方向：{_dir}\n"
+                    f"🎯 進場價：`{signal['entry']:.4f}`\n"
+                    f"📊 當前市價：`{okx_price:.4f}`\n"
+                    f"⚠️ 價格已在進場區！請立即確認或放棄\n"
+                    f"評分：*{signal['score']} 分* {signal.get('grade', '')}\n"
+                    f"\n"
+                    + _pending_narrative + "\n"
+                    + f"\n"
+                    + f"🎯 止盈目標：\n"
+                    + f"  TP1 `{signal['tp1']:.4f}`\n"
+                    + f"  TP2 `{signal['tp2']:.4f}`\n"
+                    + f"  TP3 `{signal['tp3']:.4f}`\n"
+                    + f"🛑 止損：`{signal['sl']:.4f}`\n"
+                    + f"\n"
+                    + f"⚡ 價格已到位！5 分鐘無回應自動取消",
+                    reply_markup=_pending_keyboard(order_id),
                 )
-                msg_id = send_tg(msg, reply_markup=_order_keyboard(order_id))
-                tracker.set_entry_message_id(key, msg_id)
-                logging.info(f"✅ {instId} 進場通知已送出，訂單 {order_id}")
+                tracker.set_entry_message_id(key, _urgent_msg_id)
+                logging.info(f"⚡ {instId} 價格已到位，等待使用者確認，訂單 {order_id}")
             else:
                 _d = signal.get("detail") or {}
                 _lref = okx_price
