@@ -90,7 +90,7 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778434268.798695,
-    "current_price": 0.3515
+    "current_price": 0.3516
   },
   "LINK-USDT-SWAP_LONG_1778434273-507422F6": {
     "instId": "LINK-USDT-SWAP",
@@ -182,7 +182,7 @@
     "user_confirmed": true,
     "pending_since": 1778434273.66606,
     "confirmed_at": 1778435799.7078006,
-    "current_price": 10.785
+    "current_price": 10.79
   },
   "BTC-USDT-SWAP_LONG_1778437815-D40380CA": {
     "instId": "BTC-USDT-SWAP",
@@ -274,10 +274,10 @@
     "hit_tp3": false,
     "activated_at": 1778437815.7908287,
     "entry_message_id": 1641,
-    "last_checked_ts": 1778438700.0,
+    "last_checked_ts": 1778439600.0,
     "user_confirmed": true,
     "pending_since": null,
-    "current_price": 81315.4
+    "current_price": 81373.0
   },
   "XRP-USDT-SWAP_LONG_1778437818-584350B3": {
     "instId": "XRP-USDT-SWAP",
