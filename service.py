@@ -154,12 +154,6 @@ if __name__ == "__main__":
     gh_load_all()
 
     tracker = _main.SignalTracker(_main.ACTIVE_SIGNALS_FILE)
-    _main.send_tg(
-        f"🤖 *Alpha Oracle Pro 服務上線*\n"
-        f"⏰ {_main.tw_ts()}\n"
-        f"🔍 掃描間隔：{SCAN_INTERVAL // 60} 分鐘\n"
-        f"📲 Callback 輪詢：每 {CALLBACK_INTERVAL} 秒"
-    )
     threading.Thread(target=health_server, daemon=True).start()
     threading.Thread(target=callback_loop, daemon=True).start()
     scan_loop()
