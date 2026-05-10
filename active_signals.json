@@ -179,7 +179,7 @@
     "activated_at": null,
     "entry_message_id": 1675,
     "last_checked_ts": null,
-    "user_confirmed": null,
+    "user_confirmed": false,
     "pending_since": 1778446255.8893552,
     "current_price": 4713.7
   }
