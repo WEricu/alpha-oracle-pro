@@ -3397,6 +3397,18 @@ class SignalTracker:
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
         kb = _order_keyboard(order_id)
 
+        # 🕐 確認開單後 10 分鐘未進場 → 自動取消追蹤
+        confirmed_at = sig.get("confirmed_at")
+        if confirmed_at and time.time() - confirmed_at > 10 * 60:
+            coin_name = sig["instId"].split("-")[0]
+            send_tg(
+                f"⏰ *{coin_name} 掛單超時取消*\n"
+                f"🆔 訂單：`{order_id}`\n"
+                f"確認開單後 10 分鐘限價未成交，已自動取消追蹤"
+            )
+            self.transitions += 1
+            return True
+
         if time.time() > sig["expires"]:
             send_tg(
                 f"⏰ *{coin} 訊號過期*\n"
@@ -3785,10 +3797,12 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
             key = tracker.find_key_by_order_id(order_id)
             if key and tracker.signals[key].get("user_confirmed") is None:
                 tracker.signals[key]["user_confirmed"] = True
+                tracker.signals[key]["confirmed_at"] = time.time()
                 tracker._save()
                 answer_callback(cq_id, "✅ 已確認開單，等待限價進場")
                 edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "✅ 已確認開單", "callback_data": "noop"}]]})
                 logging.info(f"✅ 用戶確認開單：{order_id}")
+              
                 _inst = tracker.signals[key].get("instId", "").split("-")[0]
                 send_tg(f"✅ 收到！*{_inst}* 已確認開單，等待限價進場 🎯")
             else:
