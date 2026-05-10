@@ -1501,6 +1501,190 @@ def calc_vwap_score(df: list, side: str, lookback: int = 20) -> tuple[int, str]:
         return 0, "價接近 VWAP"
 
 
+
+
+# ═════════════════════════════════════════════════════════
+# SMC / ICT 完整指標（BOS / CHOCH / Premium-Discount / Displacement）
+# ═════════════════════════════════════════════════════════
+
+def detect_swing_points(df: list, lookback: int = 5) -> tuple[float, float]:
+    """🔁 找出最近 swing high / swing low（用於 BOS/CHOCH）"""
+    if len(df) < lookback * 2 + 1:
+        return df[-1]["h"], df[-1]["l"]
+    seg = df[-(lookback * 2):]
+    swing_high = max(r["h"] for r in seg)
+    swing_low = min(r["l"] for r in seg)
+    return swing_high, swing_low
+
+
+def detect_bos_choch(df: list, side: str, lookback: int = 30) -> tuple[str | None, str]:
+    """🔔 BOS（結構突破）/ CHOCH（性格轉換）
+    BOS LONG  : 當前收盤突破近期 swing high → 確認多頭結構
+    CHOCH LONG: 前一波段為空頭，最後一根收盤突破前次高 → 結構反轉
+    回傳 ('BOS'|'CHOCH'|None, 描述)
+    """
+    if len(df) < lookback + 5:
+        return None, "資料不足"
+    seg = df[-lookback:]
+    last = df[-1]
+
+    # 找近期高點（最後 3~lookback 根裡最高的高點）
+    ref_seg = seg[:-3]
+    if not ref_seg:
+        return None, "參考段不足"
+
+    if side == "LONG":
+        # 找參考段中最高的 swing high
+        ref_high = max(r["h"] for r in ref_seg)
+        # BOS：收盤突破參考高點
+        if last["c"] > ref_high:
+            # 判斷是 BOS 還是 CHOCH：看前期趨勢方向
+            prev_trend_down = ref_seg[-1]["c"] < ref_seg[0]["c"]
+            label = "CHOCH" if prev_trend_down else "BOS"
+            return label, f"{label} ↑ 突破 {ref_high:.4f}"
+    else:  # SHORT
+        ref_low = min(r["l"] for r in ref_seg)
+        if last["c"] < ref_low:
+            prev_trend_up = ref_seg[-1]["c"] > ref_seg[0]["c"]
+            label = "CHOCH" if prev_trend_up else "BOS"
+            return label, f"{label} ↓ 跌破 {ref_low:.4f}"
+
+    return None, "無結構突破"
+
+
+def detect_premium_discount(df: list, current_price: float, lookback: int = 50) -> str:
+    """💰 Premium / Discount 區間（SMC 核心：在折扣區做多，在溢價區做空）
+    依據最近 N 根 K 線的高低點計算：
+    - 低於 50% (equilibrium) → DISCOUNT（尋找多頭機會）
+    - 高於 50% → PREMIUM（尋找空頭機會）
+    - 45~55% 視為 EQUILIBRIUM
+    """
+    seg = df[-lookback:] if len(df) >= lookback else df
+    high = max(r["h"] for r in seg)
+    low = min(r["l"] for r in seg)
+    if high == low:
+        return "EQUILIBRIUM"
+    pct = (current_price - low) / (high - low)
+    if pct < 0.45:
+        return "DISCOUNT"
+    elif pct > 0.55:
+        return "PREMIUM"
+    return "EQUILIBRIUM"
+
+
+def detect_displacement(df: list, side: str, n: int = 3) -> bool:
+    """⚡ Displacement（位移／強勢推進）
+    SMC/ICT：尋找 3 根以上連續同向大陽/大陰線，確認方向性動能。
+    使用 ATR 過濾：每根 body 需 > 0.5 × ATR
+    """
+    if len(df) < n + 14:
+        return False
+    atr = calc_atr(df)
+    if atr <= 0:
+        return False
+    last_n = df[-n:]
+    if side == "LONG":
+        return all(r["c"] > r["o"] and (r["c"] - r["o"]) > atr * 0.5 for r in last_n)
+    return all(r["c"] < r["o"] and (r["o"] - r["c"]) > atr * 0.5 for r in last_n)
+
+
+def detect_equal_highs_lows(df: list, side: str, lookback: int = 30, tol: float = 0.002) -> bool:
+    """🎯 Equal Highs / Equal Lows（EQH / EQL）
+    EQL（多頭）：兩個相近的低點 → 流動性池，掃完後做多
+    EQH（空頭）：兩個相近的高點 → 流動性池，掃完後做空
+    """
+    if len(df) < lookback:
+        return False
+    seg = df[-lookback:]
+    if side == "LONG":
+        lows = [r["l"] for r in seg]
+        for i in range(len(lows) - 1):
+            for j in range(i + 1, len(lows)):
+                if abs(lows[i] - lows[j]) / max(lows[i], 1e-9) <= tol:
+                    return True
+    else:
+        highs = [r["h"] for r in seg]
+        for i in range(len(highs) - 1):
+            for j in range(i + 1, len(highs)):
+                if abs(highs[i] - highs[j]) / max(highs[i], 1e-9) <= tol:
+                    return True
+    return False
+
+
+# ═════════════════════════════════════════════════════════
+# 成交量技術分析（OBV / Volume Climax / Buying Pressure）
+# ═════════════════════════════════════════════════════════
+
+def calc_obv_trend(df: list, period: int = 14) -> tuple[str, float]:
+    """📊 OBV（On Balance Volume）趨勢
+    OBV 上升 → 買盤積累（多頭偏向）
+    OBV 下降 → 賣盤積累（空頭偏向）
+    回傳 ('UP'|'DOWN'|'FLAT', obv_slope)
+    """
+    if len(df) < period + 1:
+        return "FLAT", 0.0
+    seg = df[-period:]
+    obv = 0.0
+    obv_series = []
+    for i, r in enumerate(seg):
+        vol = float(r.get("vol", r.get("v", 0)))
+        if i == 0:
+            obv_series.append(0.0)
+            continue
+        prev = seg[i - 1]
+        if r["c"] > prev["c"]:
+            obv += vol
+        elif r["c"] < prev["c"]:
+            obv -= vol
+        obv_series.append(obv)
+    if len(obv_series) < 4:
+        return "FLAT", 0.0
+    # 用線性斜率判斷趨勢
+    half = len(obv_series) // 2
+    slope = obv_series[-1] - obv_series[half]
+    if slope > 0:
+        return "UP", slope
+    elif slope < 0:
+        return "DOWN", slope
+    return "FLAT", 0.0
+
+
+def detect_volume_climax(df: list, lookback: int = 20, threshold: float = 2.5) -> bool:
+    """🔥 Volume Climax（成交量高潮）
+    近 3 根平均成交量 > lookback 期平均 × threshold → 爆量訊號
+    可能代表：趨勢延續確認 OR 反轉排列（需結合方向判斷）
+    """
+    if len(df) < lookback + 3:
+        return False
+    avg_vol = sum(float(r.get("vol", r.get("v", 0))) for r in df[-lookback:-3]) / (lookback - 3)
+    recent_avg = sum(float(r.get("vol", r.get("v", 0))) for r in df[-3:]) / 3
+    return avg_vol > 0 and recent_avg > avg_vol * threshold
+
+
+def calc_buying_pressure(df: list, n: int = 10) -> float:
+    """💪 買盤壓力比（成交量加權方向）
+    每根 K 線：bull_vol = vol × (close - low) / (high - low)
+    返回 0~1，>0.6 為多頭主導，<0.4 為空頭主導
+    """
+    if len(df) < n:
+        return 0.5
+    seg = df[-n:]
+    total_bull = 0.0
+    total_vol = 0.0
+    for r in seg:
+        vol = float(r.get("vol", r.get("v", 0)))
+        hl = r["h"] - r["l"]
+        if hl <= 0:
+            continue
+        bull_frac = (r["c"] - r["l"]) / hl
+        total_bull += vol * bull_frac
+        total_vol += vol
+    if total_vol == 0:
+        return 0.5
+    return total_bull / total_vol
+
+
+
 def detect_pullback(df: list, side: str) -> bool:
     """🌀 偵測回測進場：最後一根 K 出現方向反轉影線 + 收線回升"""
     if len(df) < 3:
@@ -1526,8 +1710,9 @@ def calc_score(
     mtf: dict | None = None,
     instId: str | None = None,
 ) -> tuple[int, str, dict]:
-    """總分 = 趨勢30 + RSI25 + MACD8 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 + EMA5 + VWAP3 = 最高 146
-    （v14.8 新增 MACD 動能確認，門檻仍預設 68）
+    """總分 = 趨勢30+RSI25+MACD8+OB20+FVG15+SNR5+PA5+流動性5+動能5+MTF15+Volume8+EMA5+VWAP3
+         +BOS12+PD5+Displacement5+EQL3+OBV6+VolClimax4+BuyPressure4 = 最高 183
+    （v14.9 完整 SMC/ICT + 成交量技術分析，門檻仍預設 68）
     """
     detail = {}
     score = 0
@@ -1628,6 +1813,71 @@ def calc_score(
             score -= 4; detail["macd"] = -4
         else:
             detail["macd"] = 0
+
+    # 🔔 BOS / CHOCH 結構突破 (-5 ~ +12)
+    bos_label, bos_desc = detect_bos_choch(df, side)
+    if bos_label == "BOS":
+        score += 12; detail["bos"] = 12
+    elif bos_label == "CHOCH":
+        score += 8; detail["bos"] = 8
+    else:
+        detail["bos"] = 0
+    detail["bos_desc"] = bos_desc
+
+    # 💰 Premium / Discount 區間 (-3 ~ +5)
+    pd_zone = detect_premium_discount(df, current_price)
+    if (side == "LONG" and pd_zone == "DISCOUNT") or (side == "SHORT" and pd_zone == "PREMIUM"):
+        score += 5; detail["pd_zone"] = 5
+    elif pd_zone == "EQUILIBRIUM":
+        detail["pd_zone"] = 0
+    else:
+        score -= 3; detail["pd_zone"] = -3
+    detail["pd_label"] = pd_zone
+
+    # ⚡ Displacement 強勢位移 (+5)
+    if detect_displacement(df, side):
+        score += 5; detail["displacement"] = 5
+    else:
+        detail["displacement"] = 0
+
+    # 🎯 Equal Highs/Lows 流動性掃蕩目標 (+3)
+    if detect_equal_highs_lows(df, side):
+        score += 3; detail["eqhl"] = 3
+    else:
+        detail["eqhl"] = 0
+
+    # 📊 OBV 趨勢共振 (-3 ~ +6)
+    obv_trend, _ = calc_obv_trend(df)
+    if (side == "LONG" and obv_trend == "UP") or (side == "SHORT" and obv_trend == "DOWN"):
+        score += 6; detail["obv"] = 6
+    elif obv_trend == "FLAT":
+        detail["obv"] = 0
+    else:
+        score -= 3; detail["obv"] = -3
+    detail["obv_trend"] = obv_trend
+
+    # 🔥 Volume Climax 爆量確認 (+4)
+    if detect_volume_climax(df):
+        score += 4; detail["vol_climax"] = 4
+    else:
+        detail["vol_climax"] = 0
+
+    # 💪 買盤壓力比 (-3 ~ +4)
+    bp = calc_buying_pressure(df)
+    if side == "LONG":
+        if bp >= 0.6:
+            score += 4; detail["buy_pressure"] = 4
+        elif bp <= 0.4:
+            score -= 3; detail["buy_pressure"] = -3
+        else:
+            detail["buy_pressure"] = 0
+    else:
+        if bp <= 0.4:
+            score += 4; detail["buy_pressure"] = 4
+        elif bp >= 0.6:
+            score -= 3; detail["buy_pressure"] = -3
+        else:
+            detail["buy_pressure"] = 0
 
 
     # 🎯 MTF 多時框共振 (-15 ~ +15)
