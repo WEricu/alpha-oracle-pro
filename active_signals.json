@@ -1,1 +1,82 @@
-{}
+{
+  "XAU-USDT-SWAP_LONG_1778397948-DB786D8B": {
+    "instId": "XAU-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 4710.3265,
+    "sl": 4708.2051,
+    "tp1": 4713.5086,
+    "tp2": 4716.6908,
+    "tp3": 4720.9336,
+    "score": 107,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.9,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 4723.4,
+      "ob_high": 4725.2,
+      "fvg": 15,
+      "fvg_low": 4724.9,
+      "fvg_high": 4726.5,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.66,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "transitional",
+      "adx": 23.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.03,
+      "learning_notes": [
+        "rsi_long:50-59 (n=13, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 0 (勝率 50%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": -0.0002351999091022,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 23.7,
+      "atr_pct": 0.03,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 4723.4,
+      "high": 4725.2
+    },
+    "created": 1778397948.5271087,
+    "expires": 1778484348.527109,
+    "order_id": "1778397948-DB786D8B",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1508,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778397948.5293999
+  }
+}
