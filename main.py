@@ -175,7 +175,7 @@ ALL_COINS = [
       "RIVER-USDT-SWAP", "HYPE-USDT-SWAP", "OKB-USDT-SWAP", "PEPE-USDT-SWAP",
 ]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
-SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 85)
+SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 100)
 
 PENDING_APPROVAL_TIMEOUT = 4
 COOLDOWN_HOURS = 2
@@ -197,7 +197,7 @@ _price_cache: dict = {}
 DEFAULT_CONFIG: dict = {
     "coins": ALL_COINS,                # 可在 config.json 自訂
     "max_signals": 3,
-    "score_threshold": 85,
+    "score_threshold": 100,
     "cooldown_hours": 2,
     "signal_expire_hours": 4,
     "atr_max_pct": 0.04,
@@ -247,7 +247,8 @@ DEFAULT_CONFIG: dict = {
     "position_sizing": {               # 倉位大小建議
         "enabled": True,
         "tiers": [
-            {"min_score": 95, "multiplier": 1.5, "label": "🔥 強訊號加大倉"},
+            {"min_score": 140, "multiplier": 2.0, "label": "👑 S級神單抱倉"},
+        {"min_score": 95, "multiplier": 1.5, "label": "🔥 強訊號加大倉"},
             {"min_score": 85, "multiplier": 1.0, "label": "標準倉"},
             {"min_score": 80, "multiplier": 0.5, "label": "謹慎小倉"},
             {"min_score": 0,  "multiplier": 0.5, "label": "標準倉"},
@@ -607,7 +608,7 @@ def _fmt_entry(
 
     # 🎯 神級訊號特別標記
     cfg_god = load_config().get("god_signal", {})
-    god_threshold = cfg_god.get("min_score", 95)
+    god_threshold = cfg_god.get("min_score", 140)
     is_god = cfg_god.get("enabled", True) and score >= god_threshold
 
     if is_god:
@@ -678,7 +679,7 @@ def _fmt_entry(
         f"方向：{direction}\n"
         f"進場價：`{entry:.4f}`\n"
         f"當前價：`{price:.4f}`\n"
-        f"評分：*{score} 分*\n"
+        f"評分：*{score} 分* {grade}{'  👑 *可抱單*' if grade.startswith('S') else ''}\n"
         f"⏱ 進場框架：`{detail.get('entry_tf', '15m') if detail else '15m'}`　📐 分析框架：`{detail.get('analysis_tfs', '1H / 4H') if detail else '1H / 4H'}`\n"
         f"🔀 MTF 方向：`{detail.get('mtf_desc', 'N/A') if detail else 'N/A'}`\n"
         f"{pos_line}"
@@ -1920,7 +1921,9 @@ def calc_score(
             detail["direction_bias_note"] = bias_note
 
     grade = (
-        "A+ 極強 🔥"
+        "S 神級 👑"
+        if score >= 140
+        else "A+ 極強 🔥"
         if score >= 120
         else "A 強力 ⭐"
         if score >= 100
@@ -4372,7 +4375,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     f"📊 掛單時市價：`{_lref:.4f}`\n"
                     f"📉 {_wait_label}\n"
                     f"📌 掛單依據：{_limit_src}\n"
-                    f"評分：*{signal['score']} 分*\n"
+                    f"評分：*{signal['score']} 分* {signal.get('grade', '')}{'  👑 *可抱單*' if signal.get('grade', '').startswith('S') else ''}\n"
                     f"⏱ 進場框架：`{signal.get('detail', {}).get('entry_tf', '15m')}`　📐 分析框架：`{signal.get('detail', {}).get('analysis_tfs', '1H / 4H')}`\n"
                     f"🔀 MTF 方向：`{signal.get('detail', {}).get('mtf_desc', 'N/A')}`\n"
                     f"\n"
