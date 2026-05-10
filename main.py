@@ -3497,7 +3497,7 @@ class SignalTracker:
         self.transitions = 0
         self._lock = threading.RLock()  # FIX Bug4
 
-    def _save    def _save(self) -> None:
+    def _save(self) -> None:
         with self._lock:
             _save_json(self.filepath, self.signals)
 
