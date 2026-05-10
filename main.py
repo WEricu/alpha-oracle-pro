@@ -673,7 +673,7 @@ def _fmt_entry(
         breakdown = _format_score_breakdown(detail)
 
     return (
-        f"{emoji} *{coin} 進場提醒* {grade}\n"
+        f"🎯 *{coin} 進場成功！* {grade}\n"
         f"━━━━━━━━━━━━━━\n"
         f"⏰ 時間：{tw_ts()}\n"
         f"方向：{direction}\n"
@@ -3700,12 +3700,12 @@ class SignalTracker:
 
         # 🕐 確認開單後 10 分鐘未進場 → 自動取消追蹤
         confirmed_at = sig.get("confirmed_at")
-        if confirmed_at and time.time() - confirmed_at > 10 * 60:
+        if confirmed_at and time.time() - confirmed_at > 4 * 3600:
             coin_name = sig["instId"].split("-")[0]
             send_tg(
                 f"⏰ *{coin_name} 掛單超時取消*\n"
                 f"🆔 訂單：`{order_id}`\n"
-                f"確認開單後 10 分鐘限價未成交，已自動取消追蹤"
+                f"確認開單後 4 小時限價未成交，已自動取消追蹤"
             )
             self.transitions += 1
             return True
