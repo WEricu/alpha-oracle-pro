@@ -160,7 +160,7 @@ def callback_loop():
     logging.info(f"Callback loop started, interval {CALLBACK_INTERVAL}s")
     while True:
         try:
-            _main.process_pending_approvals(tracker)
+            _main.process_pending_approvals(tracker, save_fn=gh_save_file)  # FIX: pass gh_save to prevent restart-duplicate
             # FIX Bug20: sync active_signals immediately after confirm/cancel
             # (content-hash dedup in gh_save_file ensures no commit unless content changed)
             gh_save_file("active_signals.json")
