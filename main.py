@@ -364,7 +364,7 @@ def send_tg(
                     wait = float(r.json().get("parameters", {}).get("retry_after", 2))
                 except Exception:
                     wait = 2.0
-                wait = min(wait + 0.5, 15)
+                wait = min(wait + 0.5, 60)
                 logging.warning(f"⏳ TG 429 限速，等 {wait:.1f}s 重試")
                 time.sleep(wait)
                 last_err = "429 rate limit"
@@ -3367,7 +3367,7 @@ def get_today_stats() -> dict:
         if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3", "OB_FAIL")
     ]
     return {
-        "trades_count": len(today_trades),
+        "trades_count": len(set(t.get("order_id", "") for t in today_trades)),  # FIX: unique signals
         "closed_count": len(closed),
         "pnl_pct": sum(t.get("pnl", 0) for t in closed),
         "wins": sum(1 for t in closed if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK")),
@@ -3393,7 +3393,7 @@ def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
     max_concurrent = dl_cfg.get("max_concurrent_positions", 2)
     open_count = sum(
         1 for s in tracker.signals.values()
-        if s.get("status") in ("PENDING", "ACTIVE", "BE", "TRAIL")
+        if s.get("status") in ("ACTIVE", "BE", "TRAIL")  # FIX: PENDING 不佔持倉名額
     )
     if open_count >= max_concurrent:
         return True, (
@@ -3645,6 +3645,8 @@ class SignalTracker:
             if status == "PENDING":
                 return self._check_pending(sig, price)
 
+            if status == "CANCELLED":
+                return True   # FIX: 已取消 → 移除
             if status not in ("ACTIVE", "BE", "TRAIL"):
                 return False
 
@@ -3876,6 +3878,7 @@ class SignalTracker:
                 reply_to_message_id=reply_to,
             )
             record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"], sig)
+            self._send_postmortem(sig, "TP3")  # FIX: 覆盤分析（獲利出場）
             self.transitions += 1
             return True
 
@@ -4020,7 +4023,7 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
 
 # ── Telegram callback helpers ──
 _TG_OFFSET_FILE = "tg_update_offset.json"
-PENDING_APPROVAL_TIMEOUT = 10 * 60  # 5 分鐘
+PENDING_APPROVAL_TIMEOUT = 10 * 60  # 10 分鐘（無回應自動取消）
 
 
 def get_tg_updates() -> list:
@@ -4122,13 +4125,12 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
             else:
                 answer_callback(cq_id, "此訊號已處理")
 
-    # 自動過期：5 分鐘無回應 → 取消
+    # 自動過期：10 分鐘無回應 → 取消
     for key, sig in list(tracker.signals.items()):
         if sig.get("status") == "PENDING" and sig.get("user_confirmed") is None:
             pending_since = sig.get("pending_since", now)
             if now - pending_since > PENDING_APPROVAL_TIMEOUT:
-                tracker.signals[key]["status"] = "CANCELLED"
-                tracker.signals[key]["user_confirmed"] = False
+                del tracker.signals[key]  # FIX: 直接刪除，不留 CANCELLED 殘留
                 tracker._save()
                 coin = sig["instId"].split("-")[0]
                 order_id = sig.get("order_id", "N/A")
