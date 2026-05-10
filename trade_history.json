@@ -2306,5 +2306,94 @@
       "atr_pct": 0.096,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-11 04:50",
+    "date": "2026-05-11",
+    "order_id": "1778443180-EB83C571",
+    "coin": "UNI",
+    "side": "LONG",
+    "entry": 4.005,
+    "close": 3.919,
+    "close_type": "OB_FAIL",
+    "pnl": -2.15,
+    "is_win": false,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.7,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 4.005,
+      "ob_high": 4.04,
+      "fvg": 15,
+      "fvg_low": 4.046,
+      "fvg_high": 4.05,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.14,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.45%",
+      "regime": "transitional",
+      "adx": 22.5,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.885,
+      "learning_notes": [
+        "rsi_long:60-69 (n=6, 勝率 33%) → -2",
+        "fund:neutral (n=31, 勝率 61%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": -1
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 60.7,
+      "atr_pct": 0.885,
+      "funding": 0.1,
+      "vol_ratio": 0.14,
+      "adx": 22.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 75.3
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.5,
+      "atr_pct": 0.885,
+      "volatile": false
+    }
   }
 ]
