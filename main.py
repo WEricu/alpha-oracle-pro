@@ -175,7 +175,7 @@ ALL_COINS = [
       "RIVER-USDT-SWAP", "HYPE-USDT-SWAP", "OKB-USDT-SWAP", "PEPE-USDT-SWAP",
 ]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
-SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
+SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 85)
 
 PENDING_APPROVAL_TIMEOUT = 4
 COOLDOWN_HOURS = 2
@@ -197,7 +197,7 @@ _price_cache: dict = {}
 DEFAULT_CONFIG: dict = {
     "coins": ALL_COINS,                # 可在 config.json 自訂
     "max_signals": 3,
-    "score_threshold": 68,
+    "score_threshold": 85,
     "cooldown_hours": 2,
     "signal_expire_hours": 4,
     "atr_max_pct": 0.04,
@@ -1921,11 +1921,11 @@ def calc_score(
 
     grade = (
         "A+ 極強 🔥"
-        if score >= 85
+        if score >= 120
         else "A 強力 ⭐"
-        if score >= 70
+        if score >= 100
         else "B+ 合格 ✅"
-        if score >= 68
+        if score >= 85
         else "觀望 ⚪"
     )
     # 🌐 傳入市場狀態供格式器使用
@@ -2131,7 +2131,7 @@ def _validate_config(cfg: dict) -> list:
     """🛡️ 驗證 config 合理性 → 回傳錯誤訊息列表（空代表通過）"""
     errs = []
     if not (50 <= cfg.get("score_threshold", 0) <= 150):
-        errs.append("score_threshold 必須在 50–100")
+        errs.append("score_threshold 必須在 50–183")
     if not (1 <= cfg.get("max_signals", 0) <= 10):
         errs.append("max_signals 必須在 1–10")
     if cfg.get("cooldown_hours", -1) < 0:
