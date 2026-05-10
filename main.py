@@ -4128,6 +4128,7 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
         if sig.get("status") == "PENDING" and sig.get("user_confirmed") is None:
             pending_since = sig.get("pending_since", now)
             if now - pending_since > PENDING_APPROVAL_TIMEOUT:
+                tracker.signals[key]["status"] = "CANCELLED"
                 tracker.signals[key]["user_confirmed"] = False
                 tracker._save()
                 coin = sig["instId"].split("-")[0]
