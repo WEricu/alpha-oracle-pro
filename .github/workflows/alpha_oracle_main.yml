@@ -3,7 +3,7 @@ name: Alpha Oracle Pro - Optimized Main
 on:
   workflow_dispatch: # 允許手動點擊 Run workflow 啟動
   schedule:
-    - cron: '0,10,20,30,40,50 * * * *' # 整點錨定：:00/:10/:20/:30/:40/:50
+    - cron: '0,10,20,30,40,50 * * * *' # 整點錨定：:00/:10/:20/:30/:40/:50 
 
 concurrency:
   group: alpha-oracle-main-${{ github.ref }}
