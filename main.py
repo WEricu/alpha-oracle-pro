@@ -4181,9 +4181,6 @@ def run_scan(tracker: SignalTracker) -> int:
     if unhealthy:
         send_tg(health_msg)
 
-    # ── -1. 處理用戶開單確認（callback queries + 超時取消） ──
-    process_pending_approvals(tracker)
-
     # ── 0. 熱載入配置 ──
     cfg = load_config()
     coins = cfg.get("coins", ALL_COINS)
