@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-service.py — Alpha Oracle Pro Koyeb/Railway Service Mode v2
+service.py — Alpha Oracle Pro Koyeb/Railway Service Mode
 掩描排程 + Telegram callback 秒級輪詢
 """
 import hashlib
