@@ -11,7 +11,7 @@ Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
      ↳ 訊息送達率從 ~95% → ~99.9%
 
 ✨ v14.6：
-  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）hhh
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）hhhh
   🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
   🛡️ 嚴格每日風控三紅線：
      ① 同時持倉數上限（預設 2 個）
@@ -173,6 +173,7 @@ SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
 
 PENDING_APPROVAL_TIMEOUT = 4
 COOLDOWN_HOURS = 2
+SIGNAL_EXPIRE_HOURS = 4
 
 ACTIVE_SIGNALS_FILE = "active_signals.json"
 TRADE_HISTORY_FILE = "trade_history.json"
