@@ -2226,5 +2226,85 @@
       "atr_pct": 0.127,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-10 19:38",
+    "date": "2026-05-10",
+    "order_id": "1778404369-57D1560A",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 80690.0,
+    "close": 80864.5679,
+    "close_type": "TP1",
+    "pnl": 0.22,
+    "is_win": true,
+    "is_be": false,
+    "score": 113,
+    "funding_rate": 5.09477785707e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.8,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 80690.0,
+      "ob_high": 80750.6,
+      "fvg": 15,
+      "fvg_low": 80645.8,
+      "fvg_high": 80662.9,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.87,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "range",
+      "adx": 13.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.096,
+      "pullback": true,
+      "learning_notes": [
+        "rsi_long:50-59 (n=13, 勝率 69%) → +1",
+        "coin:BTC (n=11, 勝率 64%) → +1",
+        "coin_side:BTC_LONG (n=9, 勝率 78%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 0 (勝率 50%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 113.0,
+      "rsi": 56.8,
+      "atr_pct": 0.096,
+      "funding": 0.0509477785707,
+      "vol_ratio": 0.87,
+      "adx": 13.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 13.7,
+      "atr_pct": 0.096,
+      "volatile": false
+    }
   }
 ]
