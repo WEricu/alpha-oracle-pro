@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """
-service.py — Alpha Oracle Pro Koyeb Service Mode
-即時掃描 + Telegram callback 秒回應
+service.py — Alpha Oracle Pro Koyeb/Railway Service Mode
+掩描排程 + Telegram callback 秒級輪詢
 """
-import os, sys, time, threading, logging, json, base64, requests
+import hashlib
+import os
+import sys
+import time
+import threading
+import logging
+import base64
+import requests
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ── 日誌 ──
@@ -23,22 +30,26 @@ PORT              = int(os.environ.get("PORT", 8000))
 
 # ── GitHub API 狀態同步 ──
 _gh_shas: dict = {}
+_gh_content_hashes: dict = {}
 _gh_lock = threading.Lock()
 
 STATE_FILES = [
     "active_signals.json",
     "system_state.json",
-    "tg_offset.json",
-    "cooldowns.json",
+    "tg_update_offset.json",
+    "signal_cooldown.json",
     "trade_history.json",
-    "learning_data.json",
+    "learning_state.json",
 ]
+
 
 def _gh_headers():
     return {"Authorization": f"token {GH_TOKEN}", "Accept": "application/vnd.github+json"}
 
+
 def gh_load_all():
     if not GH_TOKEN:
+        logging.warning("GITHUB_TOKEN 未設定，跳過狀態同步")
         return
     for fname in STATE_FILES:
         try:
@@ -51,14 +62,18 @@ def gh_load_all():
             if r.status_code == 200:
                 d = r.json()
                 _gh_shas[fname] = d["sha"]
-                content = base64.b64decode(d["content"]).decode()
-                with open(fname, "w", encoding="utf-8") as f:
-                    f.write(content)
-                logging.info(f"載入 {fname}")
+                content_bytes = base64.b64decode(d["content"])
+                with open(fname, "wb") as f:
+                    f.write(content_bytes)
+                _gh_content_hashes[fname] = hashlib.md5(content_bytes).hexdigest()
+                logging.info(f"gh_load: {fname} OK")
             elif r.status_code == 404:
-                logging.info(f"{fname} 不存在，使用預設值")
+                logging.info(f"gh_load: {fname} not found on GitHub, using local default")
+            else:
+                logging.warning(f"gh_load: {fname} HTTP {r.status_code}")
         except Exception as e:
             logging.warning(f"gh_load {fname}: {e}")
+
 
 def gh_save_file(fname: str):
     if not GH_TOKEN or not os.path.exists(fname):
@@ -67,6 +82,9 @@ def gh_save_file(fname: str):
         try:
             with open(fname, "rb") as f:
                 raw = f.read()
+            new_hash = hashlib.md5(raw).hexdigest()
+            if _gh_content_hashes.get(fname) == new_hash:
+                return
             body = {
                 "message": f"service: sync [skip ci] {fname}",
                 "content": base64.b64encode(raw).decode(),
@@ -82,6 +100,8 @@ def gh_save_file(fname: str):
             )
             if r.status_code in (200, 201):
                 _gh_shas[fname] = r.json()["content"]["sha"]
+                _gh_content_hashes[fname] = new_hash
+                logging.info(f"gh_save: {fname} OK")
             elif r.status_code == 409:
                 info = requests.get(
                     f"https://api.github.com/repos/{GH_REPO}/contents/{fname}",
@@ -97,46 +117,59 @@ def gh_save_file(fname: str):
                 )
                 if r2.status_code in (200, 201):
                     _gh_shas[fname] = r2.json()["content"]["sha"]
+                    _gh_content_hashes[fname] = new_hash
+                    logging.info(f"gh_save (retry): {fname} OK")
+            else:
+                logging.warning(f"gh_save: {fname} HTTP {r.status_code}")
         except Exception as e:
             logging.warning(f"gh_save {fname}: {e}")
+
 
 def gh_sync_all():
     for fname in STATE_FILES:
         gh_save_file(fname)
 
+
 import main as _main
 
-tracker = _main.SignalTracker(_main.ACTIVE_SIGNALS_FILE)
+tracker = None
+
 
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        sig_count = len(tracker.signals) if tracker else 0
         body = (
             f"Alpha Oracle Pro OK\n"
             f"Time: {_main.tw_ts()}\n"
-            f"Signals: {len(tracker.signals)}"
+            f"Signals: {sig_count}"
         ).encode()
         self.send_response(200)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(body)
-    def log_message(self, *a): pass
+
+    def log_message(self, *a):
+        pass
+
 
 def health_server():
-    logging.info(f"Health server on :{PORT}")
-    HTTPServer(("0.0.0.0", PORT), HealthHandler).serve_forever()
+    HTTPServer(("", PORT), HealthHandler).serve_forever()
+
 
 def callback_loop():
-    logging.info(f"Callback loop every {CALLBACK_INTERVAL}s")
+    logging.info(f"Callback loop started, interval {CALLBACK_INTERVAL}s")
     while True:
         try:
             _main.process_pending_approvals(tracker)
+            gh_save_file("active_signals.json")
+            gh_save_file("tg_update_offset.json")
         except Exception as e:
             logging.error(f"callback_loop: {e}")
         time.sleep(CALLBACK_INTERVAL)
 
+
 def scan_loop():
-    logging.info(f"Scan loop every {SCAN_INTERVAL // 60}min")
+    logging.info(f"Scan loop started, interval {SCAN_INTERVAL // 60} min")
     while True:
         try:
             _main.run_scan(tracker)
@@ -149,11 +182,12 @@ def scan_loop():
             logging.warning(f"gh_sync: {e}")
         time.sleep(SCAN_INTERVAL)
 
-if __name__ == "__main__":
-    logging.info("Alpha Oracle Pro — Koyeb Service Mode")
-    gh_load_all()
 
+if __name__ == "__main__":
+    logging.info("Alpha Oracle Pro — Service Mode starting")
+    gh_load_all()
     tracker = _main.SignalTracker(_main.ACTIVE_SIGNALS_FILE)
+    logging.info(f"SignalTracker ready, signals={len(tracker.signals)}")
     threading.Thread(target=health_server, daemon=True).start()
     threading.Thread(target=callback_loop, daemon=True).start()
     scan_loop()
