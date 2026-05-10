@@ -1,4 +1,4 @@
-h#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 service.py — Alpha Oracle Pro Koyeb Service Mode
 即時掃描 + Telegram callback 秒回應
@@ -8,7 +8,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ── 日誌 ──
 logging.basicConfig(
-    level=logging.INFO,h
+    level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
