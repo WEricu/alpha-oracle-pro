@@ -115,6 +115,7 @@ import logging
 import time
 import sys
 import uuid
+import threading
 from datetime import datetime, timezone, timedelta
 
 
@@ -2048,7 +2049,6 @@ def generate_signal(
             tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
 
         # 🎯 動態 TP 校正（預設關閉 → 固定 1.5R/3R/5R 不動）
-        cfg_rr_mode = load_config()
         if not cfg_rr_mode.get("fixed_rr_mode", True):
             tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
             if tp_notes:
@@ -2205,6 +2205,13 @@ def record_trade(
     )
     snap = sig_snapshot or {}
     detail = snap.get("detail", {}) or {}
+    _snap_sl = snap.get("sl")
+    if _snap_sl and float(_snap_sl) > 0 and entry > 0:
+        _risk_pct = abs(entry - float(_snap_sl)) / entry
+        _est_lev = min(max(round(0.01 / _risk_pct, 1), 1.0), 25.0) if _risk_pct > 0 else 1.0
+        pnl_capital = round(pnl * _est_lev, 2)
+    else:
+        pnl_capital = round(pnl, 2)  # FIX Bug17
     funding_rate = snap.get("funding_rate")
     mtf = snap.get("mtf_snapshot")
     regime = snap.get("regime_snapshot")
@@ -2222,6 +2229,7 @@ def record_trade(
         "close": close_price,
         "close_type": close_type,
         "pnl": round(pnl, 2),
+        "pnl_capital": pnl_capital,  # FIX Bug17
         "is_win": is_win,
         "is_be": is_be,
         "score": score,
@@ -3369,7 +3377,7 @@ def get_today_stats() -> dict:
     return {
         "trades_count": len(set(t.get("order_id", "") for t in today_trades)),  # FIX: unique signals
         "closed_count": len(closed),
-        "pnl_pct": sum(t.get("pnl", 0) for t in closed),
+        "pnl_pct": sum(t.get("pnl_capital", t.get("pnl", 0)) for t in closed),  # FIX Bug17
         "wins": sum(1 for t in closed if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK")),
         "losses": sum(1 for t in closed if t.get("close_type") == "SL"),
     }
@@ -3487,16 +3495,19 @@ class SignalTracker:
         self.filepath = filepath
         self.signals: dict = _load_json(filepath, {})
         self.transitions = 0
+        self._lock = threading.RLock()  # FIX Bug4
 
-    def _save(self) -> None:
-        _save_json(self.filepath, self.signals)
+    def _save    def _save(self) -> None:
+        with self._lock:
+            _save_json(self.filepath, self.signals)
 
     def add(self, signal: dict, active: bool = False) -> tuple[str, str]:
         """新增訊號 → 回傳 (key, order_id)"""
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
         now_ts = time.time()
-        self.signals[key] = {
+        with self._lock:
+         self.signals[key] = {
             **signal,
             "order_id": order_id,
             "status": "ACTIVE" if active else "PENDING",
@@ -3839,7 +3850,7 @@ class SignalTracker:
             self.transitions += 1
 
         # 🥈 TP2
-        if not sig.get("hit_tp2") and favor_hit(tp2):
+        if not sig.get("hit_tp2") and sig.get("hit_tp1") and favor_hit(tp2):  # FIX Bug11
             sig["hit_tp2"] = True
             sig["sl"] = tp1
             sig["status"] = "TRAIL"
@@ -4101,6 +4112,7 @@ def process_pending_approvals(tracker: "SignalTracker", save_fn=None) -> None:
             if key and tracker.signals[key].get("user_confirmed") is None:
                 tracker.signals[key]["user_confirmed"] = True
                 tracker.signals[key]["confirmed_at"] = time.time()
+                mark_cooldown(tracker.signals[key].get("instId", key.split("_")[0]), COOLDOWN_HOURS)  # FIX Bug15
                 tracker._save()
                 answer_callback(cq_id, "✅ 已確認開單，等待限價進場")
                 edit_tg_reply_markup(msg_id, {"inline_keyboard": [[{"text": "✅ 已確認開單", "callback_data": "noop"}]]})
@@ -4265,6 +4277,9 @@ def run_scan(tracker: SignalTracker) -> int:
             continue
         if is_coin_overheating(cn, cfg)[0]:
             continue
+        if any(s.get("instId") == instId and s.get("status") == "PENDING"
+               for s in tracker.signals.values()):
+            continue  # FIX Bug15: skip coin with pending signal
         eligible_coins.append(instId)
 
     if not eligible_coins:
@@ -4276,6 +4291,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
     # ── 3. 掃描可開單的幣種（已篩選過冷卻 / 持倉 / 暫停 / 過熱）──
     sent = 0
+    cfg_rr_mode = load_config()  # FIX Bug8: moved out of inner loop
     logging.info(f"🎯 可開單幣種：{len(eligible_coins)} 個 → {[c.split('-')[0] for c in eligible_coins]}")
     for instId in eligible_coins:
         if sent >= max_signals:
@@ -4406,8 +4422,7 @@ def run_scan(tracker: SignalTracker) -> int:
                 )
                 tracker.set_entry_message_id(key, _pending_msg_id)
                 logging.info(f"⏳ {instId} 限價掛單已建立 {signal['entry']:.4f}，單號 {order_id}")
-            mark_cooldown(instId, cooldown_h)
-            sent += 1
+            sent += 1  # FIX Bug15: mark_cooldown moved to confirm
         except Exception as e:
             logging.error(f"[{instId}] 掃描失敗：{e}")
             continue
