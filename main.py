@@ -4156,7 +4156,7 @@ def _maybe_send_patrol(tracker, sent: int) -> None:
     if now - state.get("last_patrol_ts", 0) < 3600:
         return
     state["last_patrol_ts"] = now
-    save_system_state(state)
+    set_system_state(state)
 
     active = [s for s in tracker.signals.values() if s["status"] in ("ACTIVE", "BE", "TRAIL")]
     pending = [s for s in tracker.signals.values() if s["status"] == "PENDING"]
