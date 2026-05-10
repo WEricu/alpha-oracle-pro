@@ -1091,7 +1091,7 @@ def calc_macd(df: list, fast: int = 12, slow: int = 26, sig_period: int = 9) -> 
     """MACD 指標：回傳 (macd線, 訊號線, 柱狀圖)"""
     if len(df) < slow + sig_period:
         return 0.0, 0.0, 0.0
-    closes = [float(c[4]) for c in df]
+    closes = [float(c["c"]) for c in df]
 
     def _ema(prices, period):
         k = 2.0 / (period + 1)
