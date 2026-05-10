@@ -152,7 +152,7 @@ def scan_loop():
 if __name__ == "__main__":
     logging.info("Alpha Oracle Pro — Koyeb Service Mode")
     gh_load_all()
-    global tracker
+
     tracker = _main.SignalTracker(_main.ACTIVE_SIGNALS_FILE)
     _main.send_tg(
         f"🤖 *Alpha Oracle Pro 服務上線*\n"
