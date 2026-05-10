@@ -182,7 +182,7 @@
     "user_confirmed": true,
     "pending_since": 1778434273.66606,
     "confirmed_at": 1778435799.7078006,
-    "current_price": 10.793
+    "current_price": 10.789
   },
   "BTC-USDT-SWAP_LONG_1778437815-D40380CA": {
     "instId": "BTC-USDT-SWAP",
@@ -277,7 +277,7 @@
     "last_checked_ts": 1778437815.7908287,
     "user_confirmed": true,
     "pending_since": null,
-    "current_price": 81293.8
+    "current_price": 81278.2
   },
   "XRP-USDT-SWAP_LONG_1778437818-584350B3": {
     "instId": "XRP-USDT-SWAP",
