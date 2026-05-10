@@ -4082,7 +4082,7 @@ def edit_tg_reply_markup(message_id: int, reply_markup: dict | None = None) -> N
         logging.warning(f"edit_tg_reply_markup 失敗：{e}")
 
 
-def process_pending_approvals(tracker: "SignalTracker") -> None:
+def process_pending_approvals(tracker: "SignalTracker", save_fn=None) -> None:
     """🔔 處理開單確認：讀 TG callback → 確認/拒絕；超時自動取消"""
     now = time.time()
     updates = get_tg_updates()
@@ -4132,12 +4132,15 @@ def process_pending_approvals(tracker: "SignalTracker") -> None:
             if now - pending_since > PENDING_APPROVAL_TIMEOUT:
                 del tracker.signals[key]  # FIX: 直接刪除，不留 CANCELLED 殘留
                 tracker._save()
+                if save_fn:  # FIX: 先同步 GitHub 再發 Telegram，防止重啟重複通知
+                    try: save_fn("active_signals.json")
+                    except Exception: pass
                 coin = sig["instId"].split("-")[0]
                 order_id = sig.get("order_id", "N/A")
                 send_tg(
                     f"⏱️ *{coin} 掛單自動取消*\n"
                     f"🆔 `{order_id}`\n"
-                    f"超過 5 分鐘未選擇，已自動放棄此訊號"
+                    f"超過 10 分鐘未選擇，已自動放棄此訊號"
                 )
                 m_id = sig.get("entry_message_id")
                 if m_id:
