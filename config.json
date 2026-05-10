@@ -106,7 +106,7 @@
 
   "price_verification": {
     "enabled": true,
-    "max_deviation_pct": 1.0,
+    "max_deviation_pct": 0.5,
     "block_on_unverified": false
   },
 
