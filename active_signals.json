@@ -89,7 +89,8 @@
     "entry_message_id": 1534,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778434268.798695
+    "pending_since": 1778434268.798695,
+    "current_price": 0.3519
   },
   "LINK-USDT-SWAP_LONG_1778434273-507422F6": {
     "instId": "LINK-USDT-SWAP",
@@ -178,7 +179,8 @@
     "activated_at": null,
     "entry_message_id": 1536,
     "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778434273.66606
+    "user_confirmed": true,
+    "pending_since": 1778434273.66606,
+    "confirmed_at": 1778435799.7078006
   }
 }
