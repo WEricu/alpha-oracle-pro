@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+h#!/usr/bin/env python3
 """
 service.py — Alpha Oracle Pro Koyeb Service Mode
 即時掃描 + Telegram callback 秒回應
@@ -8,7 +8,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ── 日誌 ──
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO,h
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
@@ -68,7 +68,7 @@ def gh_save_file(fname: str):
             with open(fname, "rb") as f:
                 raw = f.read()
             body = {
-                "message": f"service: sync {fname}",
+                "message": f"service: sync [skip ci] {fname}",
                 "content": base64.b64encode(raw).decode(),
                 "branch": GH_BRANCH,
             }
