@@ -161,6 +161,9 @@ def callback_loop():
     while True:
         try:
             _main.process_pending_approvals(tracker)
+            # FIX Bug20: sync active_signals immediately after confirm/cancel
+            # (content-hash dedup in gh_save_file ensures no commit unless content changed)
+            gh_save_file("active_signals.json")
         except Exception as e:
             logging.error(f"callback_loop: {e}")
         time.sleep(CALLBACK_INTERVAL)
