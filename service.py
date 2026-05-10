@@ -161,8 +161,6 @@ def callback_loop():
     while True:
         try:
             _main.process_pending_approvals(tracker)
-            gh_save_file("active_signals.json")
-            gh_save_file("tg_update_offset.json")
         except Exception as e:
             logging.error(f"callback_loop: {e}")
         time.sleep(CALLBACK_INTERVAL)
