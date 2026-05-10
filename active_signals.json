@@ -89,7 +89,7 @@
     "user_confirmed": true,
     "pending_since": 1778434273.66606,
     "confirmed_at": 1778435799.7078006,
-    "current_price": 10.866
+    "current_price": 10.75
   },
   "UNI-USDT-SWAP_LONG_1778443180-EB83C571": {
     "instId": "UNI-USDT-SWAP",
@@ -182,7 +182,7 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778443180.2621114,
-    "current_price": 4.06,
+    "current_price": 4.026,
     "confirmed_at": 1778443229.7603858
   },
   "NEAR-USDT-SWAP_LONG_1778444412-DB7D1728": {
@@ -273,8 +273,9 @@
     "activated_at": null,
     "entry_message_id": 1668,
     "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778444412.123142
+    "user_confirmed": false,
+    "pending_since": 1778444412.123142,
+    "current_price": 1.598
   },
   "APT-USDT-SWAP_LONG_1778444414-C02DA777": {
     "instId": "APT-USDT-SWAP",
@@ -364,6 +365,7 @@
     "entry_message_id": 1669,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778444414.8350244
+    "pending_since": 1778444414.8350244,
+    "current_price": 1.2076
   }
 }
