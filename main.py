@@ -2063,16 +2063,15 @@ def generate_signal(
     # 🌐 市場狀態識別（趨勢/震盪）→ 影響門檻
     regime_info = detect_market_regime(df)
     if regime_info["regime"] == "range":
-        threshold += 5  # 震盪市要求更嚴格
+        threshold += 3  # 震盪市要求稍嚴格
     if regime_info["volatile"]:
-        threshold += 3  # 高波動加碼提高門檻
+        threshold += 2  # 高波動微調門檻
 
     # ⏰ 時段門檻調整：亞洲盤假突破多，要求更嚴
     _utc_h = datetime.utcnow().hour
     if 0 <= _utc_h < 7:
-        threshold += 15  # 亞洲盤
-    elif 7 <= _utc_h < 13:
-        threshold += 5   # 歐洲盤
+        threshold += 12  # 亞洲盤（使用者不交易此時段，提高門檻）
+    # 歐洲盤(7-13 UTC)、美盤(13-24 UTC) → 維持基準，不加分
 
     # 🕒 多時框抓一次給兩個方向共用
     mtf = fetch_mtf_trend(instId)
