@@ -12,7 +12,7 @@
   ],
 
   "max_signals": 2,
-  "score_threshold": 106,
+  "score_threshold": 95,
   "cooldown_hours": 3,
   "signal_expire_hours": 24,
   "atr_max_pct": 0.04,
@@ -106,7 +106,7 @@
 
   "price_verification": {
     "enabled": true,
-    "max_deviation_pct": 0.1,
+    "max_deviation_pct": 0.3,
     "block_on_unverified": false
   },
 
