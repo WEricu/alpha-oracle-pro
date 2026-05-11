@@ -131,8 +131,30 @@ def tw_now() -> datetime:
 
 
 def tw_ts() -> str:
-    """台灣時間時間戳字串（給通知顯示用）"""
-    return tw_now().strftime("%Y-%m-%d %H:%M:%S 台灣時間")
+    """台灣時間 + 英國時間（GMT/BST）雙時區時間戳"""
+    now_utc = datetime.now(timezone.utc)
+    now_tw = now_utc.astimezone(TW_TZ)
+    _y, _m = now_utc.year, now_utc.month
+    def _last_sun(yr, mo):
+        for d in range(31, 24, -1):
+            try:
+                if datetime(yr, mo, d).weekday() == 6:
+                    return d
+            except ValueError:
+                pass
+        return 25
+    _bst_start = _last_sun(_y, 3)
+    _bst_end   = _last_sun(_y, 10)
+    _is_bst = (
+        (_m > 3 and _m < 10) or
+        (_m == 3 and now_utc.day >= _bst_start and now_utc.hour >= 1) or
+        (_m == 10 and (now_utc.day < _bst_end or (now_utc.day == _bst_end and now_utc.hour < 1)))
+    )
+    _uk_tz  = timezone(timedelta(hours=1 if _is_bst else 0))
+    now_uk  = now_utc.astimezone(_uk_tz)
+    _uk_lbl = "BST" if _is_bst else "GMT"
+    return (f"{now_tw.strftime('%m/%d %H:%M')} TWN｜"
+            f"{now_uk.strftime('%m/%d %H:%M')} {_uk_lbl}")
 
 
 # ═════════════════════════════════════════════════════════
@@ -1919,6 +1941,66 @@ def calc_score(
             score -= bias_amount
             detail["direction_bias"] = -bias_amount
             detail["direction_bias_note"] = bias_note
+
+    # 📉 RSI 背離（Divergence）+12 分
+    # 原理：價格創新高/低但 RSI 反向 → 動能衰竭、潛在反轉
+    if len(df) >= 14:
+        rsi_vals = [c.get("rsi", 50) for c in df[-14:]]
+        prices   = [c["c"] for c in df[-14:]]
+        if side == "LONG":
+            # 看漲背離：價格新低但 RSI 未新低
+            price_new_low = prices[-1] < min(prices[-14:-1])
+            rsi_no_low    = rsi_vals[-1] > min(rsi_vals[-14:-1])
+            if price_new_low and rsi_no_low:
+                score += 12
+                detail["rsi_divergence"] = 12
+        else:
+            # 看跌背離：價格新高但 RSI 未新高
+            price_new_high = prices[-1] > max(prices[-14:-1])
+            rsi_no_high    = rsi_vals[-1] < max(rsi_vals[-14:-1])
+            if price_new_high and rsi_no_high:
+                score += 12
+                detail["rsi_divergence"] = 12
+
+    # 🌀 Fibonacci 0.618 / 0.5 回撤共振 +10 分
+    # 原理：從近期 swing high/low 算回撤，價格落在 0.5-0.618 黃金帶
+    if len(df) >= 20:
+        recent = df[-20:]
+        swing_high = max(c["h"] for c in recent)
+        swing_low  = min(c["l"] for c in recent)
+        price_now  = df[-1]["c"]
+        rng = swing_high - swing_low
+        if rng > 0:
+            if side == "LONG":
+                fib618 = swing_high - rng * 0.618
+                fib500 = swing_high - rng * 0.500
+                if fib618 <= price_now <= fib500:
+                    score += 10
+                    detail["fib_618"] = 10
+            else:
+                fib382 = swing_low + rng * 0.382
+                fib500 = swing_low + rng * 0.500
+                if fib382 <= price_now <= fib500:
+                    score += 10
+                    detail["fib_618"] = 10
+
+    # 🔄 CHoCH（Change of Character）結構轉換 +8 分
+    # 原理：打破前一波最近 swing high/low → 趨勢初步轉向信號
+    if len(df) >= 10:
+        lookback = df[-10:-1]
+        price_now = df[-1]["c"]
+        if side == "LONG":
+            # 前期最近 swing high 被突破 → 空轉多信號
+            prev_swing_high = max(c["h"] for c in lookback[-5:])
+            if price_now > prev_swing_high:
+                score += 8
+                detail["choch"] = 8
+        else:
+            # 前期最近 swing low 被跌破 → 多轉空信號
+            prev_swing_low = min(c["l"] for c in lookback[-5:])
+            if price_now < prev_swing_low:
+                score += 8
+                detail["choch"] = 8
 
     grade = (
         "S 神級 👑"
