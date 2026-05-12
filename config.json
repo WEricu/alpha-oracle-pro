@@ -20,6 +20,8 @@
 
   "show_score_breakdown": true,
   "fixed_rr_mode": true,
+  "sl_atr_mult": 2.0,
+  "max_sl_pct": 0.005,
 
   "capital_management": {
     "enabled": true,
