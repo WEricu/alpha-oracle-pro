@@ -4408,6 +4408,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
     # ── 3. 掃描可開單的幣種（已篩選過冷卻 / 持倉 / 暫停 / 過熱）──
     sent = 0
+    global cfg_rr_mode
     cfg_rr_mode = load_config()  # FIX Bug8: moved out of inner loop
     logging.info(f"🎯 可開單幣種：{len(eligible_coins)} 個 → {[c.split('-')[0] for c in eligible_coins]}")
     for instId in eligible_coins:
