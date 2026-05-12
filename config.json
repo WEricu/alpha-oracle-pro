@@ -18,7 +18,7 @@
   "atr_max_pct": 0.04,
   "min_rr_ratio": 1.5,
 
-  "show_score_breakdown": false,
+  "show_score_breakdown": true,
   "fixed_rr_mode": true,
 
   "capital_management": {
