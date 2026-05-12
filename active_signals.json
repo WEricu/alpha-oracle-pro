@@ -375,7 +375,7 @@
     "activated_at": null,
     "entry_message_id": 1764,
     "last_checked_ts": null,
-    "user_confirmed": null,
+    "user_confirmed": false,
     "pending_since": 1778621625.6094007
   }
 }
