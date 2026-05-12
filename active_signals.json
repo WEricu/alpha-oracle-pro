@@ -191,5 +191,99 @@
     "pending_since": 1778616874.4601715,
     "current_price": 4716.2,
     "confirmed_at": 1778616926.9707956
+  },
+  "BNB-USDT-SWAP_LONG_1778617483-B1B937A5": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 660.9,
+    "sl": 658.4893,
+    "tp1": 664.5161,
+    "tp2": 668.1321,
+    "tp3": 672.9536,
+    "score": 92,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 85.6,
+      "rsi": 0,
+      "ob": 20,
+      "ob_low": 660.9,
+      "ob_high": 662.4,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 8,
+      "bos_desc": "CHOCH ↑ 突破 662.9000",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.33,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 1.27%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 70.6,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 19,
+      "ob_degraded": true,
+      "atr_pct": 0.242,
+      "learning_notes": [
+        "score:80-89 (n=10, 勝率 80%) → +2",
+        "sess:asia_dawn (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 8.62718053205e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 70.6,
+      "atr_pct": 0.242,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 660.9,
+      "high": 662.4
+    },
+    "created": 1778617483.0032456,
+    "expires": 1778703883.0032463,
+    "order_id": "1778617483-B1B937A5",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1749,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778617483.0032861
   }
 }
