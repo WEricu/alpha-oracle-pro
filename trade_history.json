@@ -2395,5 +2395,92 @@
       "atr_pct": 0.885,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-13 06:15",
+    "date": "2026-05-13",
+    "order_id": "1778617488-33699874",
+    "coin": "TON",
+    "side": "SHORT",
+    "entry": 2.3159,
+    "close": 2.3453,
+    "close_type": "SL",
+    "pnl": -1.27,
+    "pnl_capital": -1.27,
+    "is_win": false,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": 5e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.7,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "fib_618": 10,
+      "regime": "transitional",
+      "adx": 25.0,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.843,
+      "pullback": true,
+      "learning_notes": [
+        "sess:asia_dawn (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": -2
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 50.7,
+      "atr_pct": 0.843,
+      "funding": 0.05,
+      "vol_ratio": 0.7,
+      "adx": 25.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 28.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 25.0,
+      "atr_pct": 0.843,
+      "volatile": false
+    }
   }
 ]
