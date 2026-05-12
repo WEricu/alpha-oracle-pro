@@ -189,7 +189,7 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778616874.4601715,
-    "current_price": 4716.1,
+    "current_price": 4722.5,
     "confirmed_at": 1778616926.9707956
   },
   "TON-USDT-SWAP_SHORT_1778617488-33699874": {
@@ -277,10 +277,10 @@
     "hit_tp3": false,
     "activated_at": 1778622261.985205,
     "entry_message_id": 1767,
-    "last_checked_ts": 1778622261.985205,
+    "last_checked_ts": 1778622300.0,
     "user_confirmed": true,
     "pending_since": 1778617488.9942324,
-    "current_price": 2.314,
+    "current_price": 2.335,
     "confirmed_at": 1778617516.092836
   }
 }
