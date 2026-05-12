@@ -282,5 +282,99 @@
     "pending_since": 1778617488.9942324,
     "current_price": 2.314,
     "confirmed_at": 1778617516.092836
+  },
+  "BNB-USDT-SWAP_LONG_1778622869-6D878406": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 663.6,
+    "sl": 661.4143,
+    "tp1": 666.8786,
+    "tp2": 670.1571,
+    "tp3": 674.5286,
+    "score": 101,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 80.7,
+      "rsi": 0,
+      "ob": 20,
+      "ob_low": 663.6,
+      "ob_high": 665.3,
+      "fvg": 15,
+      "fvg_low": 664.9,
+      "fvg_high": 665.3,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 665.3000",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.93%",
+      "regime": "trend",
+      "adx": 98.1,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 8,
+      "ob_degraded": true,
+      "atr_pct": 0.219,
+      "learning_notes": [
+        "sess:asia_dawn (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 98.1,
+      "atr_pct": 0.219,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 663.6,
+      "high": 665.3
+    },
+    "created": 1778622869.3497975,
+    "expires": 1778709269.3497977,
+    "order_id": "1778622869-6D878406",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": null,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778622869.3498302
   }
 }
