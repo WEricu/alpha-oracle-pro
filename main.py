@@ -2155,7 +2155,9 @@ def generate_signal(
                 raw_limit = current_price * (1 + 0.003)
             entry = min(raw_limit, current_price * (1 + _max_off))
         entry = round(entry, 4)
-        sl_dist = atr * 1.5
+        _sl_mult = cfg_rr_mode.get("sl_atr_mult", 1.5)
+        _max_sl_pct = cfg_rr_mode.get("max_sl_pct", 1.0)
+        sl_dist = min(atr * _sl_mult, entry * _max_sl_pct)
         sl = entry - sl_dist if side == "LONG" else entry + sl_dist
         risk = abs(entry - sl)
 
