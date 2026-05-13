@@ -1,98 +1,4 @@
 {
-  "TRX-USDT-SWAP_SHORT_1778707270-C83A2DE4": {
-    "instId": "TRX-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.3503,
-    "sl": 0.3511,
-    "tp1": 0.3491,
-    "tp2": 0.3479,
-    "tp3": 0.3464,
-    "score": 98,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 37.5,
-      "rsi": 15,
-      "ob": 20,
-      "ob_low": 0.35,
-      "ob_high": 0.3503,
-      "fvg": 15,
-      "fvg_low": 0.35,
-      "fvg_high": 0.3501,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "macd": 8,
-      "bos": 0,
-      "bos_desc": "無結構突破",
-      "pd_zone": -3,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "DOWN",
-      "vol_climax": 0,
-      "buy_pressure": 4,
-      "mtf": 0,
-      "mtf_desc": "1H=中 / 4H=中",
-      "volume": 8,
-      "volume_ratio": 3.4,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 1,
-      "_vwap_desc": "價略低於 VWAP",
-      "regime": "trend",
-      "adx": 46.7,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "ob_test_count": 35,
-      "ob_degraded": true,
-      "atr_pct": 0.112,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 6
-    },
-    "funding_rate": 2.18635114599e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 53.7
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 44.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 46.7,
-      "atr_pct": 0.112,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 0.35,
-      "high": 0.3503
-    },
-    "created": 1778707270.5156922,
-    "expires": 1778793670.5156927,
-    "order_id": "1778707270-C83A2DE4",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2093,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778707270.5157309
-  },
   "LTC-USDT-SWAP_SHORT_1778707279-652C871D": {
     "instId": "LTC-USDT-SWAP",
     "side": "SHORT",
@@ -181,6 +87,7 @@
     "entry_message_id": 2094,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778707279.7734582
+    "pending_since": 1778707279.7734582,
+    "current_price": 56.66
   }
 }
