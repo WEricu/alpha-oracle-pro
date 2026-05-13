@@ -1,1 +1,95 @@
-{}
+{
+  "LINK-USDT-SWAP_LONG_1778655212-BFCA024D": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 10.453,
+    "sl": 10.4007,
+    "tp1": 10.5314,
+    "tp2": 10.6098,
+    "tp3": 10.7143,
+    "score": 121,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 70.8,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 10.453,
+      "fvg_high": 10.497,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 10.4960",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 5,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 8,
+      "volume_ratio": 2.64,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.72%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 41.9,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.344,
+      "learning_notes": [
+        "rsi_long:70-79 (n=6, 勝率 100%) → +2",
+        "fund:neutral (n=36, 勝率 61%) → +1",
+        "sess:europe (n=13, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 78.5
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 36.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 41.9,
+      "atr_pct": 0.344,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 10.398,
+      "high": 10.451
+    },
+    "created": 1778655212.1862514,
+    "expires": 1778741612.1862519,
+    "order_id": "1778655212-BFCA024D",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1844,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778655212.1882243
+  }
+}
