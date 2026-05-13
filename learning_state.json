@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 15,
+      "win": 16,
       "loss": 4,
       "be": 4,
-      "total": 28
+      "total": 29
     },
     "rsi_short:50-59": {
       "win": 1,
@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 23,
+      "win": 24,
       "loss": 3,
       "be": 6,
-      "total": 37
+      "total": 38
     },
     "sess:europe": {
       "win": 8,
@@ -25,16 +25,16 @@
       "total": 13
     },
     "coin:BTC": {
-      "win": 9,
+      "win": 10,
       "loss": 2,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin_side:BTC_SHORT": {
-      "win": 1,
+      "win": 2,
       "loss": 2,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsi_short:30-39": {
       "win": 0,
@@ -127,10 +127,10 @@
       "total": 5
     },
     "sess:asia_dawn": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 3,
-      "total": 8
+      "total": 9
     },
     "sess:asia_day": {
       "win": 7,
@@ -211,18 +211,18 @@
       "total": 1
     },
     "rsi_short:20-29": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "by_coin": {
     "BTC": {
-      "win": 9,
+      "win": 10,
       "loss": 2,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "AVAX": {
       "win": 0,
@@ -309,5 +309,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778680193.601125
+  "updated_at": 1778688153.4208565
 }
