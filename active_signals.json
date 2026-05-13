@@ -1,1 +1,97 @@
-{}
+{
+  "DOGE-USDT-SWAP_LONG_1778705420-A3F61E74": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.1123,
+    "sl": 0.1117,
+    "tp1": 0.1131,
+    "tp2": 0.114,
+    "tp3": 0.1151,
+    "score": 95,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.2,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 0.11225,
+      "ob_high": 0.11284,
+      "fvg": 15,
+      "fvg_low": 0.11329,
+      "fvg_high": 0.11382,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": -3,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.21,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.85%",
+      "choch": 8,
+      "regime": "transitional",
+      "adx": 24.5,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 23,
+      "ob_degraded": true,
+      "atr_pct": 0.569,
+      "learning_notes": [
+        "rsi_long:50-59 (n=14, 勝率 71%) → +2",
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 24.5,
+      "atr_pct": 0.569,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 0.11225,
+      "high": 0.11284
+    },
+    "created": 1778705420.5300388,
+    "expires": 1778791820.5300388,
+    "order_id": "1778705420-A3F61E74",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2087,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778705420.5300832
+  }
+}
