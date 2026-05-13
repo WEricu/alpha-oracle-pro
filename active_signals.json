@@ -86,9 +86,10 @@
     "activated_at": null,
     "entry_message_id": 1969,
     "last_checked_ts": null,
-    "user_confirmed": null,
+    "user_confirmed": true,
     "pending_since": 1778675945.8207324,
-    "current_price": 79867.3
+    "current_price": 79867.3,
+    "confirmed_at": 1778675977.955483
   },
   "SOL-USDT-SWAP_SHORT_1778675948-7667B063": {
     "instId": "SOL-USDT-SWAP",
