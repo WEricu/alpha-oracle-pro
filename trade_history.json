@@ -2573,5 +2573,187 @@
       "atr_pct": 0.234,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-13 09:12",
+    "date": "2026-05-13",
+    "order_id": "1778624106-3D2B2BB8",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 663.6,
+    "close": 670.6393,
+    "close_type": "TP2",
+    "pnl": 1.06,
+    "pnl_capital": 2.02,
+    "is_win": true,
+    "is_be": false,
+    "score": 114,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 76.0,
+      "rsi": 0,
+      "ob": 20,
+      "ob_low": 663.6,
+      "ob_high": 665.3,
+      "fvg": 15,
+      "fvg_low": 664.9,
+      "fvg_high": 665.3,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 666.2000",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 2.11,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.91%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 72.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 10,
+      "ob_degraded": true,
+      "atr_pct": 0.234,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 114.0,
+      "rsi": 76.0,
+      "atr_pct": 0.234,
+      "funding": 0.1,
+      "vol_ratio": 2.11,
+      "adx": 72.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 72.7,
+      "atr_pct": 0.234,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-13 09:12",
+    "date": "2026-05-13",
+    "order_id": "1778624106-3D2B2BB8",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 663.6,
+    "close": 675.3321,
+    "close_type": "TP3",
+    "pnl": 1.77,
+    "pnl_capital": 3.36,
+    "is_win": true,
+    "is_be": false,
+    "score": 114,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 76.0,
+      "rsi": 0,
+      "ob": 20,
+      "ob_low": 663.6,
+      "ob_high": 665.3,
+      "fvg": 15,
+      "fvg_low": 664.9,
+      "fvg_high": 665.3,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 666.2000",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 2.11,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 0.91%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 72.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 10,
+      "ob_degraded": true,
+      "atr_pct": 0.234,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 114.0,
+      "rsi": 76.0,
+      "atr_pct": 0.234,
+      "funding": 0.1,
+      "vol_ratio": 2.11,
+      "adx": 72.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 72.7,
+      "atr_pct": 0.234,
+      "volatile": false
+    }
   }
 ]
