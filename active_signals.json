@@ -95,5 +95,99 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778713453.6430123
+  },
+  "XAG-USDT-SWAP_LONG_1778713470-35764F75": {
+    "instId": "XAG-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 87.58,
+    "sl": 87.2457,
+    "tp1": 88.0814,
+    "tp2": 88.5829,
+    "tp3": 89.2514,
+    "score": 101,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.2,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 87.58,
+      "ob_high": 87.62,
+      "fvg": 15,
+      "fvg_low": 87.8,
+      "fvg_high": 87.85,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": 0,
+      "pd_label": "EQUILIBRIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.86,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "range",
+      "adx": 10.9,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 14,
+      "ob_degraded": true,
+      "atr_pct": 0.19,
+      "learning_notes": [
+        "rsi_long:50-59 (n=14, 勝率 71%) → +2",
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 0.0,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 10.9,
+      "atr_pct": 0.19,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 87.58,
+      "high": 87.62
+    },
+    "created": 1778713470.5356083,
+    "expires": 1778799870.5356085,
+    "order_id": "1778713470-35764F75",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2119,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778713470.5356474
   }
 }
