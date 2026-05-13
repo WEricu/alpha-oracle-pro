@@ -1,94 +1,4 @@
 {
-  "TON-USDT-SWAP_SHORT_1778668020-DD076FAF": {
-    "instId": "TON-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 2.2387,
-    "sl": 2.2499,
-    "tp1": 2.2219,
-    "tp2": 2.2051,
-    "tp3": 2.1827,
-    "score": 116,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 38.1,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↓ 跌破 2.2490",
-      "pd_zone": -3,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "DOWN",
-      "vol_climax": 0,
-      "buy_pressure": 4,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 8,
-      "volume_ratio": 3.5,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 下方 0.92%",
-      "choch": 8,
-      "regime": "trend",
-      "adx": 50.0,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.685,
-      "learning_notes": [
-        "fund:neutral (n=36, 勝率 61%) → +1",
-        "sess:europe (n=13, 勝率 62%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
-      ],
-      "learning_adjust": 2
-    },
-    "funding_rate": 5e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.5
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 35.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 50.0,
-      "atr_pct": 0.685,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 2.266,
-      "high": 2.283
-    },
-    "created": 1778668020.4639802,
-    "expires": 1778754420.4639804,
-    "order_id": "1778668020-DD076FAF",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 1917,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778668020.4640117,
-    "current_price": 2.232
-  },
   "XRP-USDT-SWAP_SHORT_1778668629-F9D5FFF4": {
     "instId": "XRP-USDT-SWAP",
     "side": "SHORT",
@@ -183,7 +93,8 @@
     "entry_message_id": 1920,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778668629.0120835
+    "pending_since": 1778668629.0120835,
+    "current_price": 1.458
   },
   "TRX-USDT-SWAP_LONG_1778668631-3E7520B4": {
     "instId": "TRX-USDT-SWAP",
@@ -280,6 +191,7 @@
     "entry_message_id": 1921,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778668631.5994978
+    "pending_since": 1778668631.5994978,
+    "current_price": 0.3508
   }
 }
