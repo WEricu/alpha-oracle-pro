@@ -92,7 +92,7 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778616253.2358005,
-    "current_price": 0.3491,
+    "current_price": 0.3488,
     "confirmed_at": 1778616866.3388124
   },
   "XAU-USDT-SWAP_LONG_1778616874-D4BC18DE": {
@@ -189,7 +189,7 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778616874.4601715,
-    "current_price": 4720.2,
+    "current_price": 4722.2,
     "confirmed_at": 1778616926.9707956
   },
   "BNB-USDT-SWAP_LONG_1778624106-3D2B2BB8": {
@@ -281,10 +281,10 @@
     "hit_tp3": false,
     "activated_at": 1778627993.408,
     "entry_message_id": 1784,
-    "last_checked_ts": 1778628600.0,
+    "last_checked_ts": 1778629500.0,
     "user_confirmed": true,
     "pending_since": 1778624106.5599582,
-    "current_price": 664.4,
+    "current_price": 664.8,
     "confirmed_at": 1778624150.3797433
   }
 }
