@@ -2931,5 +2931,93 @@
       "atr_pct": 0.227,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-14 02:06",
+    "date": "2026-05-14",
+    "order_id": "1778675945-9E213105",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 80106.9019,
+    "close": 79560.2162,
+    "close_type": "LOCK",
+    "pnl": 0.68,
+    "pnl_capital": 1.02,
+    "is_win": true,
+    "is_be": false,
+    "score": 102,
+    "funding_rate": 8.39382423978e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 21.1,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↓ 跌破 80515.8000",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 3.07,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.61%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 68.4,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.227,
+      "learning_notes": [
+        "fund:neutral (n=36, 勝率 61%) → +1",
+        "sess:europe (n=13, 勝率 62%) → +1",
+        "coin:BTC (n=12, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": 3
+    },
+    "features": {
+      "score": 102.0,
+      "rsi": 21.1,
+      "atr_pct": 0.227,
+      "funding": 0.0839382423978,
+      "vol_ratio": 3.07,
+      "adx": 68.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 68.4,
+      "atr_pct": 0.227,
+      "volatile": false
+    }
   }
 ]
