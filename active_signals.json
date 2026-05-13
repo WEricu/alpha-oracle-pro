@@ -1,1 +1,101 @@
-{}
+{
+  "BNB-USDT-SWAP_LONG_1778660092-AB44D790": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 675.4,
+    "sl": 672.2857,
+    "tp1": 680.0714,
+    "tp2": 684.7429,
+    "tp3": 690.9714,
+    "score": 98,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 49.5,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 675.4,
+      "ob_high": 676.7,
+      "fvg": 15,
+      "fvg_low": 677.3,
+      "fvg_high": 677.6,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": -3,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.24,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 0,
+      "_vwap_desc": "價接近 VWAP",
+      "fib_618": 10,
+      "choch": 8,
+      "regime": "range",
+      "adx": 6.8,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 11,
+      "ob_degraded": true,
+      "atr_pct": 0.229,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=36, 勝率 61%) → +1",
+        "sess:europe (n=13, 勝率 62%) → +1",
+        "coin:BNB (n=7, 勝率 71%) → +2",
+        "coin_side:BNB_LONG (n=7, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
+      ],
+      "learning_adjust": 6
+    },
+    "funding_rate": -3.14276647126e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 82.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 6.8,
+      "atr_pct": 0.229,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 675.4,
+      "high": 676.7
+    },
+    "created": 1778660092.9193506,
+    "expires": 1778746492.9193509,
+    "order_id": "1778660092-AB44D790",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1866,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778660092.919386
+  }
+}
