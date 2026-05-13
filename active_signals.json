@@ -91,95 +91,6 @@
     "current_price": 79072.0,
     "confirmed_at": 1778675977.955483
   },
-  "TON-USDT-SWAP_SHORT_1778689982-DFF7227B": {
-    "instId": "TON-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 2.1324,
-    "sl": 2.1431,
-    "tp1": 2.1164,
-    "tp2": 2.1004,
-    "tp3": 2.0791,
-    "score": 98,
-    "grade": "B+ 合格 ✅",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 33.5,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 15,
-      "fvg_low": 2.112,
-      "fvg_high": 2.122,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 0,
-      "bos_desc": "無結構突破",
-      "pd_zone": -3,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "DOWN",
-      "vol_climax": 0,
-      "buy_pressure": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.59,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 下方 1.99%",
-      "regime": "trend",
-      "adx": 70.1,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 1.232,
-      "learning_notes": [
-        "fund:neutral (n=38, 勝率 63%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
-      ],
-      "learning_adjust": 1
-    },
-    "funding_rate": 5e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 12.8
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 35.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 70.1,
-      "atr_pct": 1.232,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 2.092,
-      "high": 2.112
-    },
-    "created": 1778689982.2190144,
-    "expires": 1778776382.2190146,
-    "order_id": "1778689982-DFF7227B",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2036,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778689982.219049
-  },
   "DOT-USDT-SWAP_SHORT_1778689985-615EE759": {
     "instId": "DOT-USDT-SWAP",
     "side": "SHORT",
@@ -271,6 +182,100 @@
     "entry_message_id": 2038,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778689985.2026765
+    "pending_since": 1778689985.2026765,
+    "current_price": 1.338
+  },
+  "XRP-USDT-SWAP_SHORT_1778690593-3C1B2474": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.425,
+    "sl": 1.4321,
+    "tp1": 1.4143,
+    "tp2": 1.4036,
+    "tp3": 1.3894,
+    "score": 95,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 35.3,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 1.417,
+      "ob_high": 1.422,
+      "fvg": 15,
+      "fvg_low": 1.423,
+      "fvg_high": 1.425,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.01,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.71%",
+      "regime": "trend",
+      "adx": 71.4,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 8,
+      "ob_degraded": true,
+      "atr_pct": 0.494,
+      "learning_notes": [
+        "fund:neutral (n=38, 勝率 63%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": 1.73309987448e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 71.4,
+      "atr_pct": 0.494,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 1.417,
+      "high": 1.422
+    },
+    "created": 1778690593.1552722,
+    "expires": 1778776993.1552725,
+    "order_id": "1778690593-3C1B2474",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": null,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778690593.1553137
   }
 }
