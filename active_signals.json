@@ -93,5 +93,99 @@
     "pending_since": 1778624106.5599582,
     "current_price": 666.8,
     "confirmed_at": 1778624150.3797433
+  },
+  "SOL-USDT-SWAP_SHORT_1778634132-998D56ED": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 94.68,
+    "sl": 95.1534,
+    "tp1": 93.9699,
+    "tp2": 93.2598,
+    "tp3": 92.313,
+    "score": 109,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.6,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 94.51,
+      "ob_high": 94.68,
+      "fvg": 15,
+      "fvg_low": 94.28,
+      "fvg_high": 94.35,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.02,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "fib_618": 10,
+      "regime": "transitional",
+      "adx": 23.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 36,
+      "ob_degraded": true,
+      "atr_pct": 0.264,
+      "learning_notes": [
+        "coin:SOL (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 4 (勝率 40%)"
+      ],
+      "learning_adjust": 2
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 49.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 23.7,
+      "atr_pct": 0.264,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 94.51,
+      "high": 94.68
+    },
+    "created": 1778634132.5618565,
+    "expires": 1778720532.561857,
+    "order_id": "1778634132-998D56ED",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1807,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778634132.5618958
   }
 }
