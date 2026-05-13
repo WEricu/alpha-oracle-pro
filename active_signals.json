@@ -85,10 +85,10 @@
     "hit_tp3": false,
     "activated_at": 1778676555.8719337,
     "entry_message_id": 1975,
-    "last_checked_ts": 1778676555.8719337,
+    "last_checked_ts": 1778677200.0,
     "user_confirmed": true,
     "pending_since": 1778675945.8207324,
-    "current_price": 80284.1,
+    "current_price": 80260.2,
     "confirmed_at": 1778675977.955483
   },
   "XRP-USDT-SWAP_SHORT_1778677772-116E8BBB": {
@@ -270,5 +270,94 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778678377.7760699
+  },
+  "ADA-USDT-SWAP_SHORT_1778678382-44B0459A": {
+    "instId": "ADA-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.2692,
+    "sl": 0.2705,
+    "tp1": 0.2672,
+    "tp2": 0.2652,
+    "tp3": 0.2625,
+    "score": 96,
+    "grade": "B+ 合格 ✅",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 14.4,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 0.2683,
+      "fvg_high": 0.2692,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↓ 跌破 0.2692",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 4,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.13,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 1.20%",
+      "regime": "trend",
+      "adx": 90.3,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.63,
+      "learning_notes": [
+        "fund:neutral (n=36, 勝率 61%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 90.3,
+      "atr_pct": 0.63,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 0.2704,
+      "high": 0.2715
+    },
+    "created": 1778678382.4709055,
+    "expires": 1778764782.4709058,
+    "order_id": "1778678382-44B0459A",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 1989,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778678382.4709356
   }
 }
