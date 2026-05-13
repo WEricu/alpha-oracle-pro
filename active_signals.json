@@ -1,1 +1,99 @@
-{}
+{
+  "BNB-USDT-SWAP_LONG_1778713453-453BC0E2": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 668.8,
+    "sl": 666.1571,
+    "tp1": 672.7643,
+    "tp2": 676.7286,
+    "tp3": 682.0143,
+    "score": 105,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.6,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 668.8,
+      "ob_high": 670.0,
+      "fvg": 15,
+      "fvg_low": 669.3,
+      "fvg_high": 670.8,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": 5,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 2,
+      "mtf_desc": "1H=反 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.57,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "choch": 8,
+      "regime": "range",
+      "adx": 0.0,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 24,
+      "ob_degraded": true,
+      "atr_pct": 0.197,
+      "learning_notes": [
+        "rsi_long:50-59 (n=14, 勝率 71%) → +2",
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "coin:BNB (n=7, 勝率 71%) → +2",
+        "coin_side:BNB_LONG (n=7, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 1 (勝率 50%)"
+      ],
+      "learning_adjust": 7
+    },
+    "funding_rate": -8.81607548124e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.0
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.197,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 668.8,
+      "high": 670.0
+    },
+    "created": 1778713453.6409886,
+    "expires": 1778799853.6409886,
+    "order_id": "1778713453-453BC0E2",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2118,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778713453.6430123
+  }
+}
