@@ -1,98 +1,4 @@
 {
-  "BNB-USDT-SWAP_LONG_1778763971-A989D8FA": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 674.6699,
-    "sl": 671.2966,
-    "tp1": 679.7299,
-    "tp2": 684.7899,
-    "tp3": 691.5366,
-    "score": 117,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 72.5,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↑ 突破 673.5000",
-      "pd_zone": -3,
-      "pd_label": "PREMIUM",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 4,
-      "buy_pressure": 4,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 8,
-      "volume_ratio": 5.34,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 上方 0.81%",
-      "choch": 8,
-      "regime": "trend",
-      "adx": 31.9,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.277,
-      "learning_notes": [
-        "rsi_long:70-79 (n=6, 勝率 100%) → +2",
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "sess:us (n=5, 勝率 100%) → +2",
-        "coin:BNB (n=7, 勝率 71%) → +2",
-        "coin_side:BNB_LONG (n=7, 勝率 71%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 14
-    },
-    "funding_rate": 3.03770857362e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 58.7
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 55.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 31.9,
-      "atr_pct": 0.277,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 670.4,
-      "high": 671.7
-    },
-    "created": 1778763971.1379118,
-    "expires": 1778850371.137912,
-    "order_id": "1778763971-A989D8FA",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2328,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778763971.1379468,
-    "current_price": 676.7
-  },
   "XRP-USDT-SWAP_LONG_1778764576-9101C7CE": {
     "instId": "XRP-USDT-SWAP",
     "side": "LONG",
@@ -181,7 +87,8 @@
     "entry_message_id": 2330,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778764576.8186014
+    "pending_since": 1778764576.8186014,
+    "current_price": 1.459
   },
   "DOGE-USDT-SWAP_LONG_1778764578-A56E540A": {
     "instId": "DOGE-USDT-SWAP",
@@ -271,6 +178,7 @@
     "entry_message_id": 2331,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778764578.7603035
+    "pending_since": 1778764578.7603035,
+    "current_price": 0.11639
   }
 }
