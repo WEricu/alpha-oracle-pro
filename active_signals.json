@@ -95,102 +95,8 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778777275.3322084,
-    "current_price": 682.3,
+    "current_price": 681.0,
     "confirmed_at": 1778777487.9679987
-  },
-  "XRP-USDT-SWAP_LONG_1778779107-57DD5D09": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 1.468,
-    "sl": 1.4607,
-    "tp1": 1.479,
-    "tp2": 1.49,
-    "tp3": 1.5047,
-    "score": 105,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 81.4,
-      "rsi": 0,
-      "ob": 20,
-      "ob_low": 1.468,
-      "ob_high": 1.475,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↑ 突破 1.4760",
-      "pd_zone": -3,
-      "pd_label": "PREMIUM",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 4,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 8,
-      "volume_ratio": 2.22,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 上方 1.88%",
-      "choch": 8,
-      "regime": "trend",
-      "adx": 63.3,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "ob_test_count": 10,
-      "ob_degraded": true,
-      "atr_pct": 0.705,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 6
-    },
-    "funding_rate": 9.61803369216e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 79.6
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 52.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 63.3,
-      "atr_pct": 0.705,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 1.468,
-      "high": 1.475
-    },
-    "created": 1778779107.112391,
-    "expires": 1778865507.1123912,
-    "order_id": "1778779107-57DD5D09",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2390,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778779107.11243,
-    "current_price": 1.481
   },
   "DOT-USDT-SWAP_LONG_1778779719-BEAC6FF9": {
     "instId": "DOT-USDT-SWAP",
@@ -281,7 +187,8 @@
     "entry_message_id": 2393,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778779719.1331966
+    "pending_since": 1778779719.1331966,
+    "current_price": 1.386
   },
   "BCH-USDT-SWAP_LONG_1778779720-8089444D": {
     "instId": "BCH-USDT-SWAP",
@@ -377,6 +284,7 @@
     "entry_message_id": 2394,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778779720.7278903
+    "pending_since": 1778779720.7278903,
+    "current_price": 436.2
   }
 }
