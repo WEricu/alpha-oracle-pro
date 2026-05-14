@@ -93,9 +93,10 @@
     "activated_at": null,
     "entry_message_id": 2376,
     "last_checked_ts": null,
-    "user_confirmed": null,
+    "user_confirmed": true,
     "pending_since": 1778777275.3322084,
-    "current_price": 681.2
+    "current_price": 681.2,
+    "confirmed_at": 1778777487.9679987
   },
   "ADA-USDT-SWAP_LONG_1778777279-B413CC0E": {
     "instId": "ADA-USDT-SWAP",
