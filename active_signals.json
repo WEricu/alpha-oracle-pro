@@ -89,8 +89,9 @@
     "activated_at": null,
     "entry_message_id": 2366,
     "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778775456.16983
+    "user_confirmed": false,
+    "pending_since": 1778775456.16983,
+    "current_price": 81392.8
   },
   "ETH-USDT-SWAP_LONG_1778775458-02C992CD": {
     "instId": "ETH-USDT-SWAP",
@@ -179,7 +180,8 @@
     "activated_at": null,
     "entry_message_id": 2367,
     "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778775458.932616
+    "user_confirmed": false,
+    "pending_since": 1778775458.932616,
+    "current_price": 2303.36
   }
 }
