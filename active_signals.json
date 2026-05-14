@@ -94,5 +94,93 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778796931.3827255
+  },
+  "XAG-USDT-SWAP_SHORT_1778796946-47DEE636": {
+    "instId": "XAG-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 83.81,
+    "sl": 84.2291,
+    "tp1": 83.1814,
+    "tp2": 82.5529,
+    "tp3": 81.7148,
+    "score": 99,
+    "grade": "B+ 合格 ✅",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.1,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 83.78,
+      "fvg_high": 83.81,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 3.22,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "regime": "trend",
+      "adx": 44.2,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.348,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "funding_rate": 0.000359330898207,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 22.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 44.2,
+      "atr_pct": 0.348,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 84.23,
+      "high": 84.51
+    },
+    "created": 1778796946.3308372,
+    "expires": 1778883346.3308375,
+    "order_id": "1778796946-47DEE636",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2460,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778796946.3308704
   }
 }
