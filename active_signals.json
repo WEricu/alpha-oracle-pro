@@ -1,94 +1,4 @@
 {
-  "ETH-USDT-SWAP_SHORT_1778728909-3063A59E": {
-    "instId": "ETH-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 2249.1874,
-    "sl": 2260.4333,
-    "tp1": 2232.3185,
-    "tp2": 2215.4496,
-    "tp3": 2192.9577,
-    "score": 109,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 40.3,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 8,
-      "bos_desc": "CHOCH ↓ 跌破 2249.6000",
-      "pd_zone": -3,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "DOWN",
-      "vol_climax": 4,
-      "buy_pressure": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 8,
-      "volume_ratio": 3.39,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 下方 0.42%",
-      "regime": "trend",
-      "adx": 30.3,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.283,
-      "pullback": true,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 4
-    },
-    "funding_rate": 7.6873744594e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 36.8
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.0
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 30.3,
-      "atr_pct": 0.283,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 2259.06,
-      "high": 2262.98
-    },
-    "created": 1778728909.8640482,
-    "expires": 1778815309.8640485,
-    "order_id": "1778728909-3063A59E",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2154,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778728909.8640797,
-    "current_price": 2242.46
-  },
   "SOL-USDT-SWAP_SHORT_1778728911-A831158A": {
     "instId": "SOL-USDT-SWAP",
     "side": "SHORT",
@@ -179,7 +89,7 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778728911.4324129,
-    "current_price": 90.11
+    "current_price": 90.46
   },
   "BTC-USDT-SWAP_SHORT_1778729515-02020E91": {
     "instId": "BTC-USDT-SWAP",
@@ -274,7 +184,8 @@
     "entry_message_id": 2158,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778729515.0268946
+    "pending_since": 1778729515.0268946,
+    "current_price": 79318.3
   },
   "ADA-USDT-SWAP_SHORT_1778729520-6B4141A1": {
     "instId": "ADA-USDT-SWAP",
@@ -364,6 +275,7 @@
     "entry_message_id": 2159,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778729520.6154861
+    "pending_since": 1778729520.6154861,
+    "current_price": 0.2638
   }
 }
