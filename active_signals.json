@@ -1,102 +1,4 @@
 {
-  "XAU-USDT-SWAP_LONG_1778762144-AFF9DC00": {
-    "instId": "XAU-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 4695.2,
-    "sl": 4683.4571,
-    "tp1": 4712.8143,
-    "tp2": 4730.4286,
-    "tp3": 4753.9143,
-    "score": 102,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 61.0,
-      "rsi": 15,
-      "ob": 20,
-      "ob_low": 4695.2,
-      "ob_high": 4701.9,
-      "fvg": 15,
-      "fvg_low": 4700.7,
-      "fvg_high": 4701.4,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 0,
-      "bos_desc": "無結構突破",
-      "pd_zone": -3,
-      "pd_label": "PREMIUM",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 0,
-      "mtf": 0,
-      "mtf_desc": "1H=中 / 4H=中",
-      "volume": 5,
-      "volume_ratio": 1.53,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 1,
-      "_vwap_desc": "價略高於 VWAP",
-      "fib_618": 10,
-      "regime": "transitional",
-      "adx": 18.2,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "ob_test_count": 40,
-      "ob_degraded": true,
-      "atr_pct": 0.125,
-      "pullback": true,
-      "learning_notes": [
-        "rsi_long:60-69 (n=7, 勝率 29%) → -3",
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "sess:europe (n=13, 勝率 62%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 1 (勝率 60%)"
-      ],
-      "learning_adjust": -1
-    },
-    "funding_rate": 0.0,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 52.3
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 43.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 18.2,
-      "atr_pct": 0.125,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 4695.2,
-      "high": 4701.9
-    },
-    "created": 1778762144.025453,
-    "expires": 1778848544.0254533,
-    "order_id": "1778762144-AFF9DC00",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2317,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778762144.0274005,
-    "current_price": 4711.6
-  },
   "SOL-USDT-SWAP_LONG_1778762749-616EE3C0": {
     "instId": "SOL-USDT-SWAP",
     "side": "LONG",
@@ -194,7 +96,8 @@
     "entry_message_id": 2318,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778762749.3785398
+    "pending_since": 1778762749.3785398,
+    "current_price": 91.07
   },
   "XRP-USDT-SWAP_LONG_1778762752-9C7D109F": {
     "instId": "XRP-USDT-SWAP",
@@ -286,6 +189,7 @@
     "entry_message_id": 2320,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778762752.1661131
+    "pending_since": 1778762752.1661131,
+    "current_price": 1.447
   }
 }
