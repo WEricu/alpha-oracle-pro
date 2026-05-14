@@ -98,99 +98,6 @@
     "current_price": 680.1,
     "confirmed_at": 1778777487.9679987
   },
-  "BTC-USDT-SWAP_LONG_1778777883-13DC426A": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 81286.8,
-    "sl": 80880.366,
-    "tp1": 81896.451,
-    "tp2": 82506.102,
-    "tp3": 83318.97,
-    "score": 113,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 85.9,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 15,
-      "fvg_low": 81286.8,
-      "fvg_high": 81340.4,
-      "snr": 0,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↑ 突破 81286.8000",
-      "pd_zone": -3,
-      "pd_label": "PREMIUM",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 4,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.96,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 上方 1.12%",
-      "regime": "trend",
-      "adx": 70.8,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.421,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "coin:BTC (n=15, 勝率 73%) → +2",
-        "coin_side:BTC_LONG (n=10, 勝率 80%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 10
-    },
-    "funding_rate": -3.91825729705e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 70.1
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 52.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 70.8,
-      "atr_pct": 0.421,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 79619.5,
-      "high": 80012.5
-    },
-    "created": 1778777883.7438195,
-    "expires": 1778864283.7438197,
-    "order_id": "1778777883-13DC426A",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2381,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778777883.7438521,
-    "current_price": 81418.5
-  },
   "ETH-USDT-SWAP_LONG_1778777885-04761543": {
     "instId": "ETH-USDT-SWAP",
     "side": "LONG",
@@ -283,5 +190,95 @@
     "user_confirmed": null,
     "pending_since": 1778777885.4298403,
     "current_price": 2302.66
+  },
+  "XRP-USDT-SWAP_LONG_1778778492-962FC006": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.4815,
+    "sl": 1.4741,
+    "tp1": 1.4926,
+    "tp2": 1.5037,
+    "tp3": 1.5185,
+    "score": 101,
+    "grade": "B+ 合格 ✅",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 75.8,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 1.4760",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.28,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 1.41%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 41.2,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.652,
+      "learning_notes": [
+        "rsi_long:70-79 (n=6, 勝率 100%) → +2",
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8
+    },
+    "funding_rate": 9.02561915914e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 79.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.652,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 1.44,
+      "high": 1.449
+    },
+    "created": 1778778492.8460057,
+    "expires": 1778864892.846006,
+    "order_id": "1778778492-962FC006",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2384,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778778492.8460398
   }
 }
