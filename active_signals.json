@@ -1,1 +1,185 @@
-{}
+{
+  "BTC-USDT-SWAP_LONG_1778775456-D2B5522F": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 81031.5,
+    "sl": 80626.3425,
+    "tp1": 81639.2363,
+    "tp2": 82246.9725,
+    "tp3": 83057.2875,
+    "score": 124,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 89.2,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 81031.5,
+      "fvg_high": 81241.8,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 81130.6000",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 2.37,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 1.37%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 78.8,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.399,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "coin:BTC (n=15, 勝率 73%) → +2",
+        "coin_side:BTC_LONG (n=10, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 10
+    },
+    "funding_rate": -4.2491247116e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 70.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 78.8,
+      "atr_pct": 0.399,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 79619.5,
+      "high": 80012.5
+    },
+    "created": 1778775456.1697967,
+    "expires": 1778861856.169797,
+    "order_id": "1778775456-D2B5522F",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2366,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778775456.16983
+  },
+  "ETH-USDT-SWAP_LONG_1778775458-02C992CD": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 2296.4499,
+    "sl": 2284.9677,
+    "tp1": 2313.6733,
+    "tp2": 2330.8966,
+    "tp3": 2353.8611,
+    "score": 100,
+    "grade": "B+ 合格 ✅",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 79.3,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↑ 突破 2292.3100",
+      "pd_zone": -3,
+      "pd_label": "PREMIUM",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 8,
+      "volume_ratio": 3.1,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 上方 1.39%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 65.2,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.485,
+      "learning_notes": [
+        "rsi_long:70-79 (n=6, 勝率 100%) → +2",
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8
+    },
+    "funding_rate": 2.74904537626e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.6
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 50.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 65.2,
+      "atr_pct": 0.485,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 2279.08,
+      "high": 2289.86
+    },
+    "created": 1778775458.9308038,
+    "expires": 1778861858.930804,
+    "order_id": "1778775458-02C992CD",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2367,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778775458.932616
+  }
+}
