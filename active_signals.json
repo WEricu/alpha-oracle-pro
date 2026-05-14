@@ -95,7 +95,7 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778777275.3322084,
-    "current_price": 684.0,
+    "current_price": 682.6,
     "confirmed_at": 1778777487.9679987
   },
   "BCH-USDT-SWAP_LONG_1778779720-8089444D": {
@@ -193,98 +193,8 @@
     "last_checked_ts": null,
     "user_confirmed": true,
     "pending_since": 1778779720.7278903,
-    "current_price": 438.2,
+    "current_price": 437.9,
     "confirmed_at": 1778779783.4882076
-  },
-  "XRP-USDT-SWAP_LONG_1778783988-49238A1E": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 1.5264,
-    "sl": 1.5188,
-    "tp1": 1.5378,
-    "tp2": 1.5493,
-    "tp3": 1.5646,
-    "score": 107,
-    "grade": "B+ 合格 ✅",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 77.4,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↑ 突破 1.4930",
-      "pd_zone": -3,
-      "pd_label": "PREMIUM",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 4,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 8,
-      "volume_ratio": 3.11,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 上方 3.63%",
-      "choch": 8,
-      "regime": "trend",
-      "adx": 78.9,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.931,
-      "learning_notes": [
-        "rsi_long:70-79 (n=6, 勝率 100%) → +2",
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 8
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 84.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 52.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 78.9,
-      "atr_pct": 0.931,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 1.471,
-      "high": 1.491
-    },
-    "created": 1778783988.3844109,
-    "expires": 1778870388.384411,
-    "order_id": "1778783988-49238A1E",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2402,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778783988.3844442
   },
   "DOGE-USDT-SWAP_LONG_1778783990-40E8008B": {
     "instId": "DOGE-USDT-SWAP",
@@ -374,6 +284,7 @@
     "entry_message_id": 2403,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778783990.6944733
+    "pending_since": 1778783990.6944733,
+    "current_price": 0.11782
   }
 }
