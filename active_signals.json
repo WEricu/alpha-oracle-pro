@@ -1,1 +1,97 @@
-{}
+{
+  "AVAX-USDT-SWAP_SHORT_1778878373-0E188117": {
+    "instId": "AVAX-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 9.573,
+    "sl": 9.6209,
+    "tp1": 9.5012,
+    "tp2": 9.4294,
+    "tp3": 9.3337,
+    "score": 107,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 30.7,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 9.544,
+      "ob_high": 9.573,
+      "fvg": 15,
+      "fvg_low": 9.541,
+      "fvg_high": 9.544,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.63,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.32%",
+      "fib_618": 10,
+      "regime": "trend",
+      "adx": 47.1,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 18,
+      "ob_degraded": true,
+      "atr_pct": 0.332,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 4
+    },
+    "funding_rate": 5.1575036549e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 47.1,
+      "atr_pct": 0.332,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 9.544,
+      "high": 9.573
+    },
+    "created": 1778878373.598527,
+    "expires": 1778964773.5985277,
+    "order_id": "1778878373-0E188117",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2684,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778878373.59856
+  }
+}
