@@ -1,1 +1,96 @@
-{}
+{
+  "SOL-USDT-SWAP_SHORT_1778876520-98ECAF73": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 89.59,
+    "sl": 90.038,
+    "tp1": 88.9181,
+    "tp2": 88.2461,
+    "tp3": 87.3502,
+    "score": 99,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.4,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 89.46,
+      "ob_high": 89.59,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.14,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "fib_618": 10,
+      "choch": 8,
+      "regime": "trend",
+      "adx": 30.2,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 17,
+      "ob_degraded": true,
+      "atr_pct": 0.348,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "coin:SOL (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.348,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 89.46,
+      "high": 89.59
+    },
+    "created": 1778876520.2581272,
+    "expires": 1778962920.2581277,
+    "order_id": "1778876520-98ECAF73",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": null,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778876520.2581615
+  }
+}
