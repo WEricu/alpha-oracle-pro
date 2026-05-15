@@ -1,95 +1,4 @@
 {
-  "XRP-USDT-SWAP_SHORT_1778855524-C08C0786": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.4403,
-    "sl": 1.4475,
-    "tp1": 1.4295,
-    "tp2": 1.4187,
-    "tp3": 1.4043,
-    "score": 95,
-    "grade": "B+ 合格 ✅",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 8.5,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 15,
-      "fvg_low": 1.436,
-      "fvg_high": 1.437,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 12,
-      "bos_desc": "BOS ↓ 跌破 1.4370",
-      "pd_zone": -3,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "DOWN",
-      "vol_climax": 4,
-      "buy_pressure": 4,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "volume": 2,
-      "volume_ratio": 1.06,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 下方 1.02%",
-      "regime": "trend",
-      "adx": 91.3,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.483,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "sess:us (n=5, 勝率 100%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
-      ],
-      "learning_adjust": 3
-    },
-    "funding_rate": -6.8402913482e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 28.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 53.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 91.3,
-      "atr_pct": 0.483,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 1.464,
-      "high": 1.467
-    },
-    "created": 1778855524.5961592,
-    "expires": 1778941924.5961597,
-    "order_id": "1778855524-C08C0786",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2637,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778855524.596194,
-    "current_price": 1.436
-  },
   "TRX-USDT-SWAP_SHORT_1778855527-ACD44D30": {
     "instId": "TRX-USDT-SWAP",
     "side": "SHORT",
@@ -182,7 +91,7 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778855527.172503,
-    "current_price": 0.3502
+    "current_price": 0.3505
   },
   "BTC-USDT-SWAP_SHORT_1778856130-95EB27BB": {
     "instId": "BTC-USDT-SWAP",
@@ -273,7 +182,8 @@
     "entry_message_id": 2639,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778856130.563619
+    "pending_since": 1778856130.563619,
+    "current_price": 79148.9
   },
   "ADA-USDT-SWAP_SHORT_1778856136-D13A07AD": {
     "instId": "ADA-USDT-SWAP",
@@ -364,6 +274,7 @@
     "entry_message_id": 2640,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778856136.0598087
+    "pending_since": 1778856136.0598087,
+    "current_price": 0.2591
   }
 }
