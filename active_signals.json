@@ -1,1 +1,91 @@
-{}
+{
+  "TON-USDT-SWAP_SHORT_1778812387-F25781CA": {
+    "instId": "TON-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 2.0892,
+    "sl": 2.0996,
+    "tp1": 2.0735,
+    "tp2": 2.0579,
+    "tp3": 2.037,
+    "score": 112,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 21.5,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↓ 跌破 2.1000",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 4,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 4.57,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 1.37%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 78.1,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.704,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 4
+    },
+    "funding_rate": 5e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 78.1,
+      "atr_pct": 0.704,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 2.1,
+      "high": 2.115
+    },
+    "created": 1778812387.319725,
+    "expires": 1778898787.3197255,
+    "order_id": "1778812387-F25781CA",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2503,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778812387.319759
+  }
+}
