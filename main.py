@@ -1376,6 +1376,9 @@ def fetch_mtf_trend(instId: str) -> dict:
             }
         else:
             out[tf] = {"supertrend": 0, "trend": "side", "rsi": 50}
+    # v15: 加 1D regime（EMA50 斜率）
+    df_1d = fetch_candles(instId, tf="1D", limit=80)
+    out["1D"] = {"regime": check_regime_bias(df_1d)}
     _mtf_cache[instId] = (out, now)
     return out
 
@@ -1706,6 +1709,46 @@ def calc_buying_pressure(df: list, n: int = 10) -> float:
         return 0.5
     return total_bull / total_vol
 
+
+
+def _resolve_sl_cap(coin: str, tiers: dict, fallback: float) -> float:
+    """v15: 依幣種找到對應的 SL 上限（按波動分層）。"""
+    for _tier_name, _tier in tiers.items():
+        if not isinstance(_tier, dict):
+            continue
+        if coin in (_tier.get("coins") or []):
+            return float(_tier.get("max_pct", fallback))
+    return float(fallback)
+
+
+def check_regime_bias(df_1d: list | None) -> str:
+    """v15: 用 1D EMA50 斜率判斷市場 regime → 'up' / 'down' / 'side'。
+
+    取最近 5 根 vs 25 根前的 EMA50 比較，斜率 > +0.3% 視為上升、< -0.3% 視為下降。
+    """
+    if not df_1d or len(df_1d) < 60:
+        return "side"
+    closes = [float(c["c"]) for c in df_1d]
+    ema = closes[0]
+    k = 2 / 51  # EMA50
+    ema_series = []
+    for c in closes:
+        ema = c * k + ema * (1 - k)
+        ema_series.append(ema)
+    recent = ema_series[-5:]
+    past = ema_series[-30:-25]
+    if not past or not recent:
+        return "side"
+    avg_recent = sum(recent) / len(recent)
+    avg_past = sum(past) / len(past)
+    if avg_past <= 0:
+        return "side"
+    slope_pct = (avg_recent - avg_past) / avg_past
+    if slope_pct > 0.003:
+        return "up"
+    if slope_pct < -0.003:
+        return "down"
+    return "side"
 
 
 def detect_pullback(df: list, side: str) -> bool:
@@ -2061,20 +2104,27 @@ def generate_signal(
     coin = instId.split("-")[0]
 
     # 🌐 市場狀態識別（趨勢/震盪）→ 影響門檻
+    # v15: 累加封頂在 +12（避免 Asia+Volatile+Range 同時把門檻拉到 112，整時段無單可出）
     regime_info = detect_market_regime(df)
+    _thr_adjust = 0
     if regime_info["regime"] == "range":
-        threshold += 3  # 震盪市要求稍嚴格
+        _thr_adjust += 3  # 震盪市要求稍嚴格
     if regime_info["volatile"]:
-        threshold += 2  # 高波動微調門檻
+        _thr_adjust += 2  # 高波動微調門檻
 
     # ⏰ 時段門檻調整：亞洲盤假突破多，要求更嚴
     _utc_h = datetime.utcnow().hour
     if 0 <= _utc_h < 7:
-        threshold += 12  # 亞洲盤（使用者不交易此時段，提高門檻）
+        _thr_adjust += 12  # 亞洲盤（使用者不交易此時段，提高門檻）
     # 歐洲盤(7-13 UTC)、美盤(13-24 UTC) → 維持基準，不加分
+
+    threshold += min(_thr_adjust, 12)
 
     # 🕒 多時框抓一次給兩個方向共用
     mtf = fetch_mtf_trend(instId)
+
+    # v15: 1D regime bias（用 1D EMA50 斜率決定大方向）
+    _regime_1d = mtf.get("1D", {}).get("regime", "side")
 
     candidates = []
     for side in ("LONG", "SHORT"):
@@ -2085,6 +2135,17 @@ def generate_signal(
             continue
         if side == "SHORT" and _t1h == "up" and _t4h == "up":
             continue
+        # v15: 1D 趨勢逆向直接拒絕，順向加 +3 分
+        if side == "LONG" and _regime_1d == "down":
+            continue
+        if side == "SHORT" and _regime_1d == "up":
+            continue
+        # v16 Config R: 4H supertrend HARD requirement（必須順向，不只是不反向）
+        if cfg_rr_mode.get("hard_confluence", {}).get("enabled", False):
+            if side == "LONG" and _t4h != "up":
+                continue
+            if side == "SHORT" and _t4h != "down":
+                continue
         score, grade, detail = calc_score(df, side, current_price, mtf=mtf)
         # 🧱 OB 磁性衰退：OB被反覆測試則降分
         if detail.get("ob_low") and detail.get("ob_high"):
@@ -2105,6 +2166,19 @@ def generate_signal(
         if side == "SHORT" and funding_penalty_short:
             score -= 5
 
+        # v15: 1D 順趨勢加分；funding rate 強烈反向（|rate|>0.05% 且方向相反）直接拒絕
+        if side == "LONG" and _regime_1d == "up":
+            score += 3
+            detail["regime_1d_bonus"] = 3
+        elif side == "SHORT" and _regime_1d == "down":
+            score += 3
+            detail["regime_1d_bonus"] = 3
+        if funding_rate is not None:
+            if side == "LONG" and funding_rate > 0.0005:
+                continue
+            if side == "SHORT" and funding_rate < -0.0005:
+                continue
+
         # 註記市場狀態到 detail
         detail["regime"] = regime_info["regime"]
         detail["adx"] = regime_info["adx"]
@@ -2122,7 +2196,10 @@ def generate_signal(
         adj_knn, notes_knn = apply_knn_learning(
             score, side, detail, funding_rate, coin, mtf, regime_info
         )
-        adjusted_score = adj_simple + (adj_knn - score)
+        # v15: 兩個 delta 各自獨立加減（原公式在 KNN 降分時會被 simple bias 放大）
+        delta_simple = adj_simple - score
+        delta_knn = adj_knn - score
+        adjusted_score = score + delta_simple + delta_knn
         learning_notes = notes_simple + notes_knn
         if learning_notes:
             detail["learning_notes"] = learning_notes
@@ -2156,16 +2233,22 @@ def generate_signal(
             entry = min(raw_limit, current_price * (1 + _max_off))
         entry = round(entry, 4)
         _sl_mult = cfg_rr_mode.get("sl_atr_mult", 1.5)
+        # v15: SL 上限改為按幣種波動分層；若 config 無分層則退回單一 max_sl_pct
+        _sl_tiers = cfg_rr_mode.get("sl_caps_by_volatility")
         _max_sl_pct = cfg_rr_mode.get("max_sl_pct", 1.0)
+        if isinstance(_sl_tiers, dict):
+            _max_sl_pct = _resolve_sl_cap(coin, _sl_tiers, _max_sl_pct)
         sl_dist = min(atr * _sl_mult, entry * _max_sl_pct)
         sl = entry - sl_dist if side == "LONG" else entry + sl_dist
         risk = abs(entry - sl)
 
-        # ✅ 規格倍率：1.5R / 3.0R / 5.0R
+        # v16 Config R: TP 倍率改為 1.0/2.0/3.0（從 1.5/3.0/5.0），TP1 從 1.5R → 1R
+        # 可由 config.json 的 tp_multipliers 覆寫
+        _tp_mults = cfg_rr_mode.get("tp_multipliers", [1.0, 2.0, 3.0])
         if side == "LONG":
-            tp_levels = [entry + risk * 1.5, entry + risk * 3.0, entry + risk * 5.0]
+            tp_levels = [entry + risk * _tp_mults[0], entry + risk * _tp_mults[1], entry + risk * _tp_mults[2]]
         else:
-            tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
+            tp_levels = [entry - risk * _tp_mults[0], entry - risk * _tp_mults[1], entry - risk * _tp_mults[2]]
 
         # 🎯 動態 TP 校正（預設關閉 → 固定 1.5R/3R/5R 不動）
         if not cfg_rr_mode.get("fixed_rr_mode", True):
@@ -2174,8 +2257,7 @@ def generate_signal(
                 detail["tp_adjust_notes"] = tp_notes
 
         # ⚖️ R:R 最低門檻 — TP1 至少要有 N R，否則拒絕（加 0.02 容差避免浮點誤差）
-        cfg_rr = load_config()
-        min_rr = cfg_rr.get("min_rr_ratio", 1.5)
+        min_rr = cfg_rr_mode.get("min_rr_ratio", 1.5)
         actual_tp1_r = abs(tp_levels[0] - entry) / max(risk, 1e-9)
         if actual_tp1_r < min_rr - 0.02:
             logging.info(
@@ -2783,14 +2865,20 @@ def apply_knn_learning(
     n = len(similar)
     wr = wins / n
     notes = [f"🧬 KNN：{n} 筆最相似訊號 → 勝 {wins} / 敗 {losses} (勝率 {wr:.0%})"]
+    # v15: 門檻放寬，原本 60%+ 訊號無調整 → 現在 ~70% 訊號會被微調
     if wr < 0.30:
-        return score - 8, notes + ["KNN 低勝率 → -8"]
-    if wr < 0.40:
-        return score - 4, notes + ["KNN 偏低勝率 → -4"]
-    if wr > 0.70:
-        return score + 5, notes + ["KNN 高勝率 → +5"]
-    if wr > 0.60:
-        return score + 3, notes + ["KNN 中高勝率 → +3"]
+        adj, tag = -8, "KNN 極低勝率 → -8"
+    elif wr < 0.45:
+        adj, tag = -5, "KNN 低勝率 → -5"
+    elif wr <= 0.55:
+        adj, tag = 0, None
+    elif wr <= 0.70:
+        adj, tag = +3, "KNN 中高勝率 → +3"
+    else:
+        adj, tag = +5, "KNN 高勝率 → +5"
+    logging.info(f"[KNN] {coin} {side} score={score} adj={adj:+d} based_on={n} wr={wr:.0%}")
+    if tag:
+        return score + adj, notes + [tag]
     return score, notes
 
 
