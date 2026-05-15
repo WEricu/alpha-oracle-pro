@@ -94,5 +94,100 @@
     "last_checked_ts": null,
     "user_confirmed": null,
     "pending_since": 1778872802.2635527
+  },
+  "TON-USDT-SWAP_SHORT_1778872808-974F7587": {
+    "instId": "TON-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 2.003,
+    "sl": 2.013,
+    "tp1": 1.988,
+    "tp2": 1.973,
+    "tp3": 1.9529,
+    "score": 99,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.9,
+      "rsi": 25,
+      "ob": 20,
+      "ob_low": 1.997,
+      "ob_high": 2.003,
+      "fvg": 15,
+      "fvg_low": 1.995,
+      "fvg_high": 1.997,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": -3,
+      "obv_trend": "UP",
+      "vol_climax": 0,
+      "buy_pressure": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.5,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "fib_618": 10,
+      "regime": "range",
+      "adx": 3.8,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 15,
+      "ob_degraded": true,
+      "atr_pct": 0.518,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 3 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -3
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 28.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 24.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 3.8,
+      "atr_pct": 0.518,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 1.997,
+      "high": 2.003
+    },
+    "created": 1778872808.8208148,
+    "expires": 1778959208.820815,
+    "order_id": "1778872808-974F7587",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2664,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778872808.820847
   }
 }
