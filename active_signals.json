@@ -1,94 +1,4 @@
 {
-  "LINK-USDT-SWAP_LONG_1778830357-7D22F758": {
-    "instId": "LINK-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 10.3499,
-    "sl": 10.2982,
-    "tp1": 10.4275,
-    "tp2": 10.5051,
-    "tp3": 10.6086,
-    "score": 98,
-    "grade": "B+ 合格 ✅",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 45.2,
-      "rsi": 25,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 0,
-      "bos_desc": "無結構突破",
-      "pd_zone": 5,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 0,
-      "mtf": -5,
-      "mtf_desc": "1H=反 / 4H=中",
-      "volume": 8,
-      "volume_ratio": 2.36,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 3,
-      "_vwap_desc": "價於 VWAP 上方 0.50%",
-      "choch": 8,
-      "regime": "range",
-      "adx": 16.5,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "atr_pct": 0.431,
-      "learning_notes": [
-        "fund:neutral (n=39, 勝率 64%) → +1",
-        "sess:europe (n=13, 勝率 62%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
-      ],
-      "learning_adjust": 2
-    },
-    "funding_rate": -6.90069514594e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 22.6
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 52.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 16.5,
-      "atr_pct": 0.431,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 10.209,
-      "high": 10.254
-    },
-    "created": 1778830357.738951,
-    "expires": 1778916757.7389512,
-    "order_id": "1778830357-7D22F758",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2551,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778830357.7407537,
-    "current_price": 10.381
-  },
   "BTC-USDT-SWAP_LONG_1778830961-F48B9930": {
     "instId": "BTC-USDT-SWAP",
     "side": "LONG",
@@ -184,7 +94,8 @@
     "entry_message_id": 2554,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778830961.526434
+    "pending_since": 1778830961.526434,
+    "current_price": 80761.0
   },
   "BNB-USDT-SWAP_LONG_1778830965-438D3DE8": {
     "instId": "BNB-USDT-SWAP",
@@ -277,6 +188,7 @@
     "entry_message_id": 2555,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778830965.1007247
+    "pending_since": 1778830965.1007247,
+    "current_price": 684.1
   }
 }
