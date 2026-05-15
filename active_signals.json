@@ -1,99 +1,4 @@
 {
-  "BNB-USDT-SWAP_LONG_1778880219-85AB5FE4": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 670.981,
-    "sl": 668.0096,
-    "tp1": 675.4381,
-    "tp2": 679.8953,
-    "tp3": 685.8381,
-    "score": 98,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 15,
-      "rsi_value": 41.9,
-      "rsi": 25,
-      "ob": 20,
-      "ob_low": 673.1,
-      "ob_high": 674.5,
-      "fvg": 15,
-      "fvg_low": 672.4,
-      "fvg_high": 673.4,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "macd": 8,
-      "bos": 0,
-      "bos_desc": "無結構突破",
-      "pd_zone": 5,
-      "pd_label": "DISCOUNT",
-      "displacement": 0,
-      "eqhl": 3,
-      "obv": 6,
-      "obv_trend": "UP",
-      "vol_climax": 0,
-      "buy_pressure": 0,
-      "mtf": -5,
-      "mtf_desc": "1H=反 / 4H=中",
-      "volume": 2,
-      "volume_ratio": 1.04,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 0,
-      "_vwap_desc": "價接近 VWAP",
-      "fib_618": 10,
-      "regime": "trend",
-      "adx": 43.8,
-      "entry_tf": "15m",
-      "analysis_tfs": "1H / 4H",
-      "ob_test_count": 27,
-      "ob_degraded": true,
-      "atr_pct": 0.221,
-      "learning_notes": [
-        "coin:BNB (n=7, 勝率 71%) → +2",
-        "coin_side:BNB_LONG (n=7, 勝率 71%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 0 (勝率 60%)"
-      ],
-      "learning_adjust": 4
-    },
-    "funding_rate": -0.000111003286239,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 39.2
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 46.7
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 43.8,
-      "atr_pct": 0.221,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 673.1,
-      "high": 674.5
-    },
-    "created": 1778880219.5325992,
-    "expires": 1778966619.5326,
-    "order_id": "1778880219-85AB5FE4",
-    "status": "PENDING",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": null,
-    "entry_message_id": 2692,
-    "last_checked_ts": null,
-    "user_confirmed": null,
-    "pending_since": 1778880219.5348296
-  },
   "LINK-USDT-SWAP_SHORT_1778880226-C55DA92D": {
     "instId": "LINK-USDT-SWAP",
     "side": "SHORT",
@@ -185,6 +90,7 @@
     "entry_message_id": 2695,
     "last_checked_ts": null,
     "user_confirmed": null,
-    "pending_since": 1778880226.4326727
+    "pending_since": 1778880226.4326727,
+    "current_price": 10.049
   }
 }
