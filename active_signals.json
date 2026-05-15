@@ -1,1 +1,95 @@
-{}
+{
+  "XAG-USDT-SWAP_SHORT_1778888291-B7BA8EDB": {
+    "instId": "XAG-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 76.4186,
+    "sl": 76.6986,
+    "tp1": 75.9986,
+    "tp2": 75.5786,
+    "tp3": 75.0186,
+    "score": 98,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 36.6,
+      "rsi": 15,
+      "ob": 20,
+      "ob_low": 76.22,
+      "ob_high": 76.26,
+      "fvg": 15,
+      "fvg_low": 76.21,
+      "fvg_high": 76.22,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 4,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.73,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略低於 VWAP",
+      "regime": "trend",
+      "adx": 35.7,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "ob_test_count": 14,
+      "ob_degraded": true,
+      "atr_pct": 0.184,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "funding_rate": 0.0002563323382242,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 36.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 15.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 35.7,
+      "atr_pct": 0.184,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 76.22,
+      "high": 76.26
+    },
+    "created": 1778888291.4818077,
+    "expires": 1778974691.481808,
+    "order_id": "1778888291-B7BA8EDB",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2710,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778888291.48184
+  }
+}
