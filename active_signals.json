@@ -1,1 +1,91 @@
-{}
+{
+  "ADA-USDT-SWAP_SHORT_1778850077-4EA3A257": {
+    "instId": "ADA-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.2655,
+    "sl": 0.2668,
+    "tp1": 0.2635,
+    "tp2": 0.2615,
+    "tp3": 0.2589,
+    "score": 95,
+    "grade": "B+ 合格 ✅",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 35.7,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 0,
+      "bos_desc": "無結構突破",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 0,
+      "buy_pressure": 4,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 5,
+      "volume_ratio": 1.82,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.65%",
+      "choch": 8,
+      "regime": "trend",
+      "adx": 26.1,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "atr_pct": 0.321,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "sess:us (n=5, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 8.89013269597e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.0
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 40.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 26.1,
+      "atr_pct": 0.321,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 0.2673,
+      "high": 0.2685
+    },
+    "created": 1778850077.9090781,
+    "expires": 1778936477.9090786,
+    "order_id": "1778850077-4EA3A257",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2629,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778850077.909113
+  }
+}
