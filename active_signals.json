@@ -93,10 +93,10 @@
     "hit_tp3": false,
     "activated_at": 1778919313.0022323,
     "entry_message_id": 2736,
-    "last_checked_ts": 1778921100.0,
+    "last_checked_ts": 1778922000.0,
     "user_confirmed": true,
     "pending_since": 1778916613.4669867,
-    "current_price": 420.4,
+    "current_price": 420.0,
     "confirmed_at": 1778916661.8457782
   }
 }
