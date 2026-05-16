@@ -1,11 +1,11 @@
 {
-  "_comment": "Alpha Oracle Pro v16.0 - Config R (high-WR / 1+ signals per day) — verified by 3-year backtest",
+  "_comment": "Alpha Oracle Pro v17.0 - Config M5 (smart4 + 1:1 R:R + lock-at-TP1) — 5y backtest +61u, WR 53%, PF 1.11, 1.3 signals/day",
 
   "coins": [
-    "BTC-USDT-SWAP",
-    "ETH-USDT-SWAP",
-    "SOL-USDT-SWAP",
-    "XRP-USDT-SWAP"
+    "DOGE-USDT-SWAP",
+    "AVAX-USDT-SWAP",
+    "XRP-USDT-SWAP",
+    "SOL-USDT-SWAP"
   ],
 
   "max_signals": 2,
@@ -20,12 +20,14 @@
   "sl_atr_mult": 2.5,
   "max_sl_pct": 0.008,
   "sl_caps_by_volatility": {
-    "low":  {"coins": ["BTC", "ETH"], "max_pct": 0.005},
-    "mid":  {"coins": ["SOL", "XRP"], "max_pct": 0.008}
+    "mid":  {"coins": ["SOL", "XRP", "AVAX"], "max_pct": 0.008},
+    "high": {"coins": ["DOGE"], "max_pct": 0.012}
   },
 
   "tp_multipliers": [1.0, 2.0, 3.0],
   "tp_allocation":  [0.6, 0.3, 0.1],
+  "lock_sl_at_tp1": true,
+  "_lock_sl_comment": "v17 M5 key change: TP1 hit → SL moves to TP1 (NOT entry/BE). Captures min +1R per win on remaining 40%.",
 
   "capital_management": {
     "enabled": true,

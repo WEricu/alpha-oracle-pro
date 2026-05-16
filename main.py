@@ -780,8 +780,8 @@ def _fmt_sl(
         label = "🔐 鎖利出場"
         r_tag = f"`+{r_value:.1f}R`"
         advice = (
-            "🎉 TP2 已達成，止損上移至 TP1\n"
-            "趨勢回頭時鎖住 TP1 的獲利優雅退場\n"
+            "🎉 利潤鎖定後止損觸發\n"
+            "趨勢回頭時鎖住獲利優雅退場\n"
             "💡 風控完美執行，繼續保持 ✨"
         )
     else:
@@ -4036,17 +4036,26 @@ class SignalTracker:
         # 🥇 TP1
         if not sig.get("hit_tp1") and favor_hit(tp1):
             sig["hit_tp1"] = True
-            sig["sl"] = entry
-            sig["status"] = "BE"
-            sl = entry
+            # v17 M5: lock SL at TP1 (not BE/entry) → captures +1R minimum on remaining
+            _lock_at_tp1 = cfg_rr_mode.get("lock_sl_at_tp1", False)
+            if _lock_at_tp1:
+                sig["sl"] = tp1
+                sig["status"] = "TRAIL"  # treat like TP2-LOCK state
+                sl = tp1
+            else:
+                sig["sl"] = entry
+                sig["status"] = "BE"
+                sl = entry
             pnl = (
                 (tp1 - entry) / entry * 100
                 if side == "LONG"
                 else (entry - tp1) / entry * 100
             )
+            # v17: TP1 R label = 1.0 (was 1.5); reads from config tp_multipliers
+            _tp1_r = cfg_rr_mode.get("tp_multipliers", [1.0, 2.0, 3.0])[0]
             send_tg(
                 _fmt_tp(
-                    coin, side, order_id, "TP1", tp1, pnl, 1.5,
+                    coin, side, order_id, "TP1", tp1, pnl, _tp1_r,
                     wick_triggered=wick_favor(tp1),
                 ),
                 reply_markup=kb,
@@ -4101,11 +4110,18 @@ class SignalTracker:
             return True
 
         # 🛑 SL（用更新後的 sl 值）→ 依狀態分類
+        # v17 M5: 若 lock_sl_at_tp1 開啟，TP1 後 SL 鎖在 TP1 → 觸發為 LOCK +1R（不是 BE）
+        _lock_at_tp1_cfg = cfg_rr_mode.get("lock_sl_at_tp1", False)
         if against_hit(sl):
             if sig.get("hit_tp2"):
-                mode, r_value, close_type = "LOCK", 1.5, "LOCK"
+                _tp2_r = cfg_rr_mode.get("tp_multipliers", [1.0, 2.0, 3.0])[1]
+                mode, r_value, close_type = "LOCK", _tp2_r * 0.5 + cfg_rr_mode.get("tp_multipliers", [1.0])[0] * 0.5, "LOCK"
             elif sig.get("hit_tp1"):
-                mode, r_value, close_type = "BE", 0.0, "BE"
+                if _lock_at_tp1_cfg:
+                    _tp1_r = cfg_rr_mode.get("tp_multipliers", [1.0, 2.0, 3.0])[0]
+                    mode, r_value, close_type = "LOCK", _tp1_r, "LOCK"
+                else:
+                    mode, r_value, close_type = "BE", 0.0, "BE"
             else:
                 mode, r_value, close_type = "LOSS", -1.0, "SL"
             pnl = (
