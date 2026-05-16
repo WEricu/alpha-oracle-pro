@@ -2448,6 +2448,146 @@ def generate_signal(
 
 
 # ═════════════════════════════════════════════════════════
+# 8.5 v17.8 反轉策略（mean reversion）— 與主趨勢策略並行
+# ═════════════════════════════════════════════════════════
+def generate_signal_reversion(
+    instId: str,
+    df: list,
+    current_price: float,
+    funding_rate: float | None = None,
+    signal_expire_hours: int = 4,
+) -> dict | None:
+    """🔄 反轉策略：在 RSI 極端 + sweep + reclaim 時逆趨勢進場.
+
+    觸發條件 (硬要求, 全滿足才出單):
+    1. RSI > 75 (做空) 或 RSI < 25 (做多)
+    2. 最近 5 根 K 內出現 sweep (破前 N 根極端 + close 回到區間)
+    3. ATR 在合理範圍 (0.5%-2%)
+    4. 信號 K 反轉確認 (body >= 50% 反向)
+
+    SL: sweep 極端外側 + 0.3 ATR
+    TP: TP1=1R, TP2=1.5R, TP3=2R (短打, 比趨勢策略 TP 更近)
+    持倉時限: 4 小時 (短於趨勢策略 8 小時)
+    """
+    if df is None or len(df) < 50:
+        return None
+
+    rsi = calc_rsi(df)
+    atr = calc_atr(df)
+    if atr <= 0:
+        return None
+    atr_pct = atr / current_price
+    if atr_pct < 0.005 or atr_pct > 0.02:
+        return None
+
+    last = df[-1]
+    rng = last["h"] - last["l"]
+    if rng <= 0:
+        return None
+    body = abs(last["c"] - last["o"])
+    body_ratio = body / rng
+    if body_ratio < 0.5:
+        return None  # 沒有強反轉 K
+
+    candidates = []
+    # LONG reversion: oversold + sweep low + bullish bar
+    if rsi < 25 and last["c"] > last["o"]:
+        # Look for liquidity sweep in last 5 bars
+        for off in range(1, 6):
+            idx = len(df) - off
+            if idx - 20 < 0:
+                continue
+            bar = df[idx]
+            prior = df[idx - 20:idx]
+            if not prior:
+                continue
+            prior_low = min(b["l"] for b in prior)
+            if bar["l"] < prior_low and bar["c"] > prior_low:
+                # Sweep confirmed
+                entry = current_price
+                sl_anchor = bar["l"]
+                sl = sl_anchor - atr * 0.3
+                risk = abs(entry - sl)
+                if risk <= 0:
+                    continue
+                tp1 = entry + risk * 1.0
+                tp2 = entry + risk * 1.5
+                tp3 = entry + risk * 2.0
+                candidates.append({
+                    "instId": instId,
+                    "side": "LONG",
+                    "tf": "15m",
+                    "entry": round(entry, 4),
+                    "sl": round(sl, 4),
+                    "tp1": round(tp1, 4),
+                    "tp2": round(tp2, 4),
+                    "tp3": round(tp3, 4),
+                    "score": 100,
+                    "grade": "REVERSION",
+                    "strategy": "reversion",
+                    "detail": {
+                        "strategy": "reversion",
+                        "rsi": round(rsi, 1),
+                        "atr_pct": round(atr_pct * 100, 3),
+                        "body_ratio": round(body_ratio, 2),
+                        "sweep_bars_ago": off,
+                    },
+                    "funding_rate": funding_rate,
+                    "created": time.time(),
+                    "expires": time.time() + signal_expire_hours * 3600,
+                })
+                break
+
+    # SHORT reversion: overbought + sweep high + bearish bar
+    if rsi > 75 and last["c"] < last["o"]:
+        for off in range(1, 6):
+            idx = len(df) - off
+            if idx - 20 < 0:
+                continue
+            bar = df[idx]
+            prior = df[idx - 20:idx]
+            if not prior:
+                continue
+            prior_high = max(b["h"] for b in prior)
+            if bar["h"] > prior_high and bar["c"] < prior_high:
+                entry = current_price
+                sl_anchor = bar["h"]
+                sl = sl_anchor + atr * 0.3
+                risk = abs(entry - sl)
+                if risk <= 0:
+                    continue
+                tp1 = entry - risk * 1.0
+                tp2 = entry - risk * 1.5
+                tp3 = entry - risk * 2.0
+                candidates.append({
+                    "instId": instId,
+                    "side": "SHORT",
+                    "tf": "15m",
+                    "entry": round(entry, 4),
+                    "sl": round(sl, 4),
+                    "tp1": round(tp1, 4),
+                    "tp2": round(tp2, 4),
+                    "tp3": round(tp3, 4),
+                    "score": 100,
+                    "grade": "REVERSION",
+                    "strategy": "reversion",
+                    "detail": {
+                        "strategy": "reversion",
+                        "rsi": round(rsi, 1),
+                        "atr_pct": round(atr_pct * 100, 3),
+                        "body_ratio": round(body_ratio, 2),
+                        "sweep_bars_ago": off,
+                    },
+                    "funding_rate": funding_rate,
+                    "created": time.time(),
+                    "expires": time.time() + signal_expire_hours * 3600,
+                })
+                break
+
+    return candidates[0] if candidates else None
+
+
+# ═════════════════════════════════════════════════════════
 # 9. 持久化（冷卻 / 訊號 / 交易）
 # ═════════════════════════════════════════════════════════
 def _load_json(path: str, default):
@@ -4715,6 +4855,14 @@ def run_scan(tracker: SignalTracker) -> int:
                 atr_max_pct=atr_max,
                 signal_expire_hours=expire_h,
             )
+            # v17.8: 主趨勢策略無訊號時，嘗試反轉策略
+            if not signal and cfg_rr_mode.get("reversion_strategy", {}).get("enabled", False):
+                signal = generate_signal_reversion(
+                    instId, df, okx_price, funding,
+                    signal_expire_hours=cfg_rr_mode.get("reversion_strategy", {}).get("expire_hours", 4),
+                )
+                if signal:
+                    logging.info(f"[{instId}] 🔄 反轉策略觸發 (RSI={signal['detail']['rsi']})")
             if not signal:
                 continue
 
