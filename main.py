@@ -5116,6 +5116,21 @@ def run_scan(tracker: SignalTracker) -> int:
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
                 _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
+                # v17.20: urgent 訊息也顯示倉位
+                _u_pos_mult, _u_pos_label = suggest_position_size(signal["score"], cfg_rr_mode)
+                _u_sizing = calc_position_sizing(
+                    signal["entry"], signal["sl"],
+                    signal["tp1"], signal["tp2"], signal["tp3"],
+                    signal["side"], _u_pos_mult, cfg_rr_mode,
+                )
+                _u_sizing_line = ""
+                if _u_sizing:
+                    _u_sizing_line = (
+                        f"💼 建議倉位：`{_u_sizing['capital_usd']:.0f}u × {_u_sizing['leverage']:.0f}x` "
+                        f"= `{_u_sizing['position_value_usd']:.0f}u notional`（{_u_pos_label}）\n"
+                        f"   數量 `{_u_sizing['contracts']:.4f} {coin_name}`  "
+                        f"風險 `${_u_sizing['sl_loss_usd']:.2f}` / TP1 `+${_u_sizing['tp1_profit_usd']:.2f}` / TP3 `+${_u_sizing['tp3_profit_usd']:.2f}`\n"
+                    )
                 _urgent_msg_id = send_tg(
                     f"⚡ *{instId.split('-')[0]} 價格已到位！請確認進場*\n"
                     f"─────────────\n"
@@ -5127,6 +5142,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     f"⚠️ 價格已在進場區！請立即確認或放棄\n"
                     f"評分：*{signal['score']} 分* {signal.get('grade', '')}\n"
                     f"\n"
+                    + _u_sizing_line
                     + _pending_narrative + "\n"
                     + f"\n"
                     + f"🎯 止盈目標：\n"
