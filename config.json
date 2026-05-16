@@ -81,6 +81,15 @@
     ]
   },
 
+  "kelly_sizing": {
+    "enabled": false,
+    "window": 30,
+    "fraction": 0.25,
+    "floor": 0.5,
+    "ceiling": 1.5,
+    "_comment": "v17.7: 預設關閉，等實盤累積 30+ 樣本再開。fraction=0.25 = quarter-Kelly (保守)。floor/ceiling 限制波動。"
+  },
+
   "recent_perf_sizing": {
     "enabled": true,
     "window": 10,
