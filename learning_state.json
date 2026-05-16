@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 17,
+      "win": 20,
       "loss": 4,
       "be": 4,
-      "total": 30
+      "total": 33
     },
     "rsi_short:50-59": {
       "win": 1,
@@ -13,16 +13,16 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 25,
+      "win": 28,
       "loss": 3,
       "be": 6,
-      "total": 39
+      "total": 42
     },
     "sess:europe": {
-      "win": 8,
+      "win": 11,
       "loss": 2,
       "be": 2,
-      "total": 13
+      "total": 16
     },
     "coin:BTC": {
       "win": 11,
@@ -175,16 +175,16 @@
       "total": 1
     },
     "coin:BCH": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "coin_side:BCH_SHORT": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "coin:UNI": {
       "win": 0,
@@ -211,6 +211,12 @@
       "total": 1
     },
     "rsi_short:20-29": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "rsi_short:10-19": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -261,10 +267,10 @@
       "total": 1
     },
     "BCH": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "UNI": {
       "win": 0,
@@ -309,5 +315,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778695566.5548782
+  "updated_at": 1778923814.360058
 }
