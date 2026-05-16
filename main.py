@@ -4652,7 +4652,9 @@ def run_scan(tracker: SignalTracker) -> int:
                         )
                     continue
 
-            df = fetch_candles(instId)
+            # v17.6: configurable entry timeframe (default 15m, can be 30m)
+            _entry_tf = cfg_rr_mode.get("entry_timeframe", "15m")
+            df = fetch_candles(instId, tf=_entry_tf)
             if df is None:
                 continue
 
