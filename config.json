@@ -1,11 +1,14 @@
 {
-  "_comment": "Alpha Oracle Pro v17.0 - Config M5 (smart4 + 1:1 R:R + lock-at-TP1) — 5y backtest +61u, WR 53%, PF 1.11, 1.3 signals/day",
+  "_comment": "Alpha Oracle Pro v17.1 - 7-coin (smart4 + BTC/ETH/BCH) + 1:1 R:R + lock-at-TP1 — 5y backtest +52u, WR 52%, PF 1.06, 2.03 signals/day",
 
   "coins": [
     "DOGE-USDT-SWAP",
     "AVAX-USDT-SWAP",
     "XRP-USDT-SWAP",
-    "SOL-USDT-SWAP"
+    "SOL-USDT-SWAP",
+    "BTC-USDT-SWAP",
+    "ETH-USDT-SWAP",
+    "BCH-USDT-SWAP"
   ],
 
   "max_signals": 2,
@@ -20,7 +23,8 @@
   "sl_atr_mult": 2.5,
   "max_sl_pct": 0.008,
   "sl_caps_by_volatility": {
-    "mid":  {"coins": ["SOL", "XRP", "AVAX"], "max_pct": 0.008},
+    "low":  {"coins": ["BTC", "ETH"], "max_pct": 0.005},
+    "mid":  {"coins": ["SOL", "XRP", "AVAX", "BCH"], "max_pct": 0.008},
     "high": {"coins": ["DOGE"], "max_pct": 0.012}
   },
 
