@@ -168,11 +168,11 @@
   },
 
   "rsi_extreme_filter": {
-    "enabled": true,
+    "enabled": false,
     "short_rsi_min": 30,
     "long_rsi_max": 70,
     "adx_exhaustion": 70,
-    "_comment": "v17.12: 拒絕超賣再做空、超買再做多。SHORT 要求 RSI≥30, LONG 要求 RSI≤70. ADX>70 時門檻收緊到 RSI 35/65."
+    "_comment": "v17.12 (DISABLED by user 2026-05-16): 之前 BCH SHORT RSI 19 實際大贏, 使用者選擇不過濾這類訊號. 可隨時改 true 重新啟用."
   },
 
   "blackout_windows_tw": [
