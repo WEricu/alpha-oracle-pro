@@ -466,6 +466,47 @@ def _recent_perf_multiplier(cfg: dict) -> tuple[float, str]:
     return 1.0, ""
 
 
+def _kelly_multiplier(cfg: dict) -> tuple[float, str]:
+    """v17.7: Kelly criterion 倉位管理。
+    f* = (b*p - q) / b   where b=avg_win/avg_loss, p=WR, q=1-p
+    用 fractional Kelly (預設 0.25 = quarter-Kelly) 控制 variance。
+    """
+    k_cfg = cfg.get("kelly_sizing", {})
+    if not k_cfg.get("enabled", False):
+        return 1.0, ""
+    window = int(k_cfg.get("window", 30))
+    fraction = float(k_cfg.get("fraction", 0.25))
+    floor = float(k_cfg.get("floor", 0.5))
+    ceiling = float(k_cfg.get("ceiling", 1.5))
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+    if len(closed) < window:
+        return 1.0, ""
+    last_n = closed[-window:]
+    wins_pnl = [t.get("pnl_pct", 0) for t in last_n if t.get("close_type") in ("TP1","TP2","TP3","LOCK")]
+    losses_pnl = [t.get("pnl_pct", 0) for t in last_n if t.get("close_type") in ("SL","BE")]
+    if not wins_pnl or not losses_pnl:
+        return 1.0, ""
+    avg_win = sum(wins_pnl) / len(wins_pnl)
+    avg_loss = abs(sum(losses_pnl) / len(losses_pnl))
+    if avg_loss < 1e-6:
+        return 1.0, ""
+    p = len(wins_pnl) / len(last_n)
+    b = avg_win / avg_loss  # win/loss ratio
+    if b <= 0:
+        return 1.0, ""
+    kelly_f = (b * p - (1 - p)) / b
+    if kelly_f <= 0:
+        # Negative edge → minimum size
+        mult = floor
+    else:
+        # Fractional Kelly relative to "neutral" baseline (assumed full-Kelly = 0.20)
+        baseline_kelly = 0.20  # rough "normal edge" Kelly fraction
+        mult = max(floor, min(ceiling, (kelly_f * fraction) / (baseline_kelly * fraction)))
+    label = f"📐 Kelly p={p:.0%} b={b:.2f} f*={kelly_f:.2f} → ×{mult:.2f}"
+    return mult, label
+
+
 def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, str]:
     """💰 根據分數推薦倉位倍數，並結合 recent-N 表現."""
     if cfg is None:
@@ -482,9 +523,15 @@ def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, s
             break
     # v17.3: apply recent-perf multiplier on top
     rp_mult, rp_label = _recent_perf_multiplier(cfg)
+    # v17.7: apply Kelly multiplier on top (orthogonal to recent-perf)
+    k_mult, k_label = _kelly_multiplier(cfg)
+    final_mult = base_mult * rp_mult * k_mult
+    parts = [base_label]
     if rp_mult != 1.0:
-        return base_mult * rp_mult, f"{base_label} × {rp_label}"
-    return base_mult, base_label
+        parts.append(rp_label)
+    if k_mult != 1.0:
+        parts.append(k_label)
+    return final_mult, " × ".join(parts)
 
 
 def calc_position_sizing(
