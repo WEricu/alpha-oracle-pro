@@ -5010,6 +5010,21 @@ def run_scan(tracker: SignalTracker) -> int:
                 _ord_emoji = "🟢" if signal["side"] == "LONG" else "🔴"
                 _dir = "做多" if signal["side"] == "LONG" else "做空"
                 _pending_narrative = _fmt_analysis_narrative(signal.get("detail"), signal["side"], signal["score"])
+                # v17.14: 倉位建議行 (margin × leverage = notional + tier label)
+                _pos_mult, _pos_label = suggest_position_size(signal["score"], cfg_rr_mode)
+                _sizing = calc_position_sizing(
+                    signal["entry"], signal["sl"],
+                    signal["tp1"], signal["tp2"], signal["tp3"],
+                    signal["side"], _pos_mult, cfg_rr_mode,
+                )
+                _sizing_line = ""
+                if _sizing:
+                    _sizing_line = (
+                        f"💼 建議倉位：`{_sizing['capital_usd']:.0f}u × {_sizing['leverage']:.0f}x` "
+                        f"= `{_sizing['position_value_usd']:.0f}u notional`（{_pos_label}）\n"
+                        f"   數量 `{_sizing['contracts']:.4f} {coin_name}`  "
+                        f"風險 `${_sizing['sl_loss_usd']:.2f}` / TP1 `+${_sizing['tp1_profit_usd']:.2f}` / TP3 `+${_sizing['tp3_profit_usd']:.2f}`\n"
+                    )
                 _pending_msg_id = send_tg(
                     f"{_ord_emoji} *{instId.split('-')[0]} 限價掛單*\n"
                     f"──────────────\n"
@@ -5024,6 +5039,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     f"⏱ 進場框架：`{signal.get('detail', {}).get('entry_tf', '15m')}`　📐 分析框架：`{signal.get('detail', {}).get('analysis_tfs', '1H / 4H')}`\n"
                     f"🔀 MTF 方向：`{signal.get('detail', {}).get('mtf_desc', 'N/A')}`\n"
                     f"\n"
+                    + _sizing_line
                     + _pending_narrative + "\n"
                     + f"\n"
                     + f"🎯 止盈目標：\n"
