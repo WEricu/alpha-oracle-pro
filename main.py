@@ -418,12 +418,14 @@ def send_tg(
 
 
 def _order_keyboard(order_id: str) -> dict:
-    """🔘 生成訂單查詢按鈕（LINE 風格）"""
+    """🔘 生成訂單查詢按鈕（LINE 風格）.
+    v17.11: order_id 格式變更為 MMDD-COIN-SIDE-HHMM-XX，全長易讀，不再截尾
+    """
     return {
         "inline_keyboard": [
             [
                 {
-                    "text": f"🔍 查詢訂單 {order_id[-8:]}",
+                    "text": f"🔍 查詢 {order_id}",
                     "callback_data": f"order_{order_id}",
                 }
             ]
@@ -4024,8 +4026,16 @@ class SignalTracker:
             _save_json(self.filepath, self.signals)
 
     def add(self, signal: dict, active: bool = False) -> tuple[str, str]:
-        """新增訊號 → 回傳 (key, order_id)"""
-        order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
+        """新增訊號 → 回傳 (key, order_id)
+        v17.11: order_id 格式 "MMDD-COIN-SIDE-HHMM-XX" 易讀
+                  例如 "0516-DOGE-LONG-1015-A3" (5/16 10:15 DOGE 多單)
+        """
+        coin = signal['instId'].split('-')[0]
+        side_short = "L" if signal['side'] == "LONG" else "S"
+        now_dt = tw_now()
+        date_str = now_dt.strftime("%m%d-%H%M")
+        suffix = uuid.uuid4().hex[:2].upper()
+        order_id = f"{date_str}-{coin}-{side_short}-{suffix}"
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
         now_ts = time.time()
         with self._lock:
