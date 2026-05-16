@@ -50,6 +50,22 @@ jobs:
           fi
           python main.py daily "$TARGET_DATE"
 
+      - name: 📊 推送週報（每週日 TW 00:00 自動）
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+        run: |
+          # 今天 TW 日期是星期一 (Mon = 1) → 推上週週日為止的週報
+          TODAY_DOW=$(TZ=Asia/Taipei date +'%u')
+          if [ "$TODAY_DOW" = "1" ]; then
+            YESTERDAY=$(TZ=Asia/Taipei date -d 'yesterday' +'%Y-%m-%d')
+            echo "📅 週一 TW，自動推上週週報（結束 $YESTERDAY）"
+            python main.py weekly "$YESTERDAY"
+          else
+            echo "今天 TW 不是週一（dow=$TODAY_DOW），跳過週報"
+          fi
+
       - name: 📈 推送月報（每月 1 號自動 / 手動指定）
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}

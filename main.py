@@ -2981,6 +2981,78 @@ def format_daily_report(date: str | None = None) -> str:
     return "\n".join(lines)
 
 
+def format_weekly_report(end_date: str | None = None) -> str:
+    """v17.17: 週報：過去 7 天績效"""
+    if end_date is None:
+        end_dt = tw_now()
+    else:
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d").replace(tzinfo=TW_TZ)
+    start_dt = end_dt - timedelta(days=7)
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    week = [
+        t for t in history
+        if t.get("date", "") >= start_dt.strftime("%Y-%m-%d")
+        and t.get("date", "") <= end_dt.strftime("%Y-%m-%d")
+    ]
+    s = _summarize_trades(week)
+    if s["n"] == 0:
+        return (f"📭 *週報 {start_dt.strftime('%m/%d')} - {end_dt.strftime('%m/%d')}*\n"
+                f"過去 7 天無交易紀錄")
+
+    lines = [
+        f"📊 *週報 {start_dt.strftime('%m/%d')} - {end_dt.strftime('%m/%d')}*",
+        "━━━━━━━━━━━━━━",
+        f"交易筆數：{s['n']}",
+        f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
+        f"勝率：`{s['wr']:.0f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"平均：`{s['avg']:+.2f}%/筆`",
+        f"每天平均：`{s['n']/7:.1f}` 筆",
+        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
+        "",
+    ]
+
+    # 各幣種週度表現
+    by_coin = {}
+    for t in week:
+        c = t.get("coin", "?")
+        by_coin.setdefault(c, []).append(t)
+    if by_coin:
+        lines.append("💎 *各幣週度表現*：")
+        for c, ts in sorted(by_coin.items(), key=lambda x: -sum(t.get("pnl", 0) for t in x[1])):
+            sub = _summarize_trades(ts)
+            emoji = "🟢" if sub["pnl"] > 0 else "🔴" if sub["pnl"] < 0 else "⚪"
+            lines.append(
+                f"  {emoji} {c}: {sub['n']} 筆 ({sub['wr']:.0f}% WR) "
+                f"PnL `{sub['pnl']:+.2f}%`"
+            )
+
+    # 連勝/連敗統計
+    sorted_week = sorted(week, key=lambda t: t.get("ts", 0))
+    cur_streak = 0
+    streak_type = None
+    max_win_streak = 0
+    max_loss_streak = 0
+    for t in sorted_week:
+        is_win = t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK")
+        if streak_type == "win" and is_win:
+            cur_streak += 1
+        elif streak_type == "loss" and not is_win:
+            cur_streak += 1
+        else:
+            streak_type = "win" if is_win else "loss"
+            cur_streak = 1
+        if is_win and cur_streak > max_win_streak:
+            max_win_streak = cur_streak
+        elif not is_win and cur_streak > max_loss_streak:
+            max_loss_streak = cur_streak
+    lines.append("")
+    lines.append(f"🔥 最大連勝：{max_win_streak} 筆")
+    lines.append(f"❄️ 最大連敗：{max_loss_streak} 筆")
+
+    return "\n".join(lines)
+
+
 def format_monthly_report(year_month: str | None = None) -> str:
     """📈 月報：當月績效 + 學習進展"""
     if year_month is None:
@@ -5167,6 +5239,11 @@ def main() -> None:
             if cmd in ("/monthly", "/月報", "monthly"):
                 ym = sys.argv[2] if len(sys.argv) > 2 else None
                 send_tg(format_monthly_report(ym))
+                return
+            if cmd in ("/weekly", "/週報", "weekly"):
+                # v17.17: 週報
+                end_date = sys.argv[2] if len(sys.argv) > 2 else None
+                send_tg(format_weekly_report(end_date))
                 return
             if cmd in ("/direction", "/方向", "direction"):
                 send_tg(format_direction_stats())
