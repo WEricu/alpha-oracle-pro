@@ -1007,6 +1007,56 @@ def fetch_funding_rate(instId: str) -> float | None:
     return None
 
 
+# v17.5: BTC funding rate trend as macro sentiment indicator
+_btc_funding_cache: dict = {"ts": 0, "data": None}
+
+
+def fetch_btc_funding_trend() -> dict | None:
+    """💰 BTC 資金費率趨勢（5 分鐘快取）→ macro sentiment.
+
+    回傳 dict:
+      current   : 當前 funding rate (float)
+      avg_5     : 最近 5 期 (40 hr) 平均
+      change    : current - avg_5
+      regime    : "overheated_long" / "overheated_short" / "reset_long" / "reset_short" / "normal"
+    """
+    now = time.time()
+    if now - _btc_funding_cache["ts"] < 300 and _btc_funding_cache["data"] is not None:
+        return _btc_funding_cache["data"]
+    try:
+        res = requests.get(
+            "https://www.okx.com/api/v5/public/funding-rate-history",
+            params={"instId": "BTC-USDT-SWAP", "limit": 10},
+            timeout=5,
+        ).json()
+        if res.get("code") != "0" or not res.get("data"):
+            return None
+        rates = [float(r["fundingRate"]) for r in res["data"]]
+        if len(rates) < 5:
+            return None
+        current = rates[0]
+        avg_5 = sum(rates[:5]) / 5
+        change = current - avg_5
+        # Classify regime
+        if current > 0.0005 and change > 0.0001:
+            regime = "overheated_long"   # high & rising → longs over-positioned
+        elif current < -0.0003 and change < -0.0001:
+            regime = "overheated_short"  # low & falling → shorts over-positioned
+        elif current < 0 and change > 0.0002:
+            regime = "reset_long"        # was negative, now climbing → longs flushed, room up
+        elif current > 0.0005 and change < -0.0002:
+            regime = "reset_short"       # was high, now dropping → shorts flushed
+        else:
+            regime = "normal"
+        data = {"current": current, "avg_5": avg_5, "change": change, "regime": regime}
+        _btc_funding_cache["ts"] = now
+        _btc_funding_cache["data"] = data
+        return data
+    except Exception as e:
+        logging.warning(f"⚠️ BTC funding trend 抓取失敗：{e}")
+        return None
+
+
 # ═════════════════════════════════════════════════════════
 # 4.5 TradingView 第二價格來源（風控）
 # ═════════════════════════════════════════════════════════
@@ -2207,6 +2257,34 @@ def generate_signal(
                 continue
             if side == "SHORT" and funding_rate < -0.0005:
                 continue
+
+        # v17.5: BTC funding trend macro sentiment
+        _btc_funding = fetch_btc_funding_trend()
+        if _btc_funding:
+            _bf_regime = _btc_funding["regime"]
+            detail["btc_funding"] = round(_btc_funding["current"] * 100, 4)
+            detail["btc_funding_regime"] = _bf_regime
+            # LONG signals
+            if side == "LONG":
+                if _bf_regime == "overheated_long":
+                    score -= 5  # crowded longs, fade
+                    detail["btc_funding_adj"] = -5
+                elif _bf_regime == "reset_long":
+                    score += 4  # longs flushed, room to go up
+                    detail["btc_funding_adj"] = +4
+                elif _bf_regime == "overheated_short":
+                    score += 2  # shorts crowded, squeeze potential up
+                    detail["btc_funding_adj"] = +2
+            else:  # SHORT
+                if _bf_regime == "overheated_short":
+                    score -= 5
+                    detail["btc_funding_adj"] = -5
+                elif _bf_regime == "reset_short":
+                    score += 4
+                    detail["btc_funding_adj"] = +4
+                elif _bf_regime == "overheated_long":
+                    score += 2
+                    detail["btc_funding_adj"] = +2
 
         # 註記市場狀態到 detail
         detail["regime"] = regime_info["regime"]
