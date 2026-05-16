@@ -37,10 +37,11 @@
 
   "capital_management": {
     "enabled": true,
-    "capital_per_trade_usd": 100,
-    "max_loss_usd": 10,
+    "capital_per_trade_usd": 50,
+    "max_loss_usd": 5,
     "max_leverage": 10,
-    "min_leverage": 2
+    "min_leverage": 2,
+    "_comment": "v17.13: 保證金 50u × 10x (notional 500u). max_loss 5u 對應 ~1% SL = 10% margin drawdown per trade."
   },
 
   "daily_limits": {
