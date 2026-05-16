@@ -44,8 +44,9 @@
   "daily_limits": {
     "enabled": true,
     "max_concurrent_positions": 2,
-    "daily_loss_limit_pct": 5.0,
-    "max_daily_signals": 5
+    "daily_loss_limit_pct": 3.0,
+    "max_daily_signals": 5,
+    "_comment": "v17.2: daily_loss_limit 5% → 3%（更嚴）"
   },
 
   "post_mortem": {
@@ -63,8 +64,9 @@
     "enabled": true,
     "days": 7,
     "min_trades": 5,
-    "max_winrate": 0.30,
-    "pause_hours": 24
+    "max_winrate": 0.40,
+    "pause_hours": 48,
+    "_comment": "v17.2: 7 天內 WR < 40% 暫停 48hr (was 30%/24hr)"
   },
 
   "position_sizing": {
@@ -80,7 +82,8 @@
   "cooling_off": {
     "enabled": true,
     "loss_threshold": 2,
-    "period_minutes": 30
+    "period_minutes": 240,
+    "_comment": "v17.2: 連虧 2 → 4 小時冷靜（從 30 分鐘加強）"
   },
 
   "direction_bias": {
@@ -124,9 +127,10 @@
   "circuit_breaker": {
     "enabled": true,
     "soft_threshold": 3,
-    "soft_pause_hours": 4,
-    "hard_threshold": 5,
-    "hard_pause_hours": 24
+    "soft_pause_hours": 12,
+    "hard_threshold": 4,
+    "hard_pause_hours": 24,
+    "_comment": "v17.2: 3 連虧 → 12hr (was 4hr); 4 連虧 → 24hr (was 5/24hr)"
   },
 
   "hard_confluence": {
