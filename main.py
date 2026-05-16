@@ -3931,6 +3931,69 @@ def get_today_stats() -> dict:
     }
 
 
+def check_cumulative_drawdown(cfg: dict) -> tuple[bool, str]:
+    """v17.16: 累積回撤檢查 → 過去 N 天 PnL 低於門檻時暫停整體新單.
+    回傳 (是否暫停, 訊息).
+    """
+    cd_cfg = cfg.get("cumulative_drawdown_pause", {})
+    if not cd_cfg.get("enabled", False):
+        return False, ""
+    lookback_days = int(cd_cfg.get("lookback_days", 7))
+    max_loss_pct = float(cd_cfg.get("max_loss_pct", 5.0))  # percent of capital
+    pause_hours = float(cd_cfg.get("pause_hours", 24))
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    cutoff = tw_now() - timedelta(days=lookback_days)
+    cutoff_str = cutoff.strftime("%Y-%m-%d")
+    recent = [t for t in history
+              if t.get("date", "") >= cutoff_str
+              and t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+    if len(recent) < 5:
+        return False, ""
+    total_pnl = sum(t.get("pnl_capital", t.get("pnl", 0)) for t in recent)
+
+    if total_pnl < -max_loss_pct:
+        # check if we're still inside the pause window
+        state = get_system_state()
+        triggered_ts = state.get("cum_dd_triggered_ts")
+        now_ts = time.time()
+        if triggered_ts and (now_ts - triggered_ts) < pause_hours * 3600:
+            remaining_hr = (pause_hours * 3600 - (now_ts - triggered_ts)) / 3600
+            return True, (
+                f"📉 累積回撤暫停中（過去 {lookback_days} 天 PnL {total_pnl:+.1f}% < -{max_loss_pct}%）"
+                f"，剩餘 `{remaining_hr:.1f}` 小時"
+            )
+        # New trigger
+        state["cum_dd_triggered_ts"] = now_ts
+        state["cum_dd_pnl"] = total_pnl
+        set_system_state(state)
+        send_tg(
+            f"🚨 *累積回撤觸發 — 暫停 {pause_hours} 小時*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"過去 {lookback_days} 天 PnL：`{total_pnl:+.1f}%`\n"
+            f"門檻：`-{max_loss_pct}%`\n"
+            f"⏰ 時間：{tw_ts()}\n"
+            f"\n"
+            f"⏸ 全幣種暫停開新單 {pause_hours}hr\n"
+            f"持倉繼續監控直到 TP/SL 觸發"
+        )
+        return True, f"累積回撤觸發 PnL={total_pnl:+.1f}% < -{max_loss_pct}%"
+    # PnL recovered → clear trigger
+    state = get_system_state()
+    if state.get("cum_dd_triggered_ts"):
+        state["cum_dd_triggered_ts"] = None
+        set_system_state(state)
+        send_tg(
+            f"✅ *累積回撤恢復*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"過去 {lookback_days} 天 PnL：`{total_pnl:+.1f}%`（高於門檻）\n"
+            f"⏰ 時間：{tw_ts()}\n"
+            f"\n"
+            f"🚀 恢復正常掃描"
+        )
+    return False, ""
+
+
 def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
     """🛡️ 每日風控檢查 → (是否暫停, 訊息)
 
@@ -4856,6 +4919,14 @@ def run_scan(tracker: SignalTracker) -> int:
     cooling, remaining_sec, cool_msg = check_cooling_off(cfg)
     if cooling:
         logging.info(f"❄️ {cool_msg}")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
+    # ── 2.7 v17.16 累積回撤暫停（過去 N 天 PnL 過低時停手）──
+    cum_dd_blocked, cum_dd_msg = check_cumulative_drawdown(cfg)
+    if cum_dd_blocked:
+        logging.info(f"🚨 {cum_dd_msg}")
         tracker.check_all()
         tracker.send_position_updates()
         return 0

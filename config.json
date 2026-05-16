@@ -163,6 +163,14 @@
     "_comment": "v17.2: 3 連虧 → 12hr (was 4hr); 4 連虧 → 24hr (was 5/24hr)"
   },
 
+  "cumulative_drawdown_pause": {
+    "enabled": true,
+    "lookback_days": 7,
+    "max_loss_pct": 5.0,
+    "pause_hours": 24,
+    "_comment": "v17.16: 過去 7 天 PnL < -5% 整體暫停 24hr (50u 倉位 ≈ -$2.5 累積). PnL 恢復後自動解除."
+  },
+
   "hard_confluence": {
     "enabled": true,
     "_comment": "v16 Config R: 4H supertrend must align with signal direction; 1D regime must not be opposite"
