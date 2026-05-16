@@ -167,6 +167,14 @@
     "_comment": "v16 Config R: 4H supertrend must align with signal direction; 1D regime must not be opposite"
   },
 
+  "rsi_extreme_filter": {
+    "enabled": true,
+    "short_rsi_min": 30,
+    "long_rsi_max": 70,
+    "adx_exhaustion": 70,
+    "_comment": "v17.12: 拒絕超賣再做空、超買再做多。SHORT 要求 RSI≥30, LONG 要求 RSI≤70. ADX>70 時門檻收緊到 RSI 35/65."
+  },
+
   "blackout_windows_tw": [
     { "start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）" },
     { "start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）" },

@@ -2340,6 +2340,30 @@ def generate_signal(
         detail["adx"] = regime_info["adx"]
         detail["atr_pct"] = regime_info["atr_pct"]
 
+        # v17.12: RSI 極端反向硬過濾 — 避免「超賣再做空 / 超買再做多」高風險訊號
+        _rsi_filter = cfg_rr_mode.get("rsi_extreme_filter", {})
+        if _rsi_filter.get("enabled", True):
+            _rsi_val = detail.get("rsi_value", 50)
+            _adx_val = regime_info.get("adx", 30)
+            _short_rsi_min = _rsi_filter.get("short_rsi_min", 30)
+            _long_rsi_max = _rsi_filter.get("long_rsi_max", 70)
+            _adx_exhaustion = _rsi_filter.get("adx_exhaustion", 70)
+            # Block trend-exhaustion entries
+            if side == "SHORT" and _rsi_val < _short_rsi_min:
+                logging.info(f"[{instId}] SHORT 拒絕：RSI {_rsi_val} < {_short_rsi_min} (超賣不做空)")
+                continue
+            if side == "LONG" and _rsi_val > _long_rsi_max:
+                logging.info(f"[{instId}] LONG 拒絕：RSI {_rsi_val} > {_long_rsi_max} (超買不做多)")
+                continue
+            # Bonus block: extreme ADX + extreme RSI = trend exhaustion likely
+            if _adx_val > _adx_exhaustion:
+                if side == "SHORT" and _rsi_val < 35:
+                    logging.info(f"[{instId}] SHORT 拒絕：ADX {_adx_val} 過強 + RSI {_rsi_val} 偏低（趨勢盡頭）")
+                    continue
+                if side == "LONG" and _rsi_val > 65:
+                    logging.info(f"[{instId}] LONG 拒絕：ADX {_adx_val} 過強 + RSI {_rsi_val} 偏高（趨勢盡頭）")
+                    continue
+
         # 🌀 進場時機：有回測 K 線 +3 分
         if detect_pullback(df, side):
             score += 3
