@@ -79,6 +79,18 @@
     ]
   },
 
+  "recent_perf_sizing": {
+    "enabled": true,
+    "window": 10,
+    "_comment": "v17.3: based on backtest data. Cold streak bounces back, very-hot streak underperforms.",
+    "tiers": [
+      { "max_recent_wr": 0.30, "multiplier": 1.2, "label": "❄️→🔥 冷後反彈加倉" },
+      { "max_recent_wr": 0.70, "multiplier": 1.0, "label": "正常" },
+      { "max_recent_wr": 0.89, "multiplier": 1.1, "label": "熱手微加" },
+      { "max_recent_wr": 1.01, "multiplier": 0.6, "label": "過熱縮倉（回調風險）" }
+    ]
+  },
+
   "cooling_off": {
     "enabled": true,
     "loss_threshold": 2,
@@ -143,7 +155,10 @@
     { "start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）" },
     { "start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）" },
     { "start": "21:25", "end": "21:45", "reason": "美股開盤波動" },
-    { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
+    { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" },
+    { "start": "07:00", "end": "08:00", "reason": "v17.3: 23 UTC 弱時段（5y 回測 WR 41.9%）" },
+    { "start": "09:00", "end": "10:00", "reason": "v17.3: 01 UTC 弱時段（5y 回測 WR 35.7%）" },
+    { "start": "12:00", "end": "13:00", "reason": "v17.3: 04 UTC 弱時段（5y 回測 WR 37.9%）" }
   ],
 
   "auto_news_blackout": {

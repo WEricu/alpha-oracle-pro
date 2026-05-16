@@ -444,18 +444,47 @@ def _pending_keyboard(order_id: str) -> dict:
 # ═════════════════════════════════════════════════════════
 # 2.5 v14.1 倉位建議 + 分數細項格式化
 # ═════════════════════════════════════════════════════════
+def _recent_perf_multiplier(cfg: dict) -> tuple[float, str]:
+    """v17.3: 依最近 N 筆 trade WR 加碼/減碼倉位。
+    從 trade_history.json 讀最近 N 筆，計算勝率，套用 tier。
+    """
+    rp_cfg = cfg.get("recent_perf_sizing", {})
+    if not rp_cfg.get("enabled", False):
+        return 1.0, ""
+    window = int(rp_cfg.get("window", 10))
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+    if len(closed) < window:
+        return 1.0, ""
+    last_n = closed[-window:]
+    wins = sum(1 for t in last_n if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK"))
+    wr = wins / window
+    tiers = rp_cfg.get("tiers", [])
+    for tier in tiers:
+        if wr <= tier.get("max_recent_wr", 1.0):
+            return tier.get("multiplier", 1.0), tier.get("label", "")
+    return 1.0, ""
+
+
 def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, str]:
-    """💰 根據分數推薦倉位倍數"""
+    """💰 根據分數推薦倉位倍數，並結合 recent-N 表現."""
     if cfg is None:
         cfg = load_config()
     ps_cfg = cfg.get("position_sizing", {})
     if not ps_cfg.get("enabled", True):
         return 1.0, "標準倉"
     tiers = ps_cfg.get("tiers", DEFAULT_CONFIG["position_sizing"]["tiers"])
+    base_mult, base_label = 1.0, "標準倉"
     for tier in tiers:
         if score >= tier.get("min_score", 0):
-            return tier.get("multiplier", 1.0), tier.get("label", "標準倉")
-    return 1.0, "標準倉"
+            base_mult = tier.get("multiplier", 1.0)
+            base_label = tier.get("label", "標準倉")
+            break
+    # v17.3: apply recent-perf multiplier on top
+    rp_mult, rp_label = _recent_perf_multiplier(cfg)
+    if rp_mult != 1.0:
+        return base_mult * rp_mult, f"{base_label} × {rp_label}"
+    return base_mult, base_label
 
 
 def calc_position_sizing(
