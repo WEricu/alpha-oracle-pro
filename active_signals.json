@@ -1,1 +1,100 @@
-{}
+{
+  "BCH-USDT-SWAP_SHORT_0516-1530-BCH-S-30": {
+    "instId": "BCH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 421.0,
+    "sl": 424.368,
+    "tp1": 417.632,
+    "tp2": 414.264,
+    "tp3": 410.896,
+    "score": 121,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 18.8,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "fvg_low": 420.1,
+      "fvg_high": 421.0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "macd": 8,
+      "bos": 12,
+      "bos_desc": "BOS ↓ 跌破 422.4000",
+      "pd_zone": -3,
+      "pd_label": "DISCOUNT",
+      "displacement": 0,
+      "eqhl": 3,
+      "obv": 6,
+      "obv_trend": "DOWN",
+      "vol_climax": 4,
+      "buy_pressure": -3,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 5.23,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.39%",
+      "fib_618": 10,
+      "regime": "trend",
+      "adx": 95.6,
+      "entry_tf": "15m",
+      "analysis_tfs": "1H / 4H",
+      "regime_1d_bonus": 3,
+      "btc_funding": 0.0058,
+      "btc_funding_regime": "normal",
+      "atr_pct": 0.49,
+      "learning_notes": [
+        "fund:neutral (n=39, 勝率 64%) → +1",
+        "sess:europe (n=13, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 1 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "funding_rate": -4.84056272216e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.6
+      },
+      "1D": {
+        "regime": "down"
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 95.6,
+      "atr_pct": 0.49,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 422.5,
+      "high": 423.6
+    },
+    "created": 1778916613.4657583,
+    "expires": 1778945413.4657586,
+    "order_id": "0516-1530-BCH-S-30",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "entry_message_id": 2732,
+    "last_checked_ts": null,
+    "user_confirmed": null,
+    "pending_since": 1778916613.4669867
+  }
+}
