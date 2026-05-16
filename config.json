@@ -81,6 +81,12 @@
     ]
   },
 
+  "reversion_strategy": {
+    "enabled": false,
+    "expire_hours": 4,
+    "_comment": "v17.8: 反轉策略（mean reversion）作為趨勢策略 fallback。RSI 極端 + sweep + 反轉 K 觸發。預設關閉，等實盤跑穩 v17.5 後再開。"
+  },
+
   "kelly_sizing": {
     "enabled": false,
     "window": 30,
