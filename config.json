@@ -13,6 +13,16 @@
 
   "max_signals": 2,
   "score_threshold": 110,
+  "per_coin_thresholds": {
+    "BTC": 125,
+    "ETH": 120,
+    "BCH": 115,
+    "SOL": 110,
+    "XRP": 108,
+    "AVAX": 110,
+    "DOGE": 108,
+    "_comment": "v17.18: BTC 表現差(50% WR)用高門檻 125, ETH 120, BCH 115. DOGE/XRP 表現好(55-57%)用較鬆 108. 沒列的幣 fallback 到主 score_threshold."
+  },
   "cooldown_hours": 3,
   "signal_expire_hours": 8,
   "atr_max_pct": 0.04,

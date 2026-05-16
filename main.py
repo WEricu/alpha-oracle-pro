@@ -5075,12 +5075,17 @@ def run_scan(tracker: SignalTracker) -> int:
                 continue
 
             funding = fetch_funding_rate(instId)
+            # v17.18: 每幣 score threshold override
+            _coin_thr = score_thr
+            _coin_overrides = cfg_rr_mode.get("per_coin_thresholds", {})
+            if coin_name in _coin_overrides:
+                _coin_thr = int(_coin_overrides[coin_name])
             signal = generate_signal(
                 instId,
                 df,
                 okx_price,
                 funding,
-                score_threshold=score_thr,
+                score_threshold=_coin_thr,
                 atr_max_pct=atr_max,
                 signal_expire_hours=expire_h,
             )
