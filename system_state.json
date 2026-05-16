@@ -3,5 +3,8 @@
   "last_position_update_ts": 1778694962.2952228,
   "last_health_warning": 1778090319.7427218,
   "scan_failure_count": 0,
-  "last_patrol_ts": 1778894398.3225214
+  "last_patrol_ts": 1778894398.3225214,
+  "in_blackout": true,
+  "blackout_reason": "v17.3: 01 UTC 弱時段（5y 回測 WR 35.7%）",
+  "blackout_started_ts": 1778896684.3656437
 }
