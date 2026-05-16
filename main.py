@@ -3097,8 +3097,19 @@ def vectorize_signal(
     mtf: dict | None = None,
     regime: dict | None = None,
 ) -> dict:
-    """🧬 把訊號特徵打成向量（給 KNN 用）"""
+    """🧬 把訊號特徵打成向量（給 KNN 用）。v17.9: 加 6 個新特徵"""
     rsi = (detail or {}).get("rsi_value", 50)
+    expect = 1 if side == "LONG" else -1
+    # v17.9 新特徵
+    btc_fund = (detail or {}).get("btc_funding", 0)
+    btc_regime = (detail or {}).get("btc_funding_regime", "normal")
+    btc_regime_score = {
+        "overheated_long": -1.0, "overheated_short": 1.0,
+        "reset_long": 1.0, "reset_short": -1.0, "normal": 0.0,
+    }.get(btc_regime, 0.0) * expect  # 對 LONG/SHORT 對稱
+    regime_1d = (detail or {}).get("regime") or ""
+    regime_1d_score = {"up": 1.0, "down": -1.0, "side": 0.0}.get(regime_1d, 0.0) * expect
+    h = datetime.utcnow().hour
     return {
         "score": float(score),
         "rsi": float(rsi),
@@ -3106,15 +3117,25 @@ def vectorize_signal(
         "funding": float(funding_rate or 0) * 1000,
         "vol_ratio": float((detail or {}).get("volume_ratio", 1.0)),
         "adx": float((regime or {}).get("adx", 20)),
-        "mtf_h1": 1.0 if (mtf or {}).get("1H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
-        "mtf_h4": 1.0 if (mtf or {}).get("4H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
+        "mtf_h1": 1.0 if (mtf or {}).get("1H", {}).get("supertrend") == expect else 0.0,
+        "mtf_h4": 1.0 if (mtf or {}).get("4H", {}).get("supertrend") == expect else 0.0,
         "side": 1.0 if side == "LONG" else 0.0,
+        # v17.9 新特徵
+        "btc_fund": float(btc_fund),
+        "btc_regime": btc_regime_score,
+        "regime_1d": regime_1d_score,
+        "hour": float(h),
+        "ob_score": float((detail or {}).get("ob", 0)),
+        "fvg_score": float((detail or {}).get("fvg", 0)),
     }
 
 
 _FEATURE_SCALE = {
     "score": 30, "rsi": 50, "atr_pct": 3, "funding": 2,
     "vol_ratio": 3, "adx": 50, "mtf_h1": 1, "mtf_h4": 1, "side": 1,
+    # v17.9
+    "btc_fund": 0.05, "btc_regime": 1, "regime_1d": 1,
+    "hour": 24, "ob_score": 20, "fvg_score": 15,
 }
 
 
