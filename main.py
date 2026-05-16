@@ -4773,6 +4773,38 @@ def run_scan(tracker: SignalTracker) -> int:
 
     # ── 2. 關鍵時段過濾 ──
     blocked, btime_reason = is_blackout_time(cfg)
+    # v17.10: blackout enter/exit Telegram notification
+    _state = get_system_state()
+    _was_blocked = bool(_state.get("in_blackout", False))
+    _last_reason = _state.get("blackout_reason", "")
+    if blocked and not _was_blocked:
+        send_tg(
+            f"🕒 *禁止交易時段開始*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"原因：{btime_reason}\n"
+            f"⏰ 時間：{tw_ts()}\n"
+            f"\n"
+            f"⏸ 暫停開新單（持倉繼續監控）"
+        )
+        _state["in_blackout"] = True
+        _state["blackout_reason"] = btime_reason
+        _state["blackout_started_ts"] = time.time()
+        set_system_state(_state)
+    elif not blocked and _was_blocked:
+        dur_min = int((time.time() - _state.get("blackout_started_ts", time.time())) / 60)
+        send_tg(
+            f"✅ *禁止交易時段結束*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"剛結束的時段：{_last_reason}\n"
+            f"持續：{dur_min} 分鐘\n"
+            f"⏰ 時間：{tw_ts()}\n"
+            f"\n"
+            f"🚀 恢復正常掃描，可開新單"
+        )
+        _state["in_blackout"] = False
+        _state["blackout_reason"] = ""
+        set_system_state(_state)
+
     if blocked:
         logging.info(f"🕒 禁止交易時段（{btime_reason}），不開新單但繼續監控")
         tracker.check_all()
