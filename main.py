@@ -4747,9 +4747,8 @@ def _maybe_send_patrol(tracker, sent: int) -> None:
 
     active = [s for s in tracker.signals.values() if s["status"] in ("ACTIVE", "BE", "TRAIL")]
     pending = [s for s in tracker.signals.values() if s["status"] == "PENDING"]
-    tw_time = tw_now().strftime("%H:%M")
-
-    lines = [f"🔍 *{tw_time} 巡邏報告*", "📊 幣種掃描完成", "💤 本輪無新訊號"]
+    # v17.15: 巡邏報告也用雙時區 (TW + UK)
+    lines = [f"🔍 *巡邏報告*", f"⏰ {tw_ts()}", "📊 幣種掃描完成", "💤 本輪無新訊號"]
     if active:
         coins = " / ".join(s["instId"].split("-")[0] for s in active)
         lines.append(f"🟢 追蹤中：{len(active)} 筆（{coins}）")
