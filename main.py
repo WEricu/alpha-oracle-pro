@@ -466,47 +466,6 @@ def _recent_perf_multiplier(cfg: dict) -> tuple[float, str]:
     return 1.0, ""
 
 
-def _kelly_multiplier(cfg: dict) -> tuple[float, str]:
-    """v17.7: Kelly criterion 倉位管理。
-    f* = (b*p - q) / b   where b=avg_win/avg_loss, p=WR, q=1-p
-    用 fractional Kelly (預設 0.25 = quarter-Kelly) 控制 variance。
-    """
-    k_cfg = cfg.get("kelly_sizing", {})
-    if not k_cfg.get("enabled", False):
-        return 1.0, ""
-    window = int(k_cfg.get("window", 30))
-    fraction = float(k_cfg.get("fraction", 0.25))
-    floor = float(k_cfg.get("floor", 0.5))
-    ceiling = float(k_cfg.get("ceiling", 1.5))
-    history = _load_json(TRADE_HISTORY_FILE, [])
-    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
-    if len(closed) < window:
-        return 1.0, ""
-    last_n = closed[-window:]
-    wins_pnl = [t.get("pnl_pct", 0) for t in last_n if t.get("close_type") in ("TP1","TP2","TP3","LOCK")]
-    losses_pnl = [t.get("pnl_pct", 0) for t in last_n if t.get("close_type") in ("SL","BE")]
-    if not wins_pnl or not losses_pnl:
-        return 1.0, ""
-    avg_win = sum(wins_pnl) / len(wins_pnl)
-    avg_loss = abs(sum(losses_pnl) / len(losses_pnl))
-    if avg_loss < 1e-6:
-        return 1.0, ""
-    p = len(wins_pnl) / len(last_n)
-    b = avg_win / avg_loss  # win/loss ratio
-    if b <= 0:
-        return 1.0, ""
-    kelly_f = (b * p - (1 - p)) / b
-    if kelly_f <= 0:
-        # Negative edge → minimum size
-        mult = floor
-    else:
-        # Fractional Kelly relative to "neutral" baseline (assumed full-Kelly = 0.20)
-        baseline_kelly = 0.20  # rough "normal edge" Kelly fraction
-        mult = max(floor, min(ceiling, (kelly_f * fraction) / (baseline_kelly * fraction)))
-    label = f"📐 Kelly p={p:.0%} b={b:.2f} f*={kelly_f:.2f} → ×{mult:.2f}"
-    return mult, label
-
-
 def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, str]:
     """💰 根據分數推薦倉位倍數，並結合 recent-N 表現."""
     if cfg is None:
@@ -523,15 +482,9 @@ def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, s
             break
     # v17.3: apply recent-perf multiplier on top
     rp_mult, rp_label = _recent_perf_multiplier(cfg)
-    # v17.7: apply Kelly multiplier on top (orthogonal to recent-perf)
-    k_mult, k_label = _kelly_multiplier(cfg)
-    final_mult = base_mult * rp_mult * k_mult
-    parts = [base_label]
     if rp_mult != 1.0:
-        parts.append(rp_label)
-    if k_mult != 1.0:
-        parts.append(k_label)
-    return final_mult, " × ".join(parts)
+        return base_mult * rp_mult, f"{base_label} × {rp_label}"
+    return base_mult, base_label
 
 
 def calc_position_sizing(
@@ -1052,56 +1005,6 @@ def fetch_funding_rate(instId: str) -> float | None:
     except Exception as e:
         logging.warning(f"⚠️ 取得 {instId} 資金費率失敗：{e}")
     return None
-
-
-# v17.5: BTC funding rate trend as macro sentiment indicator
-_btc_funding_cache: dict = {"ts": 0, "data": None}
-
-
-def fetch_btc_funding_trend() -> dict | None:
-    """💰 BTC 資金費率趨勢（5 分鐘快取）→ macro sentiment.
-
-    回傳 dict:
-      current   : 當前 funding rate (float)
-      avg_5     : 最近 5 期 (40 hr) 平均
-      change    : current - avg_5
-      regime    : "overheated_long" / "overheated_short" / "reset_long" / "reset_short" / "normal"
-    """
-    now = time.time()
-    if now - _btc_funding_cache["ts"] < 300 and _btc_funding_cache["data"] is not None:
-        return _btc_funding_cache["data"]
-    try:
-        res = requests.get(
-            "https://www.okx.com/api/v5/public/funding-rate-history",
-            params={"instId": "BTC-USDT-SWAP", "limit": 10},
-            timeout=5,
-        ).json()
-        if res.get("code") != "0" or not res.get("data"):
-            return None
-        rates = [float(r["fundingRate"]) for r in res["data"]]
-        if len(rates) < 5:
-            return None
-        current = rates[0]
-        avg_5 = sum(rates[:5]) / 5
-        change = current - avg_5
-        # Classify regime
-        if current > 0.0005 and change > 0.0001:
-            regime = "overheated_long"   # high & rising → longs over-positioned
-        elif current < -0.0003 and change < -0.0001:
-            regime = "overheated_short"  # low & falling → shorts over-positioned
-        elif current < 0 and change > 0.0002:
-            regime = "reset_long"        # was negative, now climbing → longs flushed, room up
-        elif current > 0.0005 and change < -0.0002:
-            regime = "reset_short"       # was high, now dropping → shorts flushed
-        else:
-            regime = "normal"
-        data = {"current": current, "avg_5": avg_5, "change": change, "regime": regime}
-        _btc_funding_cache["ts"] = now
-        _btc_funding_cache["data"] = data
-        return data
-    except Exception as e:
-        logging.warning(f"⚠️ BTC funding trend 抓取失敗：{e}")
-        return None
 
 
 # ═════════════════════════════════════════════════════════
@@ -2305,34 +2208,6 @@ def generate_signal(
             if side == "SHORT" and funding_rate < -0.0005:
                 continue
 
-        # v17.5: BTC funding trend macro sentiment
-        _btc_funding = fetch_btc_funding_trend()
-        if _btc_funding:
-            _bf_regime = _btc_funding["regime"]
-            detail["btc_funding"] = round(_btc_funding["current"] * 100, 4)
-            detail["btc_funding_regime"] = _bf_regime
-            # LONG signals
-            if side == "LONG":
-                if _bf_regime == "overheated_long":
-                    score -= 5  # crowded longs, fade
-                    detail["btc_funding_adj"] = -5
-                elif _bf_regime == "reset_long":
-                    score += 4  # longs flushed, room to go up
-                    detail["btc_funding_adj"] = +4
-                elif _bf_regime == "overheated_short":
-                    score += 2  # shorts crowded, squeeze potential up
-                    detail["btc_funding_adj"] = +2
-            else:  # SHORT
-                if _bf_regime == "overheated_short":
-                    score -= 5
-                    detail["btc_funding_adj"] = -5
-                elif _bf_regime == "reset_short":
-                    score += 4
-                    detail["btc_funding_adj"] = +4
-                elif _bf_regime == "overheated_long":
-                    score += 2
-                    detail["btc_funding_adj"] = +2
-
         # 註記市場狀態到 detail
         detail["regime"] = regime_info["regime"]
         detail["adx"] = regime_info["adx"]
@@ -2445,146 +2320,6 @@ def generate_signal(
         )
 
     return max(candidates, key=lambda x: x["score"]) if candidates else None
-
-
-# ═════════════════════════════════════════════════════════
-# 8.5 v17.8 反轉策略（mean reversion）— 與主趨勢策略並行
-# ═════════════════════════════════════════════════════════
-def generate_signal_reversion(
-    instId: str,
-    df: list,
-    current_price: float,
-    funding_rate: float | None = None,
-    signal_expire_hours: int = 4,
-) -> dict | None:
-    """🔄 反轉策略：在 RSI 極端 + sweep + reclaim 時逆趨勢進場.
-
-    觸發條件 (硬要求, 全滿足才出單):
-    1. RSI > 75 (做空) 或 RSI < 25 (做多)
-    2. 最近 5 根 K 內出現 sweep (破前 N 根極端 + close 回到區間)
-    3. ATR 在合理範圍 (0.5%-2%)
-    4. 信號 K 反轉確認 (body >= 50% 反向)
-
-    SL: sweep 極端外側 + 0.3 ATR
-    TP: TP1=1R, TP2=1.5R, TP3=2R (短打, 比趨勢策略 TP 更近)
-    持倉時限: 4 小時 (短於趨勢策略 8 小時)
-    """
-    if df is None or len(df) < 50:
-        return None
-
-    rsi = calc_rsi(df)
-    atr = calc_atr(df)
-    if atr <= 0:
-        return None
-    atr_pct = atr / current_price
-    if atr_pct < 0.005 or atr_pct > 0.02:
-        return None
-
-    last = df[-1]
-    rng = last["h"] - last["l"]
-    if rng <= 0:
-        return None
-    body = abs(last["c"] - last["o"])
-    body_ratio = body / rng
-    if body_ratio < 0.5:
-        return None  # 沒有強反轉 K
-
-    candidates = []
-    # LONG reversion: oversold + sweep low + bullish bar
-    if rsi < 25 and last["c"] > last["o"]:
-        # Look for liquidity sweep in last 5 bars
-        for off in range(1, 6):
-            idx = len(df) - off
-            if idx - 20 < 0:
-                continue
-            bar = df[idx]
-            prior = df[idx - 20:idx]
-            if not prior:
-                continue
-            prior_low = min(b["l"] for b in prior)
-            if bar["l"] < prior_low and bar["c"] > prior_low:
-                # Sweep confirmed
-                entry = current_price
-                sl_anchor = bar["l"]
-                sl = sl_anchor - atr * 0.3
-                risk = abs(entry - sl)
-                if risk <= 0:
-                    continue
-                tp1 = entry + risk * 1.0
-                tp2 = entry + risk * 1.5
-                tp3 = entry + risk * 2.0
-                candidates.append({
-                    "instId": instId,
-                    "side": "LONG",
-                    "tf": "15m",
-                    "entry": round(entry, 4),
-                    "sl": round(sl, 4),
-                    "tp1": round(tp1, 4),
-                    "tp2": round(tp2, 4),
-                    "tp3": round(tp3, 4),
-                    "score": 100,
-                    "grade": "REVERSION",
-                    "strategy": "reversion",
-                    "detail": {
-                        "strategy": "reversion",
-                        "rsi": round(rsi, 1),
-                        "atr_pct": round(atr_pct * 100, 3),
-                        "body_ratio": round(body_ratio, 2),
-                        "sweep_bars_ago": off,
-                    },
-                    "funding_rate": funding_rate,
-                    "created": time.time(),
-                    "expires": time.time() + signal_expire_hours * 3600,
-                })
-                break
-
-    # SHORT reversion: overbought + sweep high + bearish bar
-    if rsi > 75 and last["c"] < last["o"]:
-        for off in range(1, 6):
-            idx = len(df) - off
-            if idx - 20 < 0:
-                continue
-            bar = df[idx]
-            prior = df[idx - 20:idx]
-            if not prior:
-                continue
-            prior_high = max(b["h"] for b in prior)
-            if bar["h"] > prior_high and bar["c"] < prior_high:
-                entry = current_price
-                sl_anchor = bar["h"]
-                sl = sl_anchor + atr * 0.3
-                risk = abs(entry - sl)
-                if risk <= 0:
-                    continue
-                tp1 = entry - risk * 1.0
-                tp2 = entry - risk * 1.5
-                tp3 = entry - risk * 2.0
-                candidates.append({
-                    "instId": instId,
-                    "side": "SHORT",
-                    "tf": "15m",
-                    "entry": round(entry, 4),
-                    "sl": round(sl, 4),
-                    "tp1": round(tp1, 4),
-                    "tp2": round(tp2, 4),
-                    "tp3": round(tp3, 4),
-                    "score": 100,
-                    "grade": "REVERSION",
-                    "strategy": "reversion",
-                    "detail": {
-                        "strategy": "reversion",
-                        "rsi": round(rsi, 1),
-                        "atr_pct": round(atr_pct * 100, 3),
-                        "body_ratio": round(body_ratio, 2),
-                        "sweep_bars_ago": off,
-                    },
-                    "funding_rate": funding_rate,
-                    "created": time.time(),
-                    "expires": time.time() + signal_expire_hours * 3600,
-                })
-                break
-
-    return candidates[0] if candidates else None
 
 
 # ═════════════════════════════════════════════════════════
@@ -3097,19 +2832,8 @@ def vectorize_signal(
     mtf: dict | None = None,
     regime: dict | None = None,
 ) -> dict:
-    """🧬 把訊號特徵打成向量（給 KNN 用）。v17.9: 加 6 個新特徵"""
+    """🧬 把訊號特徵打成向量（給 KNN 用）"""
     rsi = (detail or {}).get("rsi_value", 50)
-    expect = 1 if side == "LONG" else -1
-    # v17.9 新特徵
-    btc_fund = (detail or {}).get("btc_funding", 0)
-    btc_regime = (detail or {}).get("btc_funding_regime", "normal")
-    btc_regime_score = {
-        "overheated_long": -1.0, "overheated_short": 1.0,
-        "reset_long": 1.0, "reset_short": -1.0, "normal": 0.0,
-    }.get(btc_regime, 0.0) * expect  # 對 LONG/SHORT 對稱
-    regime_1d = (detail or {}).get("regime") or ""
-    regime_1d_score = {"up": 1.0, "down": -1.0, "side": 0.0}.get(regime_1d, 0.0) * expect
-    h = datetime.utcnow().hour
     return {
         "score": float(score),
         "rsi": float(rsi),
@@ -3117,25 +2841,15 @@ def vectorize_signal(
         "funding": float(funding_rate or 0) * 1000,
         "vol_ratio": float((detail or {}).get("volume_ratio", 1.0)),
         "adx": float((regime or {}).get("adx", 20)),
-        "mtf_h1": 1.0 if (mtf or {}).get("1H", {}).get("supertrend") == expect else 0.0,
-        "mtf_h4": 1.0 if (mtf or {}).get("4H", {}).get("supertrend") == expect else 0.0,
+        "mtf_h1": 1.0 if (mtf or {}).get("1H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
+        "mtf_h4": 1.0 if (mtf or {}).get("4H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
         "side": 1.0 if side == "LONG" else 0.0,
-        # v17.9 新特徵
-        "btc_fund": float(btc_fund),
-        "btc_regime": btc_regime_score,
-        "regime_1d": regime_1d_score,
-        "hour": float(h),
-        "ob_score": float((detail or {}).get("ob", 0)),
-        "fvg_score": float((detail or {}).get("fvg", 0)),
     }
 
 
 _FEATURE_SCALE = {
     "score": 30, "rsi": 50, "atr_pct": 3, "funding": 2,
     "vol_ratio": 3, "adx": 50, "mtf_h1": 1, "mtf_h4": 1, "side": 1,
-    # v17.9
-    "btc_fund": 0.05, "btc_regime": 1, "regime_1d": 1,
-    "hour": 24, "ob_score": 20, "fvg_score": 15,
 }
 
 
@@ -4860,9 +4574,7 @@ def run_scan(tracker: SignalTracker) -> int:
                         )
                     continue
 
-            # v17.6: configurable entry timeframe (default 15m, can be 30m)
-            _entry_tf = cfg_rr_mode.get("entry_timeframe", "15m")
-            df = fetch_candles(instId, tf=_entry_tf)
+            df = fetch_candles(instId)
             if df is None:
                 continue
 
@@ -4876,14 +4588,6 @@ def run_scan(tracker: SignalTracker) -> int:
                 atr_max_pct=atr_max,
                 signal_expire_hours=expire_h,
             )
-            # v17.8: 主趨勢策略無訊號時，嘗試反轉策略
-            if not signal and cfg_rr_mode.get("reversion_strategy", {}).get("enabled", False):
-                signal = generate_signal_reversion(
-                    instId, df, okx_price, funding,
-                    signal_expire_hours=cfg_rr_mode.get("reversion_strategy", {}).get("expire_hours", 4),
-                )
-                if signal:
-                    logging.info(f"[{instId}] 🔄 反轉策略觸發 (RSI={signal['detail']['rsi']})")
             if not signal:
                 continue
 

@@ -31,8 +31,6 @@
   "tp_multipliers": [1.0, 2.0, 3.0],
   "tp_allocation":  [0.6, 0.3, 0.1],
   "lock_sl_at_tp1": true,
-  "entry_timeframe": "15m",
-  "_entry_tf_comment": "v17.6: 可改 '30m' 換成 30 分鐘進場時框（訊號數約半但雜訊少）。記得同步 ANCHOR_TF_MIN env var.",
   "_lock_sl_comment": "v17 M5 key change: TP1 hit → SL moves to TP1 (NOT entry/BE). Captures min +1R per win on remaining 40%.",
 
   "capital_management": {
@@ -79,21 +77,6 @@
       { "min_score": 110, "multiplier": 0.7, "label": "謹慎小倉" },
       { "min_score": 0,   "multiplier": 0.5, "label": "保守倉" }
     ]
-  },
-
-  "reversion_strategy": {
-    "enabled": false,
-    "expire_hours": 4,
-    "_comment": "v17.8: 反轉策略（mean reversion）作為趨勢策略 fallback。RSI 極端 + sweep + 反轉 K 觸發。預設關閉，等實盤跑穩 v17.5 後再開。"
-  },
-
-  "kelly_sizing": {
-    "enabled": false,
-    "window": 30,
-    "fraction": 0.25,
-    "floor": 0.5,
-    "ceiling": 1.5,
-    "_comment": "v17.7: 預設關閉，等實盤累積 30+ 樣本再開。fraction=0.25 = quarter-Kelly (保守)。floor/ceiling 限制波動。"
   },
 
   "recent_perf_sizing": {
