@@ -4,7 +4,7 @@
   "last_health_warning": 1778090319.7427218,
   "scan_failure_count": 0,
   "last_patrol_ts": 1778945413.8801413,
-  "in_blackout": true,
-  "blackout_reason": "資金費率結算（16 UTC）",
+  "in_blackout": false,
+  "blackout_reason": "",
   "blackout_started_ts": 1778947205.6493883
 }
