@@ -26,6 +26,10 @@ GH_REPO           = os.environ.get("GH_REPO", "WEricu/alpha-oracle-pro")
 GH_BRANCH         = "main"
 SCAN_INTERVAL     = int(os.environ.get("SCAN_INTERVAL", 600))
 CALLBACK_INTERVAL = int(os.environ.get("CALLBACK_INTERVAL", 5))
+# v17.4: time-anchor scan to 15m K-line close + offset (default 5 sec after close)
+ANCHOR_TF_MIN     = int(os.environ.get("ANCHOR_TF_MIN", 15))
+ANCHOR_OFFSET_SEC = int(os.environ.get("ANCHOR_OFFSET_SEC", 5))
+ANCHOR_ENABLED    = os.environ.get("ANCHOR_ENABLED", "1") == "1"
 PORT              = int(os.environ.get("PORT", 8000))
 
 # ── GitHub API 狀態同步 ──
@@ -169,8 +173,25 @@ def callback_loop():
         time.sleep(CALLBACK_INTERVAL)
 
 
+def _seconds_to_next_anchor(tf_min: int, offset_sec: int) -> float:
+    """v17.4: 算到下個 K 線收線 + offset 的秒數。
+    例如 tf_min=15, offset=5 → 09:00:05, 09:15:05, 09:30:05...
+    """
+    now = time.time()
+    period = tf_min * 60
+    # next anchor = ceil((now - offset) / period) * period + offset
+    elapsed_in_period = (now - offset_sec) % period
+    wait = period - elapsed_in_period
+    if wait < 1:  # at exactly the anchor — wait full period
+        wait = period
+    return wait
+
+
 def scan_loop():
-    logging.info(f"Scan loop started, interval {SCAN_INTERVAL // 60} min")
+    if ANCHOR_ENABLED:
+        logging.info(f"Scan loop started, ANCHORED to {ANCHOR_TF_MIN}m K-line close + {ANCHOR_OFFSET_SEC}s")
+    else:
+        logging.info(f"Scan loop started, FLOATING interval {SCAN_INTERVAL // 60} min")
     while True:
         try:
             _main.run_scan(tracker)
@@ -181,7 +202,12 @@ def scan_loop():
             gh_sync_all()
         except Exception as e:
             logging.warning(f"gh_sync: {e}")
-        time.sleep(SCAN_INTERVAL)
+        if ANCHOR_ENABLED:
+            wait = _seconds_to_next_anchor(ANCHOR_TF_MIN, ANCHOR_OFFSET_SEC)
+            logging.info(f"⏱  next scan in {wait:.0f}s (anchored to {ANCHOR_TF_MIN}m close)")
+            time.sleep(wait)
+        else:
+            time.sleep(SCAN_INTERVAL)
 
 
 if __name__ == "__main__":
