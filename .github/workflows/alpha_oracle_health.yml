@@ -1,0 +1,85 @@
+name: Alpha Oracle 健康監控
+
+# v17.19: 外部健康監控
+# 每 30 分鐘檢查最近 service sync commit 時間.
+# 若超過 35 分鐘無 sync (代表 Railway service 停了),
+# 推 Telegram 警報 + Email (可選).
+#
+# 不能用 bot 自己監控自己 (bot 死了就推不出來),
+# 所以用獨立 GitHub Actions 當外部 watchdog.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # 每 30 分鐘
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 🩺 Bot 心跳檢查
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: 📦 下載程式碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🩺 檢查最近 service sync 時間
+        id: check_heartbeat
+        run: |
+          # 找最近 100 個 commit 中第一個 "service: sync" 自動提交
+          LATEST_SYNC=$(git log --format="%ci %s" -100 | grep -m1 "service: sync" | awk '{print $1, $2, $3}')
+          echo "Latest sync: $LATEST_SYNC"
+          if [ -z "$LATEST_SYNC" ]; then
+            echo "alive=unknown" >> "$GITHUB_OUTPUT"
+            echo "minutes_ago=999" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          NOW_EPOCH=$(date +%s)
+          SYNC_EPOCH=$(date -d "$LATEST_SYNC" +%s)
+          MINUTES_AGO=$(( (NOW_EPOCH - SYNC_EPOCH) / 60 ))
+          echo "Minutes ago: $MINUTES_AGO"
+          echo "minutes_ago=$MINUTES_AGO" >> "$GITHUB_OUTPUT"
+          # 35 分鐘以內視為活: bot 每 15 min anchor + 2 個 cycle 緩衝
+          if [ "$MINUTES_AGO" -lt 35 ]; then
+            echo "alive=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "alive=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 🚨 Bot 心跳異常 → 推 Telegram
+        if: steps.check_heartbeat.outputs.alive == 'no'
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          MINUTES_AGO: ${{ steps.check_heartbeat.outputs.minutes_ago }}
+        run: |
+          MSG="🚨 *Alpha Oracle Bot 心跳異常*"
+          MSG="$MSG%0A━━━━━━━━━━━━━━"
+          MSG="$MSG%0A⚠️ 最近一次 service sync 在 \`${MINUTES_AGO}\` 分鐘前"
+          MSG="$MSG%0A正常應該 < 30 分鐘"
+          MSG="$MSG%0A"
+          MSG="$MSG%0A🔍 *可能原因:*"
+          MSG="$MSG%0A• Railway 額度用完 (5 days left 警告)"
+          MSG="$MSG%0A• Service crash (查 Railway logs)"
+          MSG="$MSG%0A• Build 失敗 (Build Logs)"
+          MSG="$MSG%0A"
+          MSG="$MSG%0A👉 開 Railway dashboard 確認狀態"
+          MSG="$MSG%0Ahttps://railway.com/project/c99504e3-9505-4347-a1a0-a650ee588934"
+          curl -s "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            -d "chat_id=${CHAT_ID}" \
+            -d "text=${MSG}" \
+            -d "parse_mode=Markdown" \
+            > /dev/null
+          echo "🚨 警報已推送"
+
+      - name: ✅ Bot 正常
+        if: steps.check_heartbeat.outputs.alive == 'yes'
+        env:
+          MINUTES_AGO: ${{ steps.check_heartbeat.outputs.minutes_ago }}
+        run: |
+          echo "✅ Bot alive — 最近 sync 在 ${MINUTES_AGO} 分鐘前"
